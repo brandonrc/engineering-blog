@@ -1,5 +1,5 @@
 ---
-title: "I Asked LLMs to Review Another LLM. They Still Got It Wrong"
+title: I Asked LLMs to Review Another LLM. They Still Got It Wrong
 slug: llm-review-reliability
 authors:
 - khuyen-tran
@@ -11,8 +11,10 @@ tags:
 - ollama
 - meeting-summarization
 - local-llm
-meta_description: "I tested LLM reviewer models on meeting summaries to see when they catch hallucinations, when they delete true claims, and how to choose one."
-focus_keyword: "LLM review"
+meta_description: I tested LLM reviewer models on meeting summaries to see when they catch hallucinations, when they delete true claims, and how to choose one.
+focus_keyword: LLM review
+wordpress_id: 39172
+wordpress_url: https://openteams.com/llm-review-reliability/
 ---
 
 Have you ever asked one model to summarize something, then used another model to check whether the summary was trustworthy?
