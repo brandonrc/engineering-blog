@@ -1,5 +1,5 @@
 ---
-title: 'MiniCPM5-2B quantization report'
+title: MiniCPM5-2B quantization report
 slug: minicpm5-2b-quantization-report
 authors:
 - guido-imperiale
@@ -7,6 +7,8 @@ categories:
 - Engineering
 meta_description: 'MiniCPM5-2B quantization report: the best GGUF weights and K/V cache quants on llama.cpp and BeeLlama.cpp, squeezing a SOTA model into 3 GiB RAM.'
 focus_keyword: MiniCPM5-2B quantization
+wordpress_id: 39135
+wordpress_url: https://openteams.com/minicpm5-2b-quantization-report/
 ---
 
 [MiniCPM5-2B](https://huggingface.co/openbmb/MiniCPM5-2B) is a SOTA large language model for severely memory-constrained devices. I've tested several GGUF collections from HuggingFace, together with the available quantization options for KV cache, to define the frontier of the best quality/size ratios for the model.
