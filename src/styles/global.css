@@ -411,6 +411,12 @@
 		background: light-dark(#0d1b3d, #2c3d6e);
 	}
 
+	/* Author name and "Share this post" under a post: small spaced capitals. */
+	.blog-theme .author-name {
+		@apply text-sm font-medium tracking-[0.12em] text-text uppercase;
+		font-family: var(--font-mono);
+	}
+
 	.blog-theme .post-title-link {
 		@apply transition-colors hover:text-brand;
 	}

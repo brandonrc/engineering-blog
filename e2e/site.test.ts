@@ -35,11 +35,35 @@ async function crawl(): Promise<string[]> {
 	return [...seen].sort();
 }
 
+// The mermaid library is fetched from its CDN once per run and replayed from
+// memory, so parallel diagram pages don't each wait on the network.
+const cdnCache = new Map<string, Promise<{ status: number; headers: Record<string, string>; body: Buffer }>>();
+
 async function newContext(): Promise<BrowserContext> {
-	const context = await browser.newContext({ permissions: ["clipboard-read", "clipboard-write"] });
-	await context.route(/^https?:\/\//, (route) => {
+	const context = await browser.newContext();
+	// Each page records what it copies instead of using the system clipboard,
+	// which every page in the run would share.
+	await context.addInitScript(() => {
+		Object.defineProperty(navigator, "clipboard", {
+			value: { writeText: async (text: string) => void ((window as { copied?: string }).copied = text) },
+		});
+	});
+	await context.route(/^https?:\/\//, async (route) => {
 		const url = new URL(route.request().url());
-		if (url.origin === ORIGIN || url.hostname === "cdn.jsdelivr.net") return route.continue();
+		if (url.origin === ORIGIN) return route.continue();
+		if (url.hostname === "cdn.jsdelivr.net") {
+			if (!cdnCache.has(url.href)) {
+				cdnCache.set(
+					url.href,
+					fetch(url).then(async (r) => ({
+						status: r.status,
+						headers: { "content-type": r.headers.get("content-type") ?? "text/javascript", "access-control-allow-origin": "*" },
+						body: Buffer.from(await r.arrayBuffer()),
+					})),
+				);
+			}
+			return route.fulfill(await cdnCache.get(url.href)!);
+		}
 		if (url.hostname.endsWith("fonts.googleapis.com")) return route.fulfill({ contentType: "text/css", body: "" });
 		if (route.request().resourceType() === "image") return route.fulfill({ contentType: "image/png", body: PIXEL });
 		return route.fulfill({ body: "" });
@@ -137,7 +161,7 @@ describe.concurrent("site", () => {
 			await button.click();
 			return {
 				code: await block.evaluate((pre) => pre.textContent),
-				copied: await page.evaluate(() => navigator.clipboard.readText()),
+				copied: await page.evaluate(() => (window as { copied?: string }).copied),
 				label: await button.getAttribute("aria-label"),
 				buttons: await page.locator("[data-copy-code]").count(),
 				blocks: await page.locator(".editorial-content pre.astro-code").count(),
@@ -146,6 +170,35 @@ describe.concurrent("site", () => {
 		expect(result.copied).toBe(result.code);
 		expect(result.label).toBe("Copied");
 		expect(result.buttons).toBe(result.blocks);
+	});
+
+	it("shares a post on X, Hacker News, LinkedIn and Bluesky, and copies its link", async ({ expect }) => {
+		const path = `${BLOG_PATH}/pixi-ubi-micro-containers/`;
+		const result = await withPage(async (page) => {
+			await open(page, path);
+			const links = await page.$$eval("[data-share] a", (as) =>
+				Object.fromEntries(as.map((a) => [a.getAttribute("aria-label"), (a as HTMLAnchorElement).href])),
+			);
+			const button = page.locator("[data-share-copy]");
+			await button.click();
+			return {
+				links,
+				title: await page.locator("article h1").innerText(),
+				copied: await page.evaluate(() => (window as { copied?: string }).copied),
+				label: await button.getAttribute("aria-label"),
+			};
+		});
+		const url = `https://openteams.com${path}`;
+		const u = encodeURIComponent(url);
+		const t = encodeURIComponent(result.title);
+		expect(result.links).toEqual({
+			"Share on X (opens in a new tab)": `https://x.com/intent/post?text=${t}&url=${u}`,
+			"Share on Hacker News (opens in a new tab)": `https://news.ycombinator.com/submitlink?u=${u}&t=${t}`,
+			"Share on LinkedIn (opens in a new tab)": `https://www.linkedin.com/sharing/share-offsite/?url=${u}`,
+			"Share on Bluesky (opens in a new tab)": `https://bsky.app/intent/compose?text=${encodeURIComponent(`${result.title} ${url}`)}`,
+		});
+		expect(result.copied).toBe(url);
+		expect(result.label).toBe("Link copied");
 	});
 
 	it("names every author of a post on its index card", async ({ expect }) => {

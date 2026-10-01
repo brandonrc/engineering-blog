@@ -1,0 +1,60 @@
+---
+// Share row at the end of a post: X, Hacker News, LinkedIn, Bluesky and a
+// copy-link button. Logos are from Simple Icons (CC0); LinkedIn is not in
+// that set, so it uses the Phosphor mark the site already ships.
+import { Icon } from "astro-iconset/components";
+import xLogo from "../icons/share/x.svg?raw";
+import hnLogo from "../icons/share/ycombinator.svg?raw";
+import bskyLogo from "../icons/share/bluesky.svg?raw";
+
+interface Props {
+	title: string;
+	url: string;
+}
+
+const { title, url } = Astro.props;
+const u = encodeURIComponent(url);
+const t = encodeURIComponent(title);
+const svg = (raw: string) => raw.replace("<svg ", '<svg width="24" height="24" fill="currentColor" aria-hidden="true" ');
+const networks = [
+	{ name: "X", href: `https://x.com/intent/post?text=${t}&url=${u}`, logo: svg(xLogo) },
+	{ name: "Hacker News", href: `https://news.ycombinator.com/submitlink?u=${u}&t=${t}`, logo: svg(hnLogo) },
+	{ name: "LinkedIn", href: `https://www.linkedin.com/sharing/share-offsite/?url=${u}`, logo: null },
+	{ name: "Bluesky", href: `https://bsky.app/intent/compose?text=${encodeURIComponent(`${title} ${url}`)}`, logo: svg(bskyLogo) },
+];
+const button =
+	"flex size-11 items-center justify-center rounded-full text-faint transition-colors hover:text-text focus-visible:text-text";
+---
+
+<div class="mx-auto flex max-w-[680px] flex-col items-center px-6 pt-14 pb-20" data-share>
+	<h2 class="author-name">Share this post</h2>
+	<div class="mt-4 flex items-center gap-4">
+		{networks.map((n) => (
+			<a href={n.href} target="_blank" rel="noopener noreferrer" aria-label={`Share on ${n.name} (opens in a new tab)`} title={`Share on ${n.name}`} class={button}>
+				{n.logo ? <Fragment set:html={n.logo} /> : <Icon name="ph:linkedin-logo" class="text-[30px]" aria-hidden="true" />}
+			</a>
+		))}
+		<button type="button" class={`${button} cursor-pointer`} data-share-copy data-url={url} aria-label="Copy link" title="Copy link">
+			<Icon name="ph:link" class="share-copy-icon text-[28px]" aria-hidden="true" />
+			<Icon name="ph:check" class="share-copied-icon hidden text-[28px]" aria-hidden="true" />
+		</button>
+	</div>
+</div>
+
+<script>
+	for (const button of document.querySelectorAll<HTMLButtonElement>("[data-share-copy]")) {
+		let timer: ReturnType<typeof setTimeout>;
+		button.addEventListener("click", async () => {
+			await navigator.clipboard.writeText(button.dataset.url ?? location.href);
+			button.setAttribute("aria-label", "Link copied");
+			button.querySelector(".share-copy-icon")?.classList.add("hidden");
+			button.querySelector(".share-copied-icon")?.classList.remove("hidden");
+			clearTimeout(timer);
+			timer = setTimeout(() => {
+				button.setAttribute("aria-label", "Copy link");
+				button.querySelector(".share-copy-icon")?.classList.remove("hidden");
+				button.querySelector(".share-copied-icon")?.classList.add("hidden");
+			}, 2000);
+		});
+	}
+</script>

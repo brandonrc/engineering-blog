@@ -4,6 +4,7 @@ import Base from "../layouts/BlogBase.astro";
 import Avatar from "../components/Avatar.astro";
 import SubscribeBand from "../components/SubscribeBand.astro";
 import CodeCopy from "../components/CodeCopy.astro";
+import ShareLinks from "../components/ShareLinks.astro";
 import PostTitle from "../components/PostTitle.astro";
 import { getPosts, type Post } from "../lib/posts";
 import ogImages from "../data/og-images.json";
@@ -76,20 +77,20 @@ const ogImage = ogPath ? blogUrl(ogPath) : undefined;
 			</div>
 
 			{authors.length > 0 && (
-				<aside class="mx-auto mb-20 flex max-w-[680px] flex-col gap-4 px-6">
+				<aside class="mx-auto flex max-w-[680px] flex-col items-center gap-10 px-6 pt-4 text-center">
 					{authors.map((a) => (
-						<div class="flex items-start gap-4 rounded-2xl border border-border bg-surface p-6">
-							<a href={blogUrl(`/author/${a.slug}`)} class="shrink-0" aria-label={`Posts by ${a.name}`}>
-								<Avatar name={a.name} src={a.avatarUrl} size={52} />
+						<div class="flex flex-col items-center">
+							<a href={blogUrl(`/author/${a.slug}`)} aria-label={`Posts by ${a.name}`}>
+								<Avatar name={a.name} src={a.avatarUrl} size={72} />
 							</a>
-							<div>
-								<a href={blogUrl(`/author/${a.slug}`)} class="font-semibold hover:text-brand">{a.name}</a>
-								{a.bio && <p class="mt-1 text-sm leading-relaxed text-muted">{a.bio}</p>}
-							</div>
+							<a href={blogUrl(`/author/${a.slug}`)} class="author-name mt-4 hover:text-brand">{a.name}</a>
+							{a.bio && <p class="mt-2 max-w-[560px] leading-relaxed text-muted">{a.bio}</p>}
 						</div>
 					))}
 				</aside>
 			)}
+
+			<ShareLinks title={title} url={new URL(Astro.url.pathname, Astro.site).href} />
 		</div>
 
 		<aside class="hidden xl:block">
