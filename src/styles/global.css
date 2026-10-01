@@ -331,6 +331,32 @@
 		@apply mx-auto block;
 	}
 
+	/* Click a diagram to see it full screen (script in pages/[slug].astro). */
+	.blog-theme .editorial-content :where(.doodle-wrap) {
+		cursor: zoom-in;
+	}
+	.blog-theme .editorial-content :where(.doodle-wrap:focus-visible) {
+		@apply outline-2 outline-offset-2 outline-brand;
+	}
+	.blog-theme :where(dialog.diagram-zoom) {
+		@apply m-0 h-dvh max-h-none w-screen max-w-none bg-bg p-4 text-text sm:p-10;
+		border: 0;
+		cursor: zoom-out;
+	}
+	.blog-theme :where(dialog.diagram-zoom)::backdrop {
+		background: rgb(4 20 55 / 0.6);
+	}
+	.blog-theme :where(dialog.diagram-zoom .doodle-diagram) {
+		@apply h-full w-full;
+	}
+	.blog-theme :where(dialog.diagram-zoom svg) {
+		@apply h-full w-full;
+		max-width: none;
+	}
+	.blog-theme :where(.diagram-zoom-close) {
+		@apply absolute top-3 right-4 z-10 cursor-pointer rounded-full bg-surface px-3 py-1 text-2xl leading-none text-muted hover:text-text;
+	}
+
 	/* Diagram labels live inside the article, so prose rules for p/span
 	   would repaint them (wrong font and size, clipped nodes). Hand them
 	   back to the diagram's handwriting font and inherited colours. */

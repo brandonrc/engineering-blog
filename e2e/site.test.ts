@@ -181,6 +181,40 @@ describe.concurrent("site", () => {
 		expect(result.tabTitle).toContain(result.code);
 		expect(result.tabTitle).not.toContain("`");
 	});
+
+	it("opens a diagram full screen on click or Enter, and closes it on Escape", async ({ expect }) => {
+		let diagramPage: string | undefined;
+		for (const path of pages) {
+			if ((await (await fetch(ORIGIN + path)).text()).includes("language-mermaid")) {
+				diagramPage = path;
+				break;
+			}
+		}
+		expect(diagramPage).toBeDefined();
+		const result = await withPage(async (page) => {
+			await open(page, diagramPage!);
+			const diagram = page.locator(".doodle-wrap").first();
+			const inline = (await diagram.locator("svg").first().boundingBox())!;
+			const dialog = page.locator("dialog.diagram-zoom");
+			await diagram.click();
+			const zoomed = (await dialog.locator("svg").first().boundingBox())!;
+			const openAfterClick = await dialog.evaluate((d: HTMLDialogElement) => d.open);
+			const zoomedVisible = await dialog.locator("svg").first().isVisible();
+			const zoomedVisibility = await dialog.locator("svg").first().evaluate((s) => getComputedStyle(s).visibility);
+			await page.keyboard.press("Escape");
+			const openAfterEscape = await dialog.evaluate((d: HTMLDialogElement) => d.open);
+			await diagram.focus();
+			await page.keyboard.press("Enter");
+			const openAfterEnter = await dialog.evaluate((d: HTMLDialogElement) => d.open);
+			return { inline, zoomed, openAfterClick, zoomedVisible, zoomedVisibility, openAfterEscape, openAfterEnter };
+		});
+		expect(result.openAfterClick).toBe(true);
+		expect(result.zoomedVisible).toBe(true);
+		expect(result.zoomedVisibility).toBe("visible");
+		expect(result.zoomed.width * result.zoomed.height).toBeGreaterThan(result.inline.width * result.inline.height);
+		expect(result.openAfterEscape).toBe(false);
+		expect(result.openAfterEnter).toBe(true);
+	});
 });
 
 describe.concurrent("pages", () => {

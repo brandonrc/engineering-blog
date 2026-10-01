@@ -182,6 +182,50 @@ const ogImage = ogPath ? blogUrl(ogPath) : undefined;
 				document.fonts.load('600 16px "Shantell Sans"'),
 			]).catch(() => {});
 		}
-		createRenderer().mount();
+		await createRenderer().mount();
+
+		// Diagrams shrink to the column width, so a click (or Enter) opens one
+		// full screen in a dialog. The clone keeps the SVG's id, which its
+		// mermaid styles are scoped to, and sits in a .doodle-diagram so the
+		// label font rules still apply (data-processed, or mermaid-doodle's
+		// stylesheet hides it as not yet rendered). The theme toggle re-renders diagrams
+		// in place, so the clone is taken fresh on every open.
+		const wraps = document.querySelectorAll(".doodle-wrap");
+		if (wraps.length) {
+			const zoom = document.createElement("dialog");
+			zoom.className = "diagram-zoom";
+			zoom.setAttribute("aria-label", "Diagram, full screen");
+			zoom.innerHTML =
+				'<button type="button" class="diagram-zoom-close" aria-label="Close diagram">&times;</button><div class="doodle-diagram" data-processed></div>';
+			document.body.append(zoom);
+			const zoomBody = zoom.querySelector(".doodle-diagram")!;
+			zoom.addEventListener("click", () => zoom.close());
+			zoom.addEventListener("close", () => zoomBody.replaceChildren());
+
+			function openDiagram(wrap: Element) {
+				const svg = wrap.querySelector("svg");
+				if (!svg) return;
+				const copy = svg.cloneNode(true) as SVGSVGElement;
+				copy.removeAttribute("style");
+				copy.removeAttribute("width");
+				copy.removeAttribute("height");
+				zoomBody.replaceChildren(copy);
+				zoom.showModal();
+			}
+
+			for (const wrap of wraps) {
+				wrap.setAttribute("role", "button");
+				wrap.setAttribute("tabindex", "0");
+				wrap.setAttribute("aria-label", "Open diagram full screen");
+				wrap.addEventListener("click", () => openDiagram(wrap));
+				wrap.addEventListener("keydown", (e) => {
+					const key = (e as KeyboardEvent).key;
+					if (key === "Enter" || key === " ") {
+						e.preventDefault();
+						openDiagram(wrap);
+					}
+				});
+			}
+		}
 	</script>
 </Base>
