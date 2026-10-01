@@ -38,6 +38,23 @@ const check = "#22a06b";
 // Jupyter in orbit: the logo at the centre, three sparkles for
 // extensions, and a few dots and rings around it.
 const hub = { x: 360, y: 200 };
+
+// Lint feedback loop: four nodes on one ring. Angles are degrees clockwise
+// from 12 o'clock; each segment runs from where one node ends to where the
+// next begins, with its arrowhead at that end.
+const loop = { x: 360, y: 190, r: 140 };
+const ringPt = (deg: number) => {
+	const t = (deg * Math.PI) / 180;
+	return [loop.x + loop.r * Math.sin(t), loop.y - loop.r * Math.cos(t)].map((v) => v.toFixed(1));
+};
+const ringArc = (from: number, to: number) =>
+	`M${ringPt(from).join(" ")} A${loop.r} ${loop.r} 0 0 1 ${ringPt(to).join(" ")}`;
+const loopSegments = [
+	{ from: 33, to: 67, c: "#8aa2ff" },
+	{ from: 113, to: 139, c: "#ff8f73" },
+	{ from: 221, to: 256, c: "#7fd4a3" },
+	{ from: 284, to: 327, c: "#8aa2ff" },
+];
 const sparkle = (x: number, y: number, r: number) =>
 	`M${x} ${y - r}Q${x} ${y} ${x + r} ${y}Q${x} ${y} ${x} ${y + r}Q${x} ${y} ${x - r} ${y}Q${x} ${y} ${x} ${y - r}Z`;
 ---
@@ -339,15 +356,24 @@ const sparkle = (x: number, y: number, r: number) =>
 )}
 
 {slug === "lint-rules-for-ai-agents" && (
-	<svg viewBox="0 0 720 380" class="h-full w-full" preserveAspectRatio="xMidYMid meet" role="img" aria-label="ESLint turning an agent's mistake into an error it fixes">
+	<svg viewBox="0 0 720 380" class="h-full w-full" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Feedback loop: the agent writes code, ESLint flags a lint error, the agent fixes it">
 		<rect x="-300" y="-300" width="1320" height="980" fill={darkNavy}/>
-		<rect x="110" y="120" width="140" height="140" rx="32" fill="#ffffff"/>
-		<image href={blogUrl("/blog-logos/eslint.svg")} x="140" y="150" width="80" height="80"/>
-		<g font-family={mono}>
-			<rect x="310" y="126" width="300" height="56" rx="28" fill="#ff8f73" opacity="0.16"/>
-			<text x="340" y="163" font-size="26" fill="#ff8f73" font-weight="600">&#10005; lint error</text>
-			<rect x="310" y="198" width="300" height="56" rx="28" fill="#7fd4a3" opacity="0.16"/>
-			<text x="340" y="235" font-size="26" fill="#7fd4a3" font-weight="600">&#10003; fixed by agent</text>
+		{loopSegments.map((s) => (
+			<>
+				<path d={ringArc(s.from, s.to - 4)} fill="none" stroke={s.c} stroke-width="3" stroke-linecap="round"/>
+				<path d="M0 0 L-13 -7 L-13 7 Z" fill={s.c} transform={`translate(${ringPt(s.to).join(" ")}) rotate(${s.to})`}/>
+			</>
+		))}
+		<circle cx="500" cy="190" r="44" fill="#ffffff"/>
+		<image href={blogUrl("/blog-logos/eslint.svg")} x="474" y="164" width="52" height="52"/>
+		<g font-family={mono} font-size="24" font-weight="600" text-anchor="middle">
+			<rect x="295" y="26" width="130" height="48" rx="24" fill="#0b1c44" stroke="#8aa2ff" stroke-width="2.5"/>
+			<text x="360" y="58" fill="#dce3ff">agent</text>
+			<rect x="262" y="306" width="196" height="48" rx="24" fill="#2c2841" stroke="#ff8f73" stroke-width="2.5"/>
+			<text x="360" y="338" fill="#ff8f73">&#10005; lint error</text>
+			<rect x="150" y="166" width="140" height="48" rx="24" fill="#18334a" stroke="#7fd4a3" stroke-width="2.5"/>
+			<text x="220" y="198" fill="#7fd4a3">&#10003; fixed</text>
+			<text x="360" y="198" font-size="22" font-weight="500" fill="#5b6b94">jupyter/*</text>
 		</g>
 	</svg>
 )}
