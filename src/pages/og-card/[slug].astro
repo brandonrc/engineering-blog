@@ -10,12 +10,13 @@ export async function getStaticPaths() {
 	if (import.meta.env.PROD) return [];
 	const posts = await getPosts();
 	return [
-		{ params: { slug: "home" }, props: { title: "", byline: "" } },
+		{ params: { slug: "home" }, props: { title: "", byline: "", avatar: null } },
 		...posts.map((p) => ({
 			params: { slug: p.slug },
 			props: {
 				title: p.title,
 				byline: p.authors[0] ? `${p.authors[0].name} · ${p.minutes} min read` : `${p.minutes} min read`,
+				avatar: p.authors[0]?.avatarUrl ?? null,
 			},
 		})),
 	];
@@ -23,7 +24,7 @@ export async function getStaticPaths() {
 
 const { slug } = Astro.params;
 const isHome = slug === "home";
-const { title, byline } = Astro.props as { title: string; byline: string };
+const { title, byline, avatar } = Astro.props as { title: string; byline: string; avatar: string | null };
 
 const titleSize = title.length > 70 ? 52 : title.length > 45 ? 60 : 68;
 
@@ -43,6 +44,7 @@ const grid = (m: number) =>
 		<meta charset="UTF-8" />
 		<Font cssVariable="--font-sora" preload />
 		<Font cssVariable="--font-nav" preload />
+		<Font cssVariable="--font-body" preload />
 	</head>
 	<body>
 		{isHome ? (
@@ -89,9 +91,15 @@ const grid = (m: number) =>
 				<svg class="blob" width="700" height="700" viewBox="0 0 700 700">
 					<circle cx="350" cy="350" r="350" fill="#0a2158"></circle>
 				</svg>
-				<img class="logo" src={blogUrl("/openteams-white-horizontal.png")} alt="OpenTeams" />
+				<div class="brand">
+					<img class="logo" src={blogUrl("/openteams-white-horizontal.png")} alt="OpenTeams" />
+					<span class="section">Engineering</span>
+				</div>
 				<div class="title">{title}</div>
-				<div class="byline">{byline}</div>
+				<div class="author">
+					{avatar && <img class="avatar" src={avatar} alt="" />}
+					<div class="byline">{byline}</div>
+				</div>
 			</div>
 		)}
 	</body>
@@ -120,11 +128,28 @@ const grid = (m: number) =>
 		bottom: -300px;
 	}
 
+	/* "OpenTeams | Engineering", as in the site header. */
+	.brand {
+		position: relative;
+		align-self: flex-start;
+		display: flex;
+		align-items: center;
+		gap: 22px;
+	}
+
 	.logo {
 		height: 44px;
 		width: auto;
-		align-self: flex-start;
-		position: relative;
+	}
+
+	.section {
+		border-left: 2px solid rgba(255, 255, 255, 0.25);
+		padding-left: 22px;
+		font-family: var(--font-body), ui-sans-serif, sans-serif;
+		font-size: 30px;
+		font-weight: 500;
+		line-height: 40px;
+		color: rgba(255, 255, 255, 0.75);
 	}
 
 	.title {
@@ -138,6 +163,22 @@ const grid = (m: number) =>
 		font-weight: 700;
 		letter-spacing: -0.01em;
 		color: #ffffff;
+	}
+
+	.author {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 16px;
+	}
+
+	.avatar {
+		width: 76px;
+		height: 76px;
+		border-radius: 50%;
+		object-fit: cover;
+		box-shadow: 0 0 0 3px rgba(138, 162, 255, 0.45);
 	}
 
 	.byline {
