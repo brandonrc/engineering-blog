@@ -77,9 +77,9 @@ const ogImage = ogPath ? blogUrl(ogPath) : undefined;
 			</div>
 
 			{authors.length > 0 && (
-				<aside class="mx-auto flex max-w-[680px] flex-col items-center gap-10 px-6 pt-4 text-center" aria-label="About the authors">
+				<aside class="mx-auto flex max-w-[680px] flex-wrap items-start justify-center gap-x-12 gap-y-10 px-6 pt-4 text-center" aria-label="About the authors">
 					{authors.map((a) => (
-						<div class="flex flex-col items-center">
+						<div class:list={["flex flex-col items-center", authors.length > 1 && "w-[280px]"]}>
 							<a href={blogUrl(`/author/${a.slug}`)} aria-label={`Posts by ${a.name}`}>
 								<Avatar name={a.name} src={a.avatarUrl} size={72} />
 							</a>
