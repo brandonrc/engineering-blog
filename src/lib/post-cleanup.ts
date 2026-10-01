@@ -1,3 +1,5 @@
+import { plainTitle } from "./title";
+
 export interface Node {
 	type: string;
 	value?: string;
@@ -18,7 +20,7 @@ const textOf = (node: Node): string =>
  */
 export function cleanupPost(tree: Node, title: string, postUrl: (slug: string) => string = (s) => s): void {
 	const first = tree.children?.[0];
-	if (first?.type === "heading" && first.depth === 1 && textOf(first).trim() === title.trim()) {
+	if (first?.type === "heading" && first.depth === 1 && textOf(first).trim() === plainTitle(title).trim()) {
 		tree.children!.shift();
 	}
 	tree.children = (tree.children ?? [])

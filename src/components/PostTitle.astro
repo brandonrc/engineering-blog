@@ -1,0 +1,12 @@
+---
+// A post title with its backtick code spans rendered as <code>.
+import type { TitlePart } from "../lib/title";
+
+interface Props {
+	parts: TitlePart[];
+}
+
+const { parts } = Astro.props;
+---
+
+{parts.map((p) => (p.code ? <code class="title-code">{p.text}</code> : p.text))}

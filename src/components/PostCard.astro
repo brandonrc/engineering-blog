@@ -2,6 +2,7 @@
 import { blogUrl } from "../lib/blog-path";
 import BlogThumb from "./BlogThumb.astro";
 import AuthorFaces from "./AuthorFaces.astro";
+import PostTitle from "./PostTitle.astro";
 import type { Post } from "../lib/posts";
 import { bylineNames } from "../lib/byline";
 
@@ -21,7 +22,7 @@ const href = blogUrl(`/${post.slug}`);
 		<BlogThumb slug={post.slug} size="mini" />
 		<div class="mt-4"><span class="cat-badge">{label}</span></div>
 		<h3 class="post-title-link mt-2 text-[17px] leading-snug font-semibold tracking-tight">
-			{post.title}
+			<PostTitle parts={post.titleParts} />
 		</h3>
 		<div class="mt-2.5 flex items-center gap-2 text-[12.5px] text-faint">
 			<AuthorFaces authors={post.authors} size={20} />
@@ -33,7 +34,7 @@ const href = blogUrl(`/${post.slug}`);
 		<BlogThumb slug={post.slug} size="cell" />
 		<div class="cat-label mt-4">{label}</div>
 		<h3 class="post-title-link mt-2 mb-2 text-xl leading-snug font-semibold tracking-tight">
-			{post.title}
+			<PostTitle parts={post.titleParts} />
 		</h3>
 		{post.excerpt && (
 			<p class="line-clamp-2 text-[14.5px] leading-relaxed text-muted">{post.excerpt}</p>

@@ -8,6 +8,7 @@ import { plainText } from "../lib/plain-text";
 export const GET: APIRoute = async () => {
 	const items = (await getPosts()).map((p) => ({
 		title: p.title,
+		titleParts: p.titleParts,
 		section: p.topic?.label ?? "Engineering",
 		byline: bylineNames(p.authors),
 		faces: p.authors.map((a) => ({ name: a.name, src: a.avatarUrl })),

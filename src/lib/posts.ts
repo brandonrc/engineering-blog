@@ -2,6 +2,7 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import authors from "../data/authors.json";
 import { POST_TOPICS, TOPIC_LABELS } from "../data/topics";
 import { readingTimeMinutes } from "./reading-time";
+import { plainTitle, titleParts, type TitlePart } from "./title";
 
 export interface Author {
 	slug: string;
@@ -12,7 +13,10 @@ export interface Author {
 
 export interface Post {
 	slug: string;
+	/** Title without backticks, for plain-text uses. */
 	title: string;
+	/** Title split into text and code parts, for rendering. */
+	titleParts: TitlePart[];
 	excerpt: string;
 	authors: Author[];
 	topic: { slug: string; label: string } | null;
@@ -27,7 +31,8 @@ function toPost(entry: CollectionEntry<"posts">): Post {
 	const topicSlug = POST_TOPICS[entry.id];
 	return {
 		slug: entry.id,
-		title: entry.data.title,
+		title: plainTitle(entry.data.title),
+		titleParts: titleParts(entry.data.title),
 		excerpt: entry.data.meta_description,
 		authors: entry.data.authors.flatMap((s) => authorBySlug.get(s) ?? []),
 		topic: topicSlug ? { slug: topicSlug, label: TOPIC_LABELS[topicSlug] ?? topicSlug } : null,

@@ -154,6 +154,33 @@ describe.concurrent("site", () => {
 		expect(cards.length).toBeGreaterThan(0);
 		expect(mismatches).toEqual([]);
 	});
+
+	it("renders backtick code in a title as code on its card, post page and in search", async ({ expect }) => {
+		const result = await withPage(async (page) => {
+			await open(page, `${BLOG_PATH}/`);
+			const titles = page.locator("a:has(.post-byline) :is(h2, h3)");
+			const rawBackticks = (await titles.allInnerTexts()).filter((t) => t.includes("`"));
+			const card = page.locator("a:has(.post-byline):has(.title-code)").first();
+			const code = await card.locator(".title-code").first().innerText();
+			const href = await card.getAttribute("href");
+			await page.click("[data-search-trigger]");
+			await page.fill("[data-search-input]", code);
+			const searchCode = await page.locator(".search-result .sr-title .title-code").first().innerText();
+			await open(page, href!);
+			return {
+				rawBackticks,
+				code,
+				searchCode,
+				pageCode: await page.locator("article h1 .title-code").first().innerText(),
+				tabTitle: await page.title(),
+			};
+		});
+		expect(result.rawBackticks).toEqual([]);
+		expect(result.pageCode).toBe(result.code);
+		expect(result.searchCode.toLowerCase()).toContain(result.code.toLowerCase());
+		expect(result.tabTitle).toContain(result.code);
+		expect(result.tabTitle).not.toContain("`");
+	});
 });
 
 describe.concurrent("pages", () => {

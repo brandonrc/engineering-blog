@@ -73,6 +73,23 @@ import { blogUrl } from "../lib/blog-path";
 				return out + esc(value.slice(last));
 			}
 
+			// Title HTML with backtick code parts as <code>. Match indices are
+			// offsets into the plain title, which is the parts joined, so each
+			// part takes the matches that fall inside it.
+			function titleHTML(item, indices) {
+				var parts = item.titleParts || [{ text: item.title, code: false }];
+				var offset = 0;
+				return parts.map(function (p) {
+					var start = offset, end = offset + p.text.length - 1;
+					offset += p.text.length;
+					var local = (indices || []).filter(function (r) { return r[1] >= start && r[0] <= end; }).map(function (r) {
+						return [Math.max(r[0], start) - start, Math.min(r[1], end) - start];
+					});
+					var html = highlight(p.text, local);
+					return p.code ? '<code class="title-code">' + html + "</code>" : html;
+				}).join("");
+			}
+
 			function initials(name) {
 				return String(name).split(/\s+/).map(function (w) { return w[0] || ""; }).join("").slice(0, 2).toUpperCase();
 			}
@@ -109,7 +126,7 @@ import { blogUrl } from "../lib/blog-path";
 
 			function suggest() {
 				var items = allData.slice(0, 6).map(function (d) {
-					return Object.assign({}, d, { titleHTML: esc(d.title) });
+					return Object.assign({}, d, { titleHTML: titleHTML(d, null) });
 				});
 				current = items;
 				active = items.length ? 0 : -1;
@@ -162,7 +179,7 @@ import { blogUrl } from "../lib/blog-path";
 					if (!hits.length) { note("No results"); return; }
 					render(hits.map(function (h) {
 						var tm = (h.matches || []).filter(function (m) { return m.key === "title"; })[0];
-						return Object.assign({}, h.item, { titleHTML: highlight(h.item.title, tm ? tm.indices : null) });
+						return Object.assign({}, h.item, { titleHTML: titleHTML(h.item, tm ? tm.indices : null) });
 					}));
 				} catch (e) {
 					note("Search is unavailable");

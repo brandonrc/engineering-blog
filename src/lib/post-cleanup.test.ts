@@ -13,6 +13,15 @@ describe("cleanupPost", () => {
 		expect(tree).toEqual(root(para("Intro.")));
 	});
 
+	it("drops a leading heading that repeats a title written with backtick code", () => {
+		const tree = root(
+			{ type: "heading", depth: 1, children: [text("Ignored "), { type: "inlineCode", value: "AGENTS.md" }] },
+			para("Intro."),
+		);
+		cleanupPost(tree, "Ignored `AGENTS.md`");
+		expect(tree).toEqual(root(para("Intro.")));
+	});
+
 	it("drops horizontal rules", () => {
 		const tree = root(para("Before."), { type: "thematicBreak" }, para("After."));
 		cleanupPost(tree, "T");

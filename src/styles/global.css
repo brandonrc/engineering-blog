@@ -245,6 +245,13 @@
 		overflow-wrap: anywhere;
 	}
 
+	/* Code written in backticks in a post title (see lib/title.ts). */
+	.blog-theme :where(.title-code) {
+		@apply rounded-md bg-surface px-1.5 text-[0.88em];
+		color: light-dark(#022791, #a9bcff);
+		font-family: var(--font-mono);
+	}
+
 	/* Wide tables scroll inside their own box instead of the page. */
 	.blog-theme .editorial-content :where(table) {
 		@apply my-8 block w-max max-w-full overflow-x-auto border-collapse text-base;
