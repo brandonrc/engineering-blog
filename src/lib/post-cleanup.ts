@@ -8,7 +8,7 @@ export interface Node {
 	lang?: string;
 	depth?: number;
 	children?: Node[];
-	data?: { hProperties?: Record<string, unknown> };
+	data?: { hName?: string; hProperties?: Record<string, unknown> };
 }
 
 const textOf = (node: Node): string =>
@@ -59,6 +59,11 @@ function walk(node: Node, postUrl: (slug: string) => string): void {
 	}
 	if (node.type === "table") {
 		node.data = { ...node.data, hProperties: { ...node.data?.hProperties, tabIndex: 0 } };
+		// A header cell needs text; an empty one (a pandas index column, a
+		// merged cell) renders as a plain <td> instead of a nameless <th>.
+		for (const cell of node.children?.[0]?.children ?? []) {
+			if (!textOf(cell).trim()) cell.data = { ...cell.data, hName: "td" };
+		}
 	}
 	node.children?.forEach((child) => walk(child, postUrl));
 }

@@ -73,6 +73,17 @@ describe("cleanupPost", () => {
 		);
 	});
 
+	it("renders an empty header cell as a plain cell, since a header needs text", () => {
+		const cell = (value: string) => ({ type: "tableCell", children: value ? [text(value)] : [] });
+		const row = (...values: string[]) => ({ type: "tableRow", children: values.map(cell) });
+		const tree = root({ type: "table", children: [row("", "Name"), row("", "")] });
+		cleanupPost(tree, "T");
+		const [header, body] = (tree.children![0] as Node).children!;
+		expect(header.children![0].data).toEqual({ hName: "td" });
+		expect(header.children![1].data).toBeUndefined();
+		expect(body.children![0].data).toBeUndefined();
+	});
+
 	it("makes tables keyboard-focusable, since wide ones scroll in their own box", () => {
 		const tree = root({ type: "table", children: [] });
 		cleanupPost(tree, "T");

@@ -77,7 +77,7 @@ const ogImage = ogPath ? blogUrl(ogPath) : undefined;
 			</div>
 
 			{authors.length > 0 && (
-				<aside class="mx-auto flex max-w-[680px] flex-col items-center gap-10 px-6 pt-4 text-center">
+				<aside class="mx-auto flex max-w-[680px] flex-col items-center gap-10 px-6 pt-4 text-center" aria-label="About the authors">
 					{authors.map((a) => (
 						<div class="flex flex-col items-center">
 							<a href={blogUrl(`/author/${a.slug}`)} aria-label={`Posts by ${a.name}`}>
@@ -93,7 +93,7 @@ const ogImage = ogPath ? blogUrl(ogPath) : undefined;
 			<ShareLinks title={title} url={new URL(Astro.url.pathname, Astro.site).href} />
 		</div>
 
-		<aside class="hidden xl:block">
+		<aside class="hidden xl:block" aria-label="Table of contents">
 			<nav class="sticky top-24 pt-16" aria-label="On this page" id="toc" hidden>
 				<div class="toc-title">On this page</div>
 				<ul class="toc-list" id="toc-list"></ul>
@@ -203,7 +203,13 @@ const ogImage = ogPath ? blogUrl(ogPath) : undefined;
 			document.body.append(zoom);
 			const zoomBody = zoom.querySelector(".doodle-diagram")!;
 			zoom.addEventListener("click", () => zoom.close());
-			zoom.addEventListener("close", () => zoomBody.replaceChildren());
+			// Focus goes back to the diagram that was opened.
+			let opener: HTMLElement | null = null;
+			zoom.addEventListener("close", () => {
+				zoomBody.replaceChildren();
+				opener?.focus();
+				opener = null;
+			});
 
 			function openDiagram(wrap: Element) {
 				const svg = wrap.querySelector("svg");
@@ -213,6 +219,7 @@ const ogImage = ogPath ? blogUrl(ogPath) : undefined;
 				copy.removeAttribute("width");
 				copy.removeAttribute("height");
 				zoomBody.replaceChildren(copy);
+				opener = wrap as HTMLElement;
 				zoom.showModal();
 			}
 

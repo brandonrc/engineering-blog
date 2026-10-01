@@ -1,5 +1,5 @@
 import AxeBuilder from "@axe-core/playwright";
-import { chromium, type BrowserContext, type Page } from "playwright";
+import { chromium, type BrowserContext, type BrowserContextOptions, type Page } from "playwright";
 import { afterAll, describe, it } from "vitest";
 import { BLOG_PATH } from "../src/lib/blog-path";
 import { bylineNames } from "../src/lib/byline";
@@ -39,8 +39,8 @@ async function crawl(): Promise<string[]> {
 // memory, so parallel diagram pages don't each wait on the network.
 const cdnCache = new Map<string, Promise<{ status: number; headers: Record<string, string>; body: Buffer }>>();
 
-async function newContext(): Promise<BrowserContext> {
-	const context = await browser.newContext();
+async function newContext(options: BrowserContextOptions = {}): Promise<BrowserContext> {
+	const context = await browser.newContext(options);
 	// Each page records what it copies instead of using the system clipboard,
 	// which every page in the run would share.
 	await context.addInitScript(() => {
@@ -72,8 +72,8 @@ async function newContext(): Promise<BrowserContext> {
 }
 
 /** Open a page in a fresh context and hand it to `fn`; always clean up. */
-async function withPage<T>(fn: (page: Page) => Promise<T>): Promise<T> {
-	const context = await newContext();
+async function withPage<T>(fn: (page: Page) => Promise<T>, options?: BrowserContextOptions): Promise<T> {
+	const context = await newContext(options);
 	try {
 		return await fn(await context.newPage());
 	} finally {
@@ -103,6 +103,16 @@ async function open(page: Page, path: string): Promise<string[]> {
 	return problems;
 }
 
+/**
+ * Accessibility problems in the page as it is right now, at any severity:
+ * WCAG 2 A/AA plus axe's best-practice rules, the set Lighthouse reports
+ * (heading order, unique landmarks and the like).
+ */
+async function a11yProblems(page: Page): Promise<string[]> {
+	const { violations } = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "best-practice"]).analyze();
+	return violations.map((v) => `a11y ${v.id} (${v.nodes.length}): ${v.nodes[0]?.target.join(" ")}`);
+}
+
 /** Everything wrong with one page on desktop and on a phone, from one load. */
 async function check(page: Page, path: string): Promise<string[]> {
 	const problems = await open(page, path);
@@ -111,10 +121,7 @@ async function check(page: Page, path: string): Promise<string[]> {
 	);
 	problems.push(...broken.map((src) => `image did not load: ${src}`));
 
-	const { violations } = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze();
-	for (const v of violations.filter((v) => v.impact === "serious" || v.impact === "critical")) {
-		problems.push(`a11y ${v.id} (${v.nodes.length})`);
-	}
+	problems.push(...(await a11yProblems(page)));
 
 	await page.setViewportSize({ width: 390, height: 844 });
 	const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
@@ -292,8 +299,130 @@ describe.concurrent("site", () => {
 
 describe.concurrent("pages", () => {
 	for (const path of pages) {
-		it(`${path} loads cleanly, fits a phone, has no serious a11y issues`, async ({ expect }) => {
+		it(`${path} loads cleanly, fits a phone, has no a11y issues`, async ({ expect }) => {
 			expect(await withPage((page) => check(page, path))).toEqual([]);
 		});
 	}
+});
+
+// The page scans above see each page as it first loads. These open each
+// interactive state, scan it again, and check its keyboard behaviour.
+describe.concurrent("interactions", () => {
+	/** A post with a diagram, found from the HTML so no slug is hard-coded. */
+	async function diagramPage(): Promise<string> {
+		for (const path of pages) {
+			if ((await (await fetch(ORIGIN + path)).text()).includes("language-mermaid")) return path;
+		}
+		throw new Error("no post has a diagram");
+	}
+
+	it("search: open with results passes axe, Esc closes it and focus returns to the trigger", async ({ expect }) => {
+		const result = await withPage(async (page) => {
+			await open(page, `${BLOG_PATH}/`);
+			await page.focus("[data-search-trigger]");
+			await page.keyboard.press("Enter");
+			const focusedInput = await page.evaluate(() => document.activeElement?.matches("[data-search-input]"));
+			await page.keyboard.type("agent");
+			await page.locator(".search-result").first().waitFor();
+			const problems = await a11yProblems(page);
+			await page.keyboard.press("Escape");
+			return {
+				focusedInput,
+				problems,
+				closed: await page.locator("#search-modal").isHidden(),
+				focusBack: await page.evaluate(() => document.activeElement?.matches("[data-search-trigger]")),
+			};
+		});
+		expect(result.problems).toEqual([]);
+		expect(result.focusedInput).toBe(true);
+		expect(result.closed).toBe(true);
+		expect(result.focusBack).toBe(true);
+	});
+
+	it("diagram: full screen view passes axe, Esc closes it and focus returns to the diagram", async ({ expect }) => {
+		const path = await diagramPage();
+		const result = await withPage(async (page) => {
+			await open(page, path);
+			const diagram = page.locator(".doodle-wrap").first();
+			await diagram.focus();
+			await page.keyboard.press("Enter");
+			const problems = await a11yProblems(page);
+			await page.keyboard.press("Escape");
+			return {
+				problems,
+				focusBack: await diagram.evaluate((d) => d === document.activeElement),
+			};
+		});
+		expect(result.problems).toEqual([]);
+		expect(result.focusBack).toBe(true);
+	});
+
+	it("mobile menu: opening it updates aria-expanded and the open menu passes axe", async ({ expect }) => {
+		const result = await withPage(
+			async (page) => {
+				await open(page, `${BLOG_PATH}/`);
+				const toggle = page.locator("#ot-menu-toggle");
+				await toggle.focus();
+				await page.keyboard.press("Enter");
+				return {
+					expanded: await toggle.getAttribute("aria-expanded"),
+					visible: await page.locator("#ot-mobile-menu").isVisible(),
+					problems: await a11yProblems(page),
+				};
+			},
+			{ viewport: { width: 390, height: 844 } },
+		);
+		expect(result.expanded).toBe("true");
+		expect(result.visible).toBe(true);
+		expect(result.problems).toEqual([]);
+	});
+
+	it("header dropdowns: keyboard focus opens each one, Tab reaches its links, and it passes axe", async ({ expect }) => {
+		const result = await withPage(
+			async (page) => {
+				await open(page, `${BLOG_PATH}/`);
+				const menus = page.locator(".ot-header nav > ul > li");
+				const failures: string[] = [];
+				for (let i = 0; i < (await menus.count()); i++) {
+					const menu = menus.nth(i);
+					const label = (await menu.locator("button").innerText()).trim();
+					await menu.locator("button").focus();
+					await page.keyboard.press("Tab");
+					const inMenu = await menu.evaluate((m) => m.contains(document.activeElement) && document.activeElement?.tagName === "A");
+					const linkVisible = await page.evaluate(() => !!(document.activeElement as HTMLElement | null)?.checkVisibility?.());
+					if (!inMenu || !linkVisible) failures.push(`${label}: Tab did not reach a visible link`);
+					// The panel fades in; scan it once fully opaque, not mid-fade.
+					await menu.locator(".group-focus-within\\:visible").first().evaluate(
+						(panel) => new Promise((done) => {
+							const check = () => (getComputedStyle(panel).opacity === "1" ? done(null) : requestAnimationFrame(check));
+							check();
+						}),
+					);
+					failures.push(...(await a11yProblems(page)).map((p) => `${label}: ${p}`));
+				}
+				return failures;
+			},
+			{ viewport: { width: 1440, height: 900 } },
+		);
+		expect(result).toEqual([]);
+	});
+
+	it("dark mode: the index, a diagram post and open search pass axe", async ({ expect }) => {
+		const path = await diagramPage();
+		const result = await withPage(
+			async (page) => {
+				const problems: string[] = [];
+				await open(page, `${BLOG_PATH}/`);
+				problems.push(...(await a11yProblems(page)).map((p) => `index: ${p}`));
+				await page.click("[data-search-trigger]");
+				await page.locator(".search-result").first().waitFor();
+				problems.push(...(await a11yProblems(page)).map((p) => `search: ${p}`));
+				await open(page, path);
+				problems.push(...(await a11yProblems(page)).map((p) => `${path}: ${p}`));
+				return problems;
+			},
+			{ colorScheme: "dark" },
+		);
+		expect(result).toEqual([]);
+	});
 });

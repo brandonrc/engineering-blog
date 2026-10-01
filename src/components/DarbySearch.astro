@@ -18,7 +18,7 @@ import { blogUrl } from "../lib/blog-path";
 			<input type="search" class="search-input" data-search-input placeholder="Search articles..." autocomplete="off" aria-label="Search articles" />
 			<button type="button" class="search-close" data-search-close aria-label="Close search"><svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
 		</div>
-		<ul class="search-results" data-search-results role="listbox"></ul>
+		<ul class="search-results" data-search-results aria-label="Search results"></ul>
 		<div class="search-foot">
 			<span><kbd>&uarr;</kbd><kbd>&darr;</kbd> navigate</span>
 			<span><kbd>&crarr;</kbd> select</span>
@@ -41,15 +41,22 @@ import { blogUrl } from "../lib/blog-path";
 			var fuse = null, ready = false, allData = [];
 			var current = [];
 			var active = -1;
+			var opener = null;
 
 			async function open() {
+				if (modal.hidden) opener = document.activeElement;
 				modal.hidden = false;
 				input.focus();
 				if (!input.value.trim()) {
 					try { await ensureFuse(); suggest(); } catch (e) { /* index unavailable */ }
 				}
 			}
-			function close() { modal.hidden = true; input.value = ""; results.innerHTML = ""; current = []; active = -1; }
+			function close() {
+				modal.hidden = true; input.value = ""; results.innerHTML = ""; current = []; active = -1;
+				// Hand focus back to whatever opened search (the trigger, or the page for Cmd+K).
+				if (opener && opener.focus) opener.focus();
+				opener = null;
+			}
 			trigger.addEventListener("click", open);
 			if (closeBtn) closeBtn.addEventListener("click", close);
 			modal.addEventListener("click", function (e) { if (e.target === modal) close(); });
@@ -106,8 +113,8 @@ import { blogUrl } from "../lib/blog-path";
 
 			function rowHTML(it, i) {
 				var meta = [it.section, it.byline, it.date].filter(Boolean).join(" \u00b7 ");
-				return '<li role="option" class="search-result' + (i === 0 ? " active" : "") + '" data-idx="' + i + '">' +
-					'<a href="' + esc(it.url) + '" tabindex="-1">' +
+				return '<li class="search-result' + (i === 0 ? " active" : "") + '" data-idx="' + i + '">' +
+					'<a href="' + esc(it.url) + '">' +
 						facesHTML(it) +
 						'<span class="sr-text">' +
 							'<span class="sr-title">' + (it.titleHTML || esc(it.title)) + "</span>" +
@@ -133,25 +140,31 @@ import { blogUrl } from "../lib/blog-path";
 				results.innerHTML = '<li class="search-section-label">Suggested pages</li>' + items.map(rowHTML).join("");
 			}
 
-			function setActive(i) {
+			// Results are plain links. The active row is highlighted; arrow keys
+			// also move real focus to its link so screen readers announce it.
+			function setActive(i, focus) {
 				var rows = results.querySelectorAll(".search-result");
 				if (!rows.length) return;
 				active = (i + rows.length) % rows.length;
 				rows.forEach(function (r, idx) { r.classList.toggle("active", idx === active); });
 				rows[active].scrollIntoView({ block: "nearest" });
+				if (focus) rows[active].querySelector("a").focus();
 			}
 
 			document.addEventListener("keydown", function (e) {
 				if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); open(); return; }
 				if (modal.hidden) return;
 				if (e.key === "Escape") { close(); }
-				else if (e.key === "ArrowDown") { e.preventDefault(); setActive(active + 1); }
-				else if (e.key === "ArrowUp") { e.preventDefault(); setActive(active - 1); }
-				else if (e.key === "Enter" && active >= 0 && current[active]) { window.location.href = current[active].url; }
+				else if (e.key === "ArrowDown") { e.preventDefault(); setActive(document.activeElement === input ? active : active + 1, true); }
+				else if (e.key === "ArrowUp") { e.preventDefault(); setActive(active - 1, true); }
+				// On a focused result link, Enter follows the link natively.
+				else if (e.key === "Enter" && document.activeElement === input && active >= 0 && current[active]) { window.location.href = current[active].url; }
+				// Typing while a result has focus goes back to the search box.
+				else if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey && document.activeElement !== input) { input.focus(); }
 			});
 			results.addEventListener("mousemove", function (e) {
 				var li = e.target.closest(".search-result");
-				if (li) setActive(parseInt(li.getAttribute("data-idx"), 10));
+				if (li) setActive(parseInt(li.getAttribute("data-idx"), 10), false);
 			});
 
 			async function ensureFuse() {
@@ -220,7 +233,8 @@ import { blogUrl } from "../lib/blog-path";
 	.sr-crumb { font-size: 0.78rem; color: var(--color-muted); font-family: var(--font-header); }
 	.sr-enter { flex: none; align-self: center; font-size: 1.05rem; opacity: 0; color: var(--color-muted); }
 	.search-result.active .sr-enter { opacity: 1; }
-	.search-results mark { background: transparent; color: var(--color-brand); font-weight: 700; }
+	/* Darker than --color-brand in light mode so a match on the active row's tint still reads at 4.5:1. */
+	.search-results mark { background: transparent; color: light-dark(#022791, #6d8dff); font-weight: 700; }
 	.search-section-label { padding: 0.55rem 0.7rem 0.2rem; color: var(--color-faint); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; font-family: var(--font-header); }
 	.search-note { padding: 0.55rem 0.7rem; color: var(--color-muted); font-size: 0.9rem; }
 	.search-foot { display: flex; gap: 1rem; padding: 0.5rem 0.9rem; border-top: 1px solid var(--color-border); font-size: 0.72rem; color: var(--color-muted); font-family: var(--font-header); }

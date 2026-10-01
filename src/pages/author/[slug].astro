@@ -29,6 +29,7 @@ const { author, posts } = Astro.props as { author: Author; posts: Post[] };
 			{posts.length} article{posts.length === 1 ? "" : "s"}
 		</p>
 	</section>
+	<h2 class="sr-only">Posts by {author.name}</h2>
 	<div class="container-wide grid gap-x-10 gap-y-11 pb-22 md:grid-cols-3">
 		{posts.map((p) => <PostCard post={p} />)}
 	</div>

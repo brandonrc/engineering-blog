@@ -114,7 +114,7 @@ const ogImage = image ? new URL(image, Astro.site).href : undefined;
 				<div class="grid grid-cols-2 gap-8 md:grid-cols-3">
 					{footerColumns.map((col) => (
 						<div>
-							<h4 class="mb-4 text-xs font-semibold tracking-[0.08em] text-white uppercase">{col.heading}</h4>
+							<h2 class="mb-4 text-xs font-semibold tracking-[0.08em] text-white uppercase">{col.heading}</h2>
 							{col.links.map((link) => (
 								<a href={link.url} class="block py-1.5 text-sm transition-colors hover:text-white">{link.label}</a>
 							))}
