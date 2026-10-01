@@ -1,0 +1,35 @@
+---
+import Base from "../../layouts/BlogBase.astro";
+import Avatar from "../../components/Avatar.astro";
+import PostCard from "../../components/PostCard.astro";
+import { blogUrl } from "../../lib/blog-path";
+import { authorsOf, getPosts, type Author, type Post } from "../../lib/posts";
+
+export async function getStaticPaths() {
+	return authorsOf(await getPosts()).map(({ author, posts }) => ({
+		params: { slug: author.slug },
+		props: { author, posts },
+	}));
+}
+
+const { author, posts } = Astro.props as { author: Author; posts: Post[] };
+---
+
+<Base title={`${author.name} — Engineering Blog`} description={author.bio || undefined}>
+	<section class="container-wide pt-16 pb-10">
+		<a href={blogUrl("/")} class="cat-label">&larr; Engineering Blog</a>
+		<div class="mt-5 flex items-center gap-5">
+			<Avatar name={author.name} src={author.avatarUrl} size={88} />
+			<div>
+				<h1 class="text-4xl font-bold tracking-tight md:text-5xl">{author.name}</h1>
+				{author.bio && <p class="mt-2 max-w-[640px] text-lg text-muted">{author.bio}</p>}
+			</div>
+		</div>
+		<p class="mt-6 text-sm font-semibold tracking-[0.08em] text-faint uppercase">
+			{posts.length} article{posts.length === 1 ? "" : "s"}
+		</p>
+	</section>
+	<div class="container-wide grid gap-x-10 gap-y-11 pb-22 md:grid-cols-3">
+		{posts.map((p) => <PostCard post={p} />)}
+	</div>
+</Base>

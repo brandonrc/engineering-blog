@@ -46,15 +46,15 @@ const ogImage = ogPath ? blogUrl(ogPath) : undefined;
 					{excerpt && <p class="mt-4 text-lg leading-relaxed text-muted">{excerpt}</p>}
 					<div class="mt-7 flex flex-wrap items-center gap-x-8 gap-y-4 border-y border-border py-4">
 						{authors.map((a) => (
-							<div class="flex items-center gap-2.5">
+							<a href={blogUrl(`/author/${a.slug}`)} class="group flex items-center gap-2.5">
 								<Avatar name={a.name} src={a.avatarUrl} size={38} />
 								<div>
-									<div class="text-base leading-tight font-semibold">{a.name}</div>
+									<div class="text-base leading-tight font-semibold group-hover:text-brand">{a.name}</div>
 									<div class="mt-0.5 text-sm leading-tight text-faint">
 										{a.bio.split(".")[0] || "OpenTeams"}
 									</div>
 								</div>
-							</div>
+							</a>
 						))}
 						<div class="ml-auto text-right text-xs leading-relaxed text-faint">
 							<time datetime={publishedDate.toISOString()} class="block">
@@ -77,9 +77,11 @@ const ogImage = ogPath ? blogUrl(ogPath) : undefined;
 				<aside class="mx-auto mb-20 flex max-w-[680px] flex-col gap-4 px-6">
 					{authors.map((a) => (
 						<div class="flex items-start gap-4 rounded-2xl border border-border bg-surface p-6">
-							<Avatar name={a.name} src={a.avatarUrl} size={52} />
+							<a href={blogUrl(`/author/${a.slug}`)} class="shrink-0" aria-label={`Posts by ${a.name}`}>
+								<Avatar name={a.name} src={a.avatarUrl} size={52} />
+							</a>
 							<div>
-								<div class="font-semibold">{a.name}</div>
+								<a href={blogUrl(`/author/${a.slug}`)} class="font-semibold hover:text-brand">{a.name}</a>
 								{a.bio && <p class="mt-1 text-sm leading-relaxed text-muted">{a.bio}</p>}
 							</div>
 						</div>
