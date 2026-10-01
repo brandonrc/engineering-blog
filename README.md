@@ -7,10 +7,6 @@
   <a href="https://github.com/openteams-ai/engineering-blog-v2/actions/workflows/deploy.yml"><img src="https://github.com/openteams-ai/engineering-blog-v2/actions/workflows/deploy.yml/badge.svg?branch=main" alt="Deploy"></a>
 </p>
 
-<p align="center">
-  <a href="https://openteams.com/sandbox-4af53e-engineering-blog/"><b>openteams.com/sandbox-4af53e-engineering-blog</b></a>
-</p>
-
 ## Develop
 
 ```bash
