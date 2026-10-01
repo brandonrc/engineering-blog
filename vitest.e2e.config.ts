@@ -8,7 +8,9 @@ export default defineConfig({
 		globalSetup: ["e2e/server.ts"],
 		// One line per page and check as each finishes, so CI shows progress.
 		reporters: ["verbose"],
-		testTimeout: 180_000,
-		hookTimeout: 180_000,
+		testTimeout: 60_000,
+		hookTimeout: 60_000,
+		// Pages are checked 8 at a time.
+		maxConcurrency: 8,
 	},
 });
