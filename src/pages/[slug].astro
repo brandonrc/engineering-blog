@@ -26,9 +26,15 @@ const hasDiagram = /^```mermaid\s*$/m.test(post.entry.body ?? "");
 	{hasDiagram && (
 		<link slot="head" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shantell+Sans:wght@400;500;600&display=swap" />
 	)}
-	<div class="mx-auto max-w-[1120px] xl:grid xl:grid-cols-[minmax(0,1fr)_220px] xl:gap-16">
+	<script is:inline>
+		// Apply a saved "contents hidden" choice before the layout paints.
+		try {
+			if (localStorage.getItem("toc-collapsed") === "1") document.documentElement.classList.add("toc-collapsed");
+		} catch (e) {}
+	</script>
+	<div class="post-layout mx-auto max-w-[1120px] xl:grid xl:grid-cols-(--post-cols) xl:gap-16">
 		<div class="min-w-0">
-			<article class="mx-auto max-w-[680px] px-6 pt-16">
+			<article class="mx-auto max-w-(--post-width) px-6 pt-16">
 				<header class="mb-8">
 					<div class="flex items-center gap-3">
 						<a href={blogUrl("/")} class="cat-label hover:underline">Engineering Blog</a>
@@ -70,7 +76,7 @@ const hasDiagram = /^```mermaid\s*$/m.test(post.entry.body ?? "");
 					</div>
 				</header>
 			</article>
-			<div class="editorial-content max-w-[680px] pb-16">
+			<div class="editorial-content max-w-(--post-width) pb-16">
 				<Content />
 			</div>
 
@@ -92,8 +98,16 @@ const hasDiagram = /^```mermaid\s*$/m.test(post.entry.body ?? "");
 		</div>
 
 		<aside class="hidden xl:block" aria-label="Table of contents">
+			<button type="button" class="toc-toggle toc-show" id="toc-show" aria-controls="toc" aria-expanded="false" aria-label="Show table of contents" title="Show contents" hidden>
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16M10 10l-2 2 2 2"/></svg>
+			</button>
 			<nav class="sticky top-24 pt-16" aria-label="On this page" id="toc" hidden>
-				<div class="toc-title">On this page</div>
+				<div class="toc-head">
+					<div class="toc-title">On this page</div>
+					<button type="button" class="toc-toggle" id="toc-hide" aria-controls="toc" aria-expanded="true" aria-label="Hide table of contents" title="Hide contents">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16M8 10l2 2-2 2"/></svg>
+					</button>
+				</div>
 				<ul class="toc-list" id="toc-list"></ul>
 			</nav>
 		</aside>
@@ -142,6 +156,21 @@ const hasDiagram = /^```mermaid\s*$/m.test(post.entry.body ?? "");
 				tocList.appendChild(li);
 			}
 			toc.hidden = false;
+
+			// Hide/show the rail. Hidden, the article takes the full width
+			// (styles in global.css under .toc-collapsed); the choice is kept.
+			const hideBtn = document.getElementById("toc-hide")!;
+			const showBtn = document.getElementById("toc-show")!;
+			showBtn.hidden = false;
+			const setCollapsed = (collapsed: boolean) => {
+				document.documentElement.classList.toggle("toc-collapsed", collapsed);
+				try {
+					localStorage.setItem("toc-collapsed", collapsed ? "1" : "0");
+				} catch {}
+				(collapsed ? showBtn : hideBtn).focus();
+			};
+			hideBtn.addEventListener("click", () => setCollapsed(true));
+			showBtn.addEventListener("click", () => setCollapsed(false));
 
 			const links = new Map(
 				[...tocList.querySelectorAll<HTMLAnchorElement>("a")].map((a) => [

@@ -379,6 +379,41 @@
 	}
 
 	/* On-this-page rail */
+	.blog-theme .toc-head {
+		@apply mb-3 flex items-center justify-between gap-2;
+	}
+	.blog-theme .toc-head .toc-title {
+		@apply mb-0;
+	}
+	.blog-theme .toc-toggle {
+		@apply flex size-8 cursor-pointer items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface hover:text-text;
+	}
+	/* The show button only appears once the rail is hidden. */
+	.blog-theme .toc-show {
+		@apply sticky top-24 mt-16 hidden;
+	}
+
+	/* Rail hidden (button in the rail, choice kept in localStorage): the
+	   article column takes the space the rail had. Wide screens only, as
+	   the rail itself only shows there. */
+	/* Variables, not utilities, so the collapsed state below can change them. */
+	.blog-theme .post-layout {
+		--post-width: 680px;
+		--post-cols: minmax(0, 1fr) 220px;
+	}
+	@media (min-width: 80rem) {
+		.blog-theme.toc-collapsed .post-layout {
+			--post-width: 100%;
+			--post-cols: minmax(0, 1fr) 2rem;
+		}
+		.blog-theme.toc-collapsed #toc {
+			display: none;
+		}
+		.blog-theme.toc-collapsed .toc-show:not([hidden]) {
+			display: flex;
+		}
+	}
+
 	.blog-theme .toc-title {
 		@apply mb-3 text-xs font-semibold tracking-[0.08em] text-faint uppercase;
 		font-family: var(--font-header);

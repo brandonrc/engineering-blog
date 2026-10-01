@@ -440,3 +440,44 @@ describe.concurrent("interactions", () => {
 		expect(result).toEqual([]);
 	});
 });
+
+describe.concurrent("table of contents", () => {
+	/** A post long enough to get a table of contents (two or more section headings). */
+	async function tocPage(): Promise<string> {
+		for (const path of pages) {
+			const html = await (await fetch(ORIGIN + path)).text();
+			if (html.includes('id="toc"') && (html.match(/<h2 id="/g) ?? []).length >= 2) return path;
+		}
+		throw new Error("no post has a table of contents");
+	}
+
+	it("collapses to give the article the full width, stays collapsed on reload, and opens again", async ({ expect }) => {
+		const path = await tocPage();
+		const result = await withPage(
+			async (page) => {
+				await open(page, path);
+				const content = page.locator(".editorial-content");
+				const toc = page.locator("#toc");
+				const before = (await content.boundingBox())!.width;
+				await page.getByRole("button", { name: "Hide table of contents" }).click();
+				const collapsed = { tocVisible: await toc.isVisible(), width: (await content.boundingBox())!.width };
+				await open(page, path);
+				const afterReload = { tocVisible: await toc.isVisible(), width: (await content.boundingBox())!.width };
+				const show = page.getByRole("button", { name: "Show table of contents" });
+				const showExpanded = await show.getAttribute("aria-expanded");
+				const problems = await a11yProblems(page);
+				await show.click();
+				const reopened = { tocVisible: await toc.isVisible(), width: (await content.boundingBox())!.width };
+				return { before, collapsed, afterReload, showExpanded, problems, reopened };
+			},
+			{ viewport: { width: 1440, height: 900 } },
+		);
+		expect(result.collapsed.tocVisible).toBe(false);
+		expect(result.collapsed.width).toBeGreaterThan(result.before + 200);
+		expect(result.afterReload).toEqual(result.collapsed);
+		expect(result.showExpanded).toBe("false");
+		expect(result.problems).toEqual([]);
+		expect(result.reopened.tocVisible).toBe(true);
+		expect(result.reopened.width).toBe(result.before);
+	});
+});
