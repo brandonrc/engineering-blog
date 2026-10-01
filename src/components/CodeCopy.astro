@@ -1,0 +1,89 @@
+---
+// Copy button in the top-right corner of every highlighted code block.
+---
+
+<script>
+	const COPY =
+		'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+	const CHECK =
+		'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L19 7"/></svg>';
+
+	for (const pre of document.querySelectorAll<HTMLPreElement>(".editorial-content pre.astro-code")) {
+		const wrap = document.createElement("div");
+		wrap.className = "code-wrap";
+		pre.replaceWith(wrap);
+		wrap.append(pre);
+
+		const button = document.createElement("button");
+		button.type = "button";
+		button.className = "code-copy";
+		button.dataset.copyCode = "";
+		const reset = () => {
+			button.innerHTML = COPY;
+			button.setAttribute("aria-label", "Copy code");
+			button.classList.remove("is-copied");
+		};
+		reset();
+		let timer: ReturnType<typeof setTimeout>;
+		button.addEventListener("click", async () => {
+			await navigator.clipboard.writeText(pre.textContent ?? "");
+			button.innerHTML = CHECK;
+			button.setAttribute("aria-label", "Copied");
+			button.classList.add("is-copied");
+			clearTimeout(timer);
+			timer = setTimeout(reset, 2000);
+		});
+		wrap.append(button);
+	}
+</script>
+
+<style is:global>
+	.blog-theme .editorial-content .code-wrap {
+		position: relative;
+		margin: 2rem 0;
+	}
+
+	.blog-theme .editorial-content .code-wrap > pre {
+		margin: 0;
+	}
+
+	.blog-theme .code-copy {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 32px;
+		height: 32px;
+		border-radius: 8px;
+		border: 1px solid rgb(255 255 255 / 0.14);
+		background: rgb(30 30 46 / 0.9);
+		color: #bac2de;
+		cursor: pointer;
+		opacity: 0;
+		transition: opacity 0.15s, color 0.15s, border-color 0.15s;
+	}
+
+	.blog-theme .code-wrap:hover .code-copy,
+	.blog-theme .code-copy:focus-visible,
+	.blog-theme .code-copy.is-copied {
+		opacity: 1;
+	}
+
+	.blog-theme .code-copy:hover {
+		color: #ffffff;
+		border-color: rgb(255 255 255 / 0.3);
+	}
+
+	.blog-theme .code-copy.is-copied {
+		color: #a6e3a1;
+	}
+
+	/* Touch screens have no hover: keep the button visible. */
+	@media (hover: none) {
+		.blog-theme .code-copy {
+			opacity: 1;
+		}
+	}
+</style>

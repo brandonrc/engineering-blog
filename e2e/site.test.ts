@@ -36,7 +36,7 @@ async function crawl(): Promise<string[]> {
 }
 
 async function newContext(): Promise<BrowserContext> {
-	const context = await browser.newContext();
+	const context = await browser.newContext({ permissions: ["clipboard-read", "clipboard-write"] });
 	await context.route(/^https?:\/\//, (route) => {
 		const url = new URL(route.request().url());
 		if (url.origin === ORIGIN || url.hostname === "cdn.jsdelivr.net") return route.continue();
@@ -126,6 +126,26 @@ describe.concurrent("site", () => {
 		expect(result.photoLoaded).toBe(true);
 		expect(result.meta).toMatch(/\w+ \w+ · [A-Z][a-z]{2} \d{1,2}, \d{4}/);
 		expect(result.photoRadius).not.toBe("0px");
+	});
+
+	it("copies a code block's exact code with its copy button", async ({ expect }) => {
+		const result = await withPage(async (page) => {
+			await open(page, `${BLOG_PATH}/pixi-ubi-micro-containers/`);
+			const block = page.locator(".editorial-content pre.astro-code").first();
+			const button = page.locator("[data-copy-code]").first();
+			await block.hover();
+			await button.click();
+			return {
+				code: await block.evaluate((pre) => pre.textContent),
+				copied: await page.evaluate(() => navigator.clipboard.readText()),
+				label: await button.getAttribute("aria-label"),
+				buttons: await page.locator("[data-copy-code]").count(),
+				blocks: await page.locator(".editorial-content pre.astro-code").count(),
+			};
+		});
+		expect(result.copied).toBe(result.code);
+		expect(result.label).toBe("Copied");
+		expect(result.buttons).toBe(result.blocks);
 	});
 
 	it("names every author of a post on its index card", async ({ expect }) => {

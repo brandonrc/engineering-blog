@@ -3,6 +3,7 @@ import { render } from "astro:content";
 import Base from "../layouts/BlogBase.astro";
 import Avatar from "../components/Avatar.astro";
 import SubscribeBand from "../components/SubscribeBand.astro";
+import CodeCopy from "../components/CodeCopy.astro";
 import PostTitle from "../components/PostTitle.astro";
 import { getPosts, type Post } from "../lib/posts";
 import ogImages from "../data/og-images.json";
@@ -100,6 +101,7 @@ const ogImage = ogPath ? blogUrl(ogPath) : undefined;
 	</div>
 
 	<SubscribeBand />
+	<CodeCopy />
 
 	<script>
 		// On-this-page rail + heading anchor links, from the rendered content.
