@@ -11,4 +11,11 @@ describe("readingTimeMinutes", () => {
 	it("never reports less than a minute", () => {
 		expect(readingTimeMinutes("Short.")).toBe(1);
 	});
+
+	it("does not count table cells, link URLs or image references", () => {
+		const prose = Array.from({ length: 220 }, () => "word").join(" ");
+		const table = ["| a | b |", "|---|---|", ...Array.from({ length: 300 }, () => "| one two three | four five six |")].join("\n");
+		const links = Array.from({ length: 100 }, () => "[x](https://example.com/a/b/c) ![y](images/p/a.png)").join(" ");
+		expect(readingTimeMinutes(`${prose}\n\n${table}\n\n${links}\n`)).toBe(1);
+	});
 });
