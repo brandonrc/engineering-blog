@@ -13,13 +13,15 @@
 npm install
 npm run dev          # http://localhost:4321/sandbox-4af53e-engineering-blog
 npm run build
+npm run og           # share cards into dist/ (needed before test:e2e)
 npm test             # unit tests
 npm run test:e2e     # browser tests against the build
 ```
 
 ## Write a post
 
-1. Add `src/content/posts/<name>.md`:
+1. New author? Add them to `src/data/authors.json` (slug, name, bio, photo URL).
+2. Add `src/content/posts/<name>.md`:
 
    ```yaml
    ---
@@ -36,13 +38,15 @@ npm run test:e2e     # browser tests against the build
 
    Images go in `src/content/posts/images/`.
 
-2. Add its topic in `src/data/topics.ts`.
-3. Draw its card art in `src/components/PostArt.astro` and list it in `BlogThumb.astro`.
-4. Capture its share image with the dev server running, then list it in `src/data/og-images.json`:
+3. Add its topic in `src/data/topics.ts`.
+4. Draw its card art in `src/components/PostArt.astro` and list it in `BlogThumb.astro`.
 
-   ```bash
-   npm run capture-og -- my-post
-   ```
+Share images (the card shown in link previews) are made on deploy: one for the
+blog, each post and each author (`src/lib/og-cards.ts`, drawn by
+`src/pages/og-card/[slug].astro`). Each file is named by a fingerprint of what
+is on the card, so `npm run og` downloads the ones the live site already has
+and renders only new or changed ones, such as a new post, a new author, or an
+author whose post count changed.
 
 ## Deploy
 

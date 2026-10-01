@@ -34,4 +34,6 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-${{ hashFiles('package-lock.json') }}
       - run: npx playwright install --with-deps chromium
+      # Share cards: reused from the live site, new or changed ones rendered.
+      - run: npm run og
       - run: npm run test:e2e

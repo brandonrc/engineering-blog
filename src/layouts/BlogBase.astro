@@ -5,13 +5,14 @@ import DarbySearch from "../components/DarbySearch.astro";
 import MainSiteHeader from "../components/MainSiteHeader.astro";
 import { SITE_TAGLINE, SITE_TITLE, footerColumns, socialLinks } from "../data/site";
 import { blogUrl } from "../lib/blog-path";
-import ogImages from "../data/og-images.json";
+import { ogCards, ogFile } from "../lib/og-cards";
+import { getPosts } from "../lib/posts";
 import "../styles/global.css";
 
 interface Props {
 	title?: string;
 	description?: string;
-	/** Share card key in og-images.json; pages without a card use the blog's. */
+	/** Share card key (lib/og-cards.ts); pages without a card use the blog's. */
 	og?: string;
 	type?: "website" | "article";
 }
@@ -20,8 +21,9 @@ const { title, description, og = "home", type = "website" } = Astro.props;
 const fullTitle = title ? `${title} — ${SITE_TITLE}` : SITE_TITLE;
 const pageDescription = description || SITE_TAGLINE;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const cards = ogImages as Record<string, string>;
-const ogImage = new URL(blogUrl(cards[og] ?? cards.home), Astro.site).href;
+const cards = ogCards(await getPosts());
+const card = cards.find((c) => c.key === og) ?? cards[0];
+const ogImage = new URL(blogUrl(ogFile(card)), Astro.site).href;
 ---
 
 <!doctype html>

@@ -1,35 +1,15 @@
 ---
-// Renders a 1200x630 OG card for a post (or the blog index when slug is
-// "home"), captured with `npm run capture-og` and committed as a static PNG
-// under public/og/. Dev only: production builds emit no card pages.
+// Renders a 1200x630 share card (lib/og-cards.ts lists them). `npm run og`
+// screenshots the cards the live site doesn't have yet into dist/.
+// Dev only: production builds emit no card pages.
 import { Font } from "astro:assets";
 import { blogUrl } from "../../lib/blog-path";
-import { authorsOf, getPosts } from "../../lib/posts";
-import { authorRole } from "../../lib/byline";
+import { getPosts } from "../../lib/posts";
+import { ogCards } from "../../lib/og-cards";
 
 export async function getStaticPaths() {
 	if (import.meta.env.PROD) return [];
-	const posts = await getPosts();
-	return [
-		{ params: { slug: "home" }, props: { title: "", byline: "", avatar: null } },
-		// Author pages: name as the title, role and post count as the byline.
-		...authorsOf(posts).map(({ author, posts: written }) => ({
-			params: { slug: `author-${author.slug}` },
-			props: {
-				title: author.name,
-				byline: `${authorRole(author)} · ${written.length} ${written.length === 1 ? "post" : "posts"}`,
-				avatar: author.avatarUrl,
-			},
-		})),
-		...posts.map((p) => ({
-			params: { slug: p.slug },
-			props: {
-				title: p.title,
-				byline: p.authors[0] ? `${p.authors[0].name} · ${p.minutes} min read` : `${p.minutes} min read`,
-				avatar: p.authors[0]?.avatarUrl ?? null,
-			},
-		})),
-	];
+	return ogCards(await getPosts()).map((card) => ({ params: { slug: card.key }, props: card }));
 }
 
 const { slug } = Astro.params;

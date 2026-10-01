@@ -126,7 +126,8 @@ async function check(page: Page, path: string): Promise<string[]> {
 	const ogImage = await page.getAttribute('meta[property="og:image"]', "content");
 	if (!ogImage) problems.push("no og:image");
 	else if (!(await fetch(ORIGIN + new URL(ogImage).pathname)).ok) problems.push(`og:image does not load: ${ogImage}`);
-	if (path.includes("/author/") && !ogImage?.includes(`/og-author-${path.split("/author/")[1].replace(/\/$/, "")}.png`)) {
+	const author = path.match(/\/author\/([^/]+)/)?.[1];
+	if (author && !new RegExp(`/og-author-${author}-[0-9a-f]{8}\\.png$`).test(ogImage ?? "")) {
 		problems.push(`author page share image is not the author's own card: ${ogImage}`);
 	}
 

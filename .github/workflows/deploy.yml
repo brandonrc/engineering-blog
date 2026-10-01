@@ -33,6 +33,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      # Share cards: reused from the live site, new or changed ones rendered
+      # (Chromium is installed only when there is something to render).
+      - run: npm run og
 
       - name: Check Cloudflare token
         id: token
