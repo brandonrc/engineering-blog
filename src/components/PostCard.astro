@@ -1,8 +1,9 @@
 ---
 import { blogUrl } from "../lib/blog-path";
 import BlogThumb from "./BlogThumb.astro";
-import Avatar from "./Avatar.astro";
+import AuthorFaces from "./AuthorFaces.astro";
 import type { Post } from "../lib/posts";
+import { bylineNames } from "../lib/byline";
 
 interface Props {
 	post: Post;
@@ -10,8 +11,7 @@ interface Props {
 }
 
 const { post, size = "cell" } = Astro.props;
-const author = post.authors[0]?.name ?? "OpenTeams Engineering";
-const avatarUrl = post.authors[0]?.avatarUrl ?? null;
+const byline = bylineNames(post.authors);
 const label = post.topic?.label ?? "Engineering";
 const href = blogUrl(`/${post.slug}`);
 ---
@@ -24,8 +24,8 @@ const href = blogUrl(`/${post.slug}`);
 			{post.title}
 		</h3>
 		<div class="mt-2.5 flex items-center gap-2 text-[12.5px] text-faint">
-			<Avatar name={author} src={avatarUrl} size={20} />
-			{author} &middot; {post.minutes} min read
+			<AuthorFaces authors={post.authors} size={20} />
+			<span><span class="post-byline">{byline}</span> &middot; {post.minutes} min read</span>
 		</div>
 	</a>
 ) : (
@@ -39,9 +39,9 @@ const href = blogUrl(`/${post.slug}`);
 			<p class="line-clamp-2 text-[14.5px] leading-relaxed text-muted">{post.excerpt}</p>
 		)}
 		<div class="mt-3.5 flex items-center gap-2.5">
-			<Avatar name={author} src={avatarUrl} size={30} />
+			<AuthorFaces authors={post.authors} size={30} />
 			<div>
-				<div class="text-[13px] leading-tight font-semibold">{author}</div>
+				<div class="post-byline text-[13px] leading-tight font-semibold">{byline}</div>
 				<div class="text-xs leading-tight text-faint">{post.minutes} min read</div>
 			</div>
 		</div>

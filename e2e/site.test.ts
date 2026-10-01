@@ -2,6 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { chromium, type Browser, type Page } from "playwright";
 import { afterAll, describe, expect, it } from "vitest";
 import { BLOG_PATH } from "../src/lib/blog-path";
+import { bylineNames } from "../src/lib/byline";
 import { PORT } from "./server";
 
 const ORIGIN = process.env.E2E_ORIGIN ?? `http://localhost:${PORT}`;
@@ -67,6 +68,47 @@ describe("site", () => {
 	it("links every post, topic page and the index", () => {
 		// index + 18 posts + 4 topics
 		expect(pages.length).toBeGreaterThanOrEqual(23);
+	});
+
+	it("shows each search suggestion's author photo, name and date", async () => {
+		const page = await browser.newPage();
+		await open(page, `${BLOG_PATH}/`);
+		await page.click("[data-search-trigger]");
+		const row = page.locator(".search-result").first();
+		await row.waitFor();
+		const photo = row.locator("img.sr-avatar");
+		const meta = await row.locator(".sr-crumb").innerText();
+		const photoLoaded = await photo.evaluate((i: HTMLImageElement) => i.decode().then(() => i.naturalWidth > 0));
+		const photoRadius = await photo.evaluate((i) => getComputedStyle(i).borderTopLeftRadius);
+		await page.close();
+		expect(photoLoaded).toBe(true);
+		expect(meta).toMatch(/\w+ \w+ · [A-Z][a-z]{2} \d{1,2}, \d{4}/);
+		expect(photoRadius).not.toBe("0px");
+	});
+
+	it("names every author of a post on its index card", async () => {
+		const page = await browser.newPage();
+		await open(page, `${BLOG_PATH}/`);
+		const cards = await page.$$eval("a:has(.post-byline)", (as) =>
+			as.map((a) => ({
+				href: (a as HTMLAnchorElement).href,
+				byline: a.querySelector(".post-byline")!.textContent!.trim(),
+				photos: a.querySelectorAll(".post-byline-faces > *").length,
+			})),
+		);
+		const mismatches: string[] = [];
+		for (const card of cards) {
+			await page.goto(card.href);
+			const names = await page.$$eval('article header a[href*="/author/"]', (as) =>
+				as.map((a) => ({ name: (a as HTMLElement).innerText.split("\n")[0].trim() })),
+			);
+			if (card.byline !== bylineNames(names) || card.photos !== Math.max(names.length, 1)) {
+				mismatches.push(`${card.href}: "${card.byline}" with ${card.photos} photos, page lists ${names.length}`);
+			}
+		}
+		await page.close();
+		expect(cards.length).toBeGreaterThan(0);
+		expect(mismatches).toEqual([]);
 	});
 });
 

@@ -1,20 +1,22 @@
 ---
 import Base from "../layouts/BlogBase.astro";
 import BlogThumb from "../components/BlogThumb.astro";
-import Avatar from "../components/Avatar.astro";
+import AuthorFaces from "../components/AuthorFaces.astro";
 import HeroSplash from "../components/HeroSplash.astro";
 import PostCard from "../components/PostCard.astro";
 import SubscribeBand from "../components/SubscribeBand.astro";
 import { getPosts, topicsOf } from "../lib/posts";
 import ogImages from "../data/og-images.json";
 import { blogUrl } from "../lib/blog-path";
+import { bylineNames } from "../lib/byline";
 
 const posts = await getPosts();
 const [featured, ...rest] = posts;
 const side = rest.slice(0, 4);
 const grid = rest.slice(4);
 const allTags = topicsOf(posts);
-const featuredAuthor = featured?.authors[0];
+// A role line only fits a single author; co-written posts show just the time.
+const featuredRole = featured?.authors.length === 1 ? featured.authors[0].bio.split(".")[0] || "OpenTeams" : null;
 ---
 
 <style>
@@ -71,17 +73,13 @@ const featuredAuthor = featured?.authors[0];
 					</p>
 				)}
 				<div class="mt-4 flex items-center gap-2.5">
-					<Avatar
-						name={featuredAuthor?.name ?? "OpenTeams Engineering"}
-						src={featuredAuthor?.avatarUrl}
-						size={32}
-					/>
+					<AuthorFaces authors={featured.authors} size={32} />
 					<div>
-						<div class="text-[13.5px] leading-tight font-semibold">
-							{featuredAuthor?.name ?? "OpenTeams Engineering"}
+						<div class="post-byline text-[13.5px] leading-tight font-semibold">
+							{bylineNames(featured.authors)}
 						</div>
 						<div class="text-xs leading-tight text-faint">
-							{featuredAuthor?.bio.split(".")[0] || "OpenTeams"} &middot; {featured.minutes} min read
+							{featuredRole && <>{featuredRole} &middot; </>}{featured.minutes} min read
 						</div>
 					</div>
 				</div>

@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import { blogUrl } from "../lib/blog-path";
+import { bylineNames } from "../lib/byline";
 import { getPosts } from "../lib/posts";
 import { plainText } from "../lib/plain-text";
 
@@ -8,6 +9,9 @@ export const GET: APIRoute = async () => {
 	const items = (await getPosts()).map((p) => ({
 		title: p.title,
 		section: p.topic?.label ?? "Engineering",
+		byline: bylineNames(p.authors),
+		faces: p.authors.map((a) => ({ name: a.name, src: a.avatarUrl })),
+		date: p.date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }),
 		url: blogUrl(`/${p.slug}`),
 		content: plainText(p.entry.body ?? ""),
 	}));

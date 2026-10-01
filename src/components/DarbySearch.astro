@@ -73,13 +73,28 @@ import { blogUrl } from "../lib/blog-path";
 				return out + esc(value.slice(last));
 			}
 
+			function initials(name) {
+				return String(name).split(/\s+/).map(function (w) { return w[0] || ""; }).join("").slice(0, 2).toUpperCase();
+			}
+
+			function faceHTML(face) {
+				if (face.src) return '<img class="sr-avatar" src="' + esc(face.src) + '" alt="" width="28" height="28" loading="lazy">';
+				return '<span class="sr-avatar sr-initials" aria-hidden="true">' + esc(initials(face.name)) + "</span>";
+			}
+
+			function facesHTML(it) {
+				var faces = it.faces && it.faces.length ? it.faces : [{ name: it.byline || it.title, src: null }];
+				return '<span class="sr-faces" aria-hidden="true">' + faces.map(faceHTML).join("") + "</span>";
+			}
+
 			function rowHTML(it, i) {
+				var meta = [it.section, it.byline, it.date].filter(Boolean).join(" \u00b7 ");
 				return '<li role="option" class="search-result' + (i === 0 ? " active" : "") + '" data-idx="' + i + '">' +
 					'<a href="' + esc(it.url) + '" tabindex="-1">' +
-						'<span class="sr-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/></svg></span>' +
+						facesHTML(it) +
 						'<span class="sr-text">' +
 							'<span class="sr-title">' + (it.titleHTML || esc(it.title)) + "</span>" +
-							(it.section ? '<span class="sr-crumb">' + esc(it.section) + "</span>" : "") +
+							(meta ? '<span class="sr-crumb">' + esc(meta) + "</span>" : "") +
 						"</span>" +
 						'<span class="sr-enter" aria-hidden="true">&crarr;</span>' +
 					"</a></li>";
@@ -94,7 +109,7 @@ import { blogUrl } from "../lib/blog-path";
 
 			function suggest() {
 				var items = allData.slice(0, 6).map(function (d) {
-					return { titleHTML: esc(d.title), section: d.section, url: d.url };
+					return Object.assign({}, d, { titleHTML: esc(d.title) });
 				});
 				current = items;
 				active = items.length ? 0 : -1;
@@ -147,7 +162,7 @@ import { blogUrl } from "../lib/blog-path";
 					if (!hits.length) { note("No results"); return; }
 					render(hits.map(function (h) {
 						var tm = (h.matches || []).filter(function (m) { return m.key === "title"; })[0];
-						return { titleHTML: highlight(h.item.title, tm ? tm.indices : null), section: h.item.section, url: h.item.url };
+						return Object.assign({}, h.item, { titleHTML: highlight(h.item.title, tm ? tm.indices : null) });
 					}));
 				} catch (e) {
 					note("Search is unavailable");
@@ -179,7 +194,10 @@ import { blogUrl } from "../lib/blog-path";
 	.search-results { list-style: none; margin: 0; padding: 0.4rem; overflow-y: auto; flex: 1; scrollbar-width: thin; }
 	.search-result a { display: flex; align-items: center; gap: 0.7rem; padding: 0.6rem 0.7rem; border-radius: 10px; color: var(--color-text); text-decoration: none; }
 	.search-result.active { background: var(--color-surface); border-radius: 10px; }
-	.sr-icon { color: var(--color-muted); flex: none; display: inline-flex; }
+	.sr-faces { flex: none; display: inline-flex; width: 46px; }
+	.sr-faces > .sr-avatar + .sr-avatar { margin-left: -10px; }
+	.sr-avatar { flex: none; box-shadow: 0 0 0 2px var(--color-bg); width: 28px; height: 28px; border-radius: 999px; object-fit: cover; }
+	.sr-initials { display: inline-flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--color-brand-strong), var(--color-brand)); color: #fff; font-size: 10px; font-weight: 600; font-family: var(--font-header); }
 	.sr-text { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; flex: 1; }
 	.sr-title { font-weight: 600; color: var(--color-text); font-size: 0.95rem; font-family: var(--font-header); }
 	.sr-crumb { font-size: 0.78rem; color: var(--color-muted); font-family: var(--font-header); }
