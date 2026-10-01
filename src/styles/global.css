@@ -1,0 +1,381 @@
+@import "tailwindcss";
+
+/*
+  OpenTeams theme, built on Tailwind v4.
+
+  Brand hexes come from the OpenTeams logo (public/favicon.svg):
+    #4D75FE  blue   -> brand
+    #022791  navy   -> brand-strong / navy surfaces + text
+    #FF8A69  coral  -> accent (gradient partner)
+    #FAA944  gold   -> warning / tertiary
+
+  Semantic colors are declared with light-dark(). The footer theme toggle
+  in Base.astro flips `color-scheme` via .light / .dark classes on <html>,
+  and light-dark() follows it -- so light / dark / system all work without
+  any dark: variants on the color utilities.
+*/
+
+@theme {
+	/* Typeface -- --font-body is injected by the Astro font pipeline
+	   (astro.config.mjs). Mapping it to --font-sans makes it the default. */
+	--font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+
+	/* Surfaces + text */
+	--color-bg: light-dark(#ffffff, #060b2e);
+	--color-surface: light-dark(#f6f8ff, #0f1747);
+	--color-text: light-dark(#022791, #f2f5ff);
+	--color-muted: light-dark(#5b6b9c, #9aa8d4);
+	--color-border: light-dark(#dde3f5, #26315f);
+
+	/* Brand -- OpenTeams blue */
+	--color-brand: light-dark(#4d75fe, #6d8dff);
+	--color-brand-strong: light-dark(#022791, #4d75fe);
+	--color-brand-soft: light-dark(#8aa2ff, #a9bcff);
+	/* Brand blue for text-sized links: brand itself is 3.97:1 on white,
+	   under the 4.5:1 WCAG AA minimum, so links get this darker shade
+	   (4.97:1); dark mode reuses brand, which passes at 6.3:1. */
+	--color-link: light-dark(#3b63f0, #6d8dff);
+
+	/* Accent -- coral, the gradient partner to brand */
+	--color-accent: #ff8a69;
+	--color-accent-soft: #ffb59e;
+
+	/* Additional tokens used by the engineering blog (additive) */
+	--font-mono: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
+	--font-display: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+	--font-serif: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+	--font-header: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+	--color-faint: light-dark(#667085, #8b98c0);
+	--color-deep: #041437;
+	--color-code-bg: #1e1e2e;
+
+	/* On-brand + semantics */
+	--color-on-brand: #ffffff;
+	--color-success: #22c55e;
+	--color-warning: #faa944;
+	--color-danger: light-dark(#dc2626, #f87171);
+}
+
+/*
+  Dark variant wired to the toggle: active when <html> has .dark, or when
+  the OS prefers dark and no explicit .light override is set. Colors don't
+  need it (light-dark() handles them); it's here for any non-color dark:
+  utilities.
+*/
+@custom-variant dark {
+	&:where(.dark, .dark *) {
+		@slot;
+	}
+	@media (prefers-color-scheme: dark) {
+		&:where(:root:not(.light), :root:not(.light) *) {
+			@slot;
+		}
+	}
+}
+
+/* Pin the UA color scheme when the toggle sets an explicit choice. With no
+   class, `light dark` follows the OS. */
+:root {
+	color-scheme: light dark;
+}
+:root.light {
+	color-scheme: light;
+}
+:root.dark {
+	color-scheme: dark;
+}
+
+@layer base {
+	body {
+		@apply bg-bg text-text antialiased;
+	}
+
+	/* Inline links inside post bodies (bare <a> tags) need a visible style;
+	   component links restyle themselves. */
+	p a:not([class]),
+	li a:not([class]) {
+		@apply text-link underline underline-offset-2;
+	}
+}
+
+@layer components {
+	/* Body styling for long-form post content. */
+	.editorial-content {
+		@apply mx-auto w-full max-w-[820px] px-6;
+	}
+
+	.editorial-content :where(h1, h2, h3, h4, h5, h6) {
+		@apply text-text tracking-tight;
+	}
+
+	.editorial-content :where(h1) {
+		@apply mt-10 text-4xl font-extrabold md:text-5xl;
+	}
+
+	.editorial-content :where(h2) {
+		@apply mt-8 text-3xl font-extrabold md:text-4xl;
+	}
+
+	.editorial-content :where(h3) {
+		@apply mt-7 text-2xl font-bold md:text-3xl;
+	}
+
+	.editorial-content :where(h4, h5, h6) {
+		@apply mt-6 text-xl font-bold;
+	}
+
+	.editorial-content :where(p, li) {
+		@apply text-lg leading-relaxed text-text;
+	}
+
+	.editorial-content :where(p + p) {
+		@apply mt-5;
+	}
+
+	.editorial-content :where(ul, ol) {
+		@apply my-6 pl-7;
+	}
+
+	.editorial-content :where(ul) {
+		list-style: disc;
+	}
+
+	.editorial-content :where(ol) {
+		list-style: decimal;
+	}
+
+	.editorial-content :where(li + li) {
+		@apply mt-2;
+	}
+
+	.editorial-content :where(blockquote) {
+		@apply my-8 border-l-4 border-brand pl-5 text-muted italic;
+	}
+
+	.editorial-content :where(a:not([class])) {
+		/* text-link, not text-brand: brand is 3.97:1 on white, under WCAG AA. */
+		@apply text-link underline decoration-link/60 underline-offset-2 hover:decoration-link;
+	}
+
+	.container-wide {
+		@apply mx-auto w-full max-w-[1200px] px-6;
+	}
+
+
+}
+
+
+/* ============================================================
+   Engineering blog theme, scoped to .blog-theme (set on <html> by
+   BlogBase.astro).
+   ============================================================ */
+
+.blog-theme {
+	/* Brand guidelines type: Inter everywhere (display, prose, nav);
+	   code keeps Fira Code. Scoped here so the main site is untouched. */
+	--font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+	--font-display: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+	--font-serif: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+	--font-header: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+	/* Background and surface inherit the main site's values so the blog
+	   matches the home page in both light and dark. */
+	--color-text: light-dark(#101422, #f2f5ff);
+	--color-muted: light-dark(#5d6575, #9aa8d4);
+	--color-border: light-dark(#e9ebf1, #26315f);
+
+	--emdash-search-bg: var(--color-bg);
+	--emdash-search-text: var(--color-text);
+	--emdash-search-muted: var(--color-muted);
+	--emdash-search-border: var(--color-border);
+	--emdash-search-hover: var(--color-surface);
+	--emdash-search-highlight: var(--color-brand);
+}
+
+@layer components {
+	/* Long-form article typography: 17px body with headings held to
+	   ~1.3x so the eye isn't jumping between sizes; the post column keeps
+	   lines near 70 characters. */
+	.blog-theme .editorial-content :where(p, li) {
+		font-family: var(--font-serif);
+		font-size: 17px;
+		line-height: 1.7;
+	}
+
+	.blog-theme .editorial-content :where(h1, h2, h3, h4, h5, h6) {
+		font-family: var(--font-display);
+		scroll-margin-top: 96px;
+	}
+
+	.blog-theme .editorial-content :where(h1) {
+		@apply mt-10 mb-5 text-4xl font-bold md:text-5xl;
+	}
+
+	.blog-theme .editorial-content :where(h2) {
+		@apply mt-10 mb-4 text-[23px] leading-snug font-bold;
+	}
+
+	.blog-theme .editorial-content :where(h3) {
+		@apply mt-8 mb-3 text-[20px] leading-snug font-bold;
+	}
+
+	.blog-theme .editorial-content :where(h4, h5, h6) {
+		@apply mt-6 mb-3 text-lg font-bold;
+	}
+
+	.blog-theme .editorial-content :where(blockquote) {
+		font-family: var(--font-serif);
+	}
+
+	/* Code: Catppuccin blocks (shiki sets its own bg inline), Fira Code */
+	.blog-theme .editorial-content :where(pre:not(.doodle-diagram)) {
+		@apply my-8 overflow-x-auto rounded-xl bg-code-bg p-5 text-[13.5px] leading-relaxed text-[#dce3ff];
+		font-family: var(--font-mono);
+	}
+
+	.blog-theme .editorial-content :where(pre code) {
+		@apply bg-transparent p-0 text-inherit;
+		font-family: var(--font-mono);
+	}
+
+	.blog-theme .editorial-content :where(:not(pre) > code) {
+		@apply rounded-md bg-surface px-1.5 py-0.5 text-[0.85em];
+		color: light-dark(#022791, #a9bcff);
+		font-family: var(--font-mono);
+	}
+
+	.blog-theme .editorial-content :where(table) {
+		@apply my-8 w-full border-collapse text-base;
+	}
+
+	.blog-theme .editorial-content :where(th) {
+		@apply border-b-2 border-border px-3 py-2 text-left font-semibold;
+	}
+
+	.blog-theme .editorial-content :where(td) {
+		@apply border-b border-border px-3 py-2 align-top;
+	}
+
+	.blog-theme .editorial-content :where(img) {
+		@apply my-8 w-full rounded-xl;
+	}
+
+	/* Mermaid diagrams, drawn by mermaid-doodle in its hand-drawn style and
+	   coloured from these variables. It reads them as raw text and does not
+	   resolve light-dark(), so the dark set is declared separately, under the
+	   same .dark / prefers-color-scheme rules as the theme toggle. */
+	.blog-theme {
+		--doodle-font: "Shantell Sans", "Segoe Print", "Comic Sans MS", cursive;
+		--doodle-accent: #2456e6;
+		--doodle-node-bg: #e7eeff;
+		--doodle-node-text: #0d1b3d;
+		--doodle-alt-bg: #eef4ff;
+		--doodle-alt-border: #7a99e8;
+		--doodle-cluster-bg: #f4f8ff;
+		--doodle-cluster-border: #c3d2f4;
+		--doodle-tertiary-bg: #f7faff;
+		--doodle-tertiary-text: #1e293b;
+		--doodle-note-bg: #eef4ff;
+		--doodle-text: #33406b;
+		--doodle-edge-label-bg: #ffffff;
+	}
+	.blog-theme.dark {
+		--doodle-accent: #8aa2ff;
+		--doodle-node-bg: #101d40;
+		--doodle-node-text: #e8edff;
+		--doodle-alt-bg: #16244d;
+		--doodle-alt-border: #5b74c4;
+		--doodle-cluster-bg: #0a1330;
+		--doodle-cluster-border: #2c3d6e;
+		--doodle-tertiary-bg: #0b152f;
+		--doodle-tertiary-text: #cdd8f0;
+		--doodle-note-bg: #16244d;
+		--doodle-text: #dce3ff;
+		--doodle-edge-label-bg: #041437;
+	}
+	@media (prefers-color-scheme: dark) {
+		.blog-theme:not(.light) {
+			--doodle-accent: #8aa2ff;
+			--doodle-node-bg: #101d40;
+			--doodle-node-text: #e8edff;
+			--doodle-alt-bg: #16244d;
+			--doodle-alt-border: #5b74c4;
+			--doodle-cluster-bg: #0a1330;
+			--doodle-cluster-border: #2c3d6e;
+			--doodle-tertiary-bg: #0b152f;
+			--doodle-tertiary-text: #cdd8f0;
+			--doodle-note-bg: #16244d;
+			--doodle-text: #dce3ff;
+			--doodle-edge-label-bg: #041437;
+		}
+	}
+
+	.blog-theme .editorial-content :where(.doodle-wrap) {
+		@apply my-8 overflow-x-auto rounded-xl bg-surface p-6;
+	}
+
+	.blog-theme .editorial-content :where(.doodle-diagram) {
+		@apply m-0 w-full;
+	}
+
+	.blog-theme .editorial-content :where(.doodle-diagram svg) {
+		@apply mx-auto block;
+	}
+
+	/* Diagram labels live inside the article, so prose rules for p/span
+	   would repaint them (wrong font and size, clipped nodes). Hand them
+	   back to the diagram's handwriting font and inherited colours. */
+	.blog-theme .doodle-diagram :is(p, span, .nodeLabel, .edgeLabel, .cluster-label) {
+		font-family: var(--doodle-font);
+		color: inherit;
+		font-size: inherit;
+		line-height: 1.35;
+		margin: 0;
+	}
+
+	/* Heading anchor links (revealed on hover) */
+	.blog-theme .heading-anchor {
+		@apply ml-2 text-brand no-underline! opacity-0 transition-opacity;
+	}
+
+	.blog-theme .editorial-content :where(h2, h3):hover .heading-anchor,
+	.blog-theme .heading-anchor:focus-visible {
+		@apply opacity-100;
+	}
+
+	/* On-this-page rail */
+	.blog-theme .toc-title {
+		@apply mb-3 text-xs font-semibold tracking-[0.08em] text-faint uppercase;
+		font-family: var(--font-header);
+	}
+
+	.blog-theme .toc-list {
+		@apply flex list-none flex-col gap-2 border-l border-border;
+	}
+
+	.blog-theme .toc-list a {
+		@apply block border-l-2 border-transparent py-0.5 pl-4 text-[13.5px] leading-snug text-muted no-underline! transition-colors hover:text-text;
+		font-family: var(--font-header);
+		margin-left: -1px;
+	}
+
+	.blog-theme .toc-list a.active {
+		@apply border-brand font-medium;
+		color: light-dark(#3b5bd9, #8aa2ff);
+	}
+
+	/* Card + index components */
+	.blog-theme .cat-label {
+		@apply text-xs font-semibold tracking-[0.08em] uppercase;
+		color: light-dark(#3b5bd9, #8aa2ff);
+	}
+
+	.blog-theme .cat-badge {
+		@apply inline-block rounded-full px-2.5 py-1 text-[11px] leading-none font-semibold tracking-[0.06em] uppercase;
+		color: light-dark(#ffffff, #dce3ff);
+		background: light-dark(#0d1b3d, #2c3d6e);
+	}
+
+	.blog-theme .post-title-link {
+		@apply transition-colors hover:text-brand;
+	}
+}

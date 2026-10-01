@@ -1,0 +1,150 @@
+---
+import { Font } from "astro:assets";
+import { Icon } from "astro-iconset/components";
+import DarbySearch from "../components/DarbySearch.astro";
+import MainSiteHeader from "../components/MainSiteHeader.astro";
+import { SITE_TAGLINE, SITE_TITLE, footerColumns, socialLinks } from "../data/site";
+import "../styles/global.css";
+
+interface Props {
+	title?: string;
+	description?: string;
+	image?: string;
+	type?: "website" | "article";
+}
+
+const { title, description, image, type = "website" } = Astro.props;
+const fullTitle = title ? `${title} — ${SITE_TITLE}` : SITE_TITLE;
+const pageDescription = description || SITE_TAGLINE;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = image ? new URL(image, Astro.site).href : undefined;
+---
+
+<!doctype html>
+<html lang="en" class="blog-theme">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{fullTitle}</title>
+		<meta name="description" content={pageDescription} />
+		<link rel="canonical" href={canonical} />
+		<meta property="og:type" content={type} />
+		<meta property="og:site_name" content={SITE_TITLE} />
+		<meta property="og:title" content={title ?? SITE_TITLE} />
+		<meta property="og:description" content={pageDescription} />
+		<meta property="og:url" content={canonical} />
+		{ogImage && <meta property="og:image" content={ogImage} />}
+		<meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
+		{ogImage && <meta name="twitter:image" content={ogImage} />}
+		<link rel="alternate" type="application/rss+xml" title="OpenTeams Engineering Blog" href="/engineering-blog/rss.xml" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<Font cssVariable="--font-body" preload />
+		<Font cssVariable="--font-mono" />
+		<slot name="head" />
+		<style is:global>
+			/* Moon/sun toggle icon follows the effective theme. */
+			.theme-icon-sun { display: none; }
+			html.dark .theme-icon-sun { display: block; }
+			html.dark .theme-icon-moon { display: none; }
+			@media (prefers-color-scheme: dark) {
+				html:not(.light) .theme-icon-sun { display: block; }
+				html:not(.light) .theme-icon-moon { display: none; }
+			}
+		</style>
+		<script is:inline>
+			// Apply an explicit theme choice immediately to prevent flash.
+			// With no cookie, color-scheme: light dark follows the OS.
+			(function () {
+				var c = document.cookie;
+				var i = c.indexOf("theme=");
+				var theme = i >= 0 ? c.slice(i + 6).split(";")[0] : null;
+				if (theme === "dark" || theme === "light") {
+					document.documentElement.classList.add(theme);
+				}
+			})();
+		</script>
+	</head>
+	<body class="min-h-screen leading-relaxed">
+		<MainSiteHeader>
+			<DarbySearch />
+			<button
+				type="button"
+				id="theme-toggle"
+				class="flex size-9 cursor-pointer items-center justify-center rounded-full border border-white/20 text-lg text-white/75 transition-colors hover:border-[#4d75fe] hover:text-white"
+				aria-label="Toggle dark mode"
+			>
+				<Icon name="ph:moon" class="theme-icon-moon" aria-hidden="true" />
+				<Icon name="ph:sun" class="theme-icon-sun" aria-hidden="true" />
+			</button>
+		</MainSiteHeader>
+
+		<main class="min-h-[calc(100vh-200px)]">
+			<slot />
+		</main>
+
+		<footer class="bg-deep text-[#8d99bd]">
+			<div class="container-wide grid grid-cols-1 gap-12 py-16 md:grid-cols-[1.4fr_2fr] md:gap-20">
+				<div>
+					<img src="/openteams-white-horizontal.png" alt={SITE_TITLE} class="h-7 w-auto" />
+					<p class="mt-4 max-w-xs text-sm leading-relaxed">{SITE_TAGLINE}</p>
+					<div class="mt-5 flex flex-wrap gap-2">
+						{socialLinks.map((s) => (
+							<a
+								href={s.url}
+								target="_blank"
+								rel="noopener noreferrer"
+								aria-label={s.label}
+								title={s.label}
+								class="flex size-9 items-center justify-center rounded-lg bg-white/5 text-lg text-[#cfd8ef] transition-colors hover:bg-white/10 hover:text-white"
+							>
+								<Icon name={s.icon} aria-hidden="true" />
+							</a>
+						))}
+						<a
+							href="/engineering-blog/rss.xml"
+							aria-label="RSS feed"
+							title="RSS"
+							class="flex size-9 items-center justify-center rounded-lg bg-white/5 text-lg text-[#cfd8ef] transition-colors hover:bg-white/10 hover:text-white"
+						>
+							<Icon name="ph:rss" aria-hidden="true" />
+						</a>
+					</div>
+				</div>
+				<div class="grid grid-cols-2 gap-8 md:grid-cols-3">
+					{footerColumns.map((col) => (
+						<div>
+							<h4 class="mb-4 text-xs font-semibold tracking-[0.08em] text-white uppercase">{col.heading}</h4>
+							{col.links.map((link) => (
+								<a href={link.url} class="block py-1.5 text-sm transition-colors hover:text-white">{link.label}</a>
+							))}
+						</div>
+					))}
+				</div>
+			</div>
+			<div class="container-wide border-t border-white/10 py-6 text-sm text-[#97a3c4]">
+				<p>&copy; {new Date().getFullYear()} {SITE_TITLE}. All rights reserved.</p>
+			</div>
+		</footer>
+
+		<script>
+			// Single moon/sun toggle: flips between explicit light and dark,
+			// starting from the effective theme (cookie, else OS preference).
+			const root = document.documentElement;
+			const toggle = document.getElementById("theme-toggle");
+
+			function effectiveDark(): boolean {
+				if (root.classList.contains("dark")) return true;
+				if (root.classList.contains("light")) return false;
+				return window.matchMedia("(prefers-color-scheme: dark)").matches;
+			}
+
+			toggle?.addEventListener("click", () => {
+				const next = effectiveDark() ? "light" : "dark";
+				const secure = location.protocol === "https:" ? "; Secure" : "";
+				document.cookie = `theme=${next}; path=/; max-age=31536000; SameSite=Lax${secure}`;
+				root.classList.remove("light", "dark");
+				root.classList.add(next);
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,223 @@
+---
+// Hero: matrix multiplication -- the primitive an LLM actually is.
+// W (weights) x x (input) = y, computed as a perpetual rolling wave:
+// row i of W and column j of x glow while cell (i,j) of y fills, then
+// the wave moves on. Deterministic cell intensities, pure SVG + CSS.
+// Reduced motion gets the completed product, static.
+
+const N = 4;
+const CELL = 24;
+const GAP = 6;
+const STEP = 0.35; // seconds per output cell
+const ROW_T = N * STEP; // 1.4s per row of output
+
+// Deterministic "weights": stable pseudo-random intensity per cell.
+const val = (m: number, i: number, j: number) =>
+	0.25 + (((m * 31 + i * 17 + j * 7) % 13) / 13) * 0.7;
+
+const cells = (m: number) =>
+	Array.from({ length: N * N }, (_, k) => {
+		const i = Math.floor(k / N);
+		const j = k % N;
+		return { i, j, v: val(m, i, j) };
+	});
+
+// y is the REAL product of the two matrices shown (normalized to opacity),
+// so the picture is numerically honest: y[i][j] = row i of W dot column j of x.
+const dot = (i: number, j: number) =>
+	Array.from({ length: N }, (_, k) => val(1, i, k) * val(2, k, j)).reduce((a, b) => a + b, 0);
+const dots = Array.from({ length: N * N }, (_, k) => dot(Math.floor(k / N), k % N));
+const dmin = Math.min(...dots);
+const dmax = Math.max(...dots);
+const ycells = dots.map((d, k) => ({
+	i: Math.floor(k / N),
+	j: k % N,
+	v: 0.2 + ((d - dmin) / (dmax - dmin)) * 0.8,
+}));
+
+const gx = (j: number) => j * (CELL + GAP);
+const gy = (i: number) => i * (CELL + GAP);
+const GRID = N * CELL + (N - 1) * GAP; // 141
+
+// Layout inside the 1100x400 hero canvas, right-weighted.
+const AX = 656; // W
+const BX = AX + GRID + 48; // x
+const CX = BX + GRID + 48; // y
+const TOP = 116;
+---
+
+<svg
+	viewBox="0 0 1100 400"
+	class="h-full w-full"
+	preserveAspectRatio="xMaxYMid meet"
+	role="img"
+	aria-hidden="true"
+>
+	<!-- faint ghost matrix drifting behind the heading -->
+	<g opacity="0.22">
+		{Array.from({ length: 12 }, (_, k) => (
+			<rect
+				x={40 + (k % 4) * 44}
+				y={140 + Math.floor(k / 4) * 44}
+				width="30"
+				height="30"
+				rx="7"
+				fill="var(--color-brand-soft)"
+				opacity={0.15 + ((k * 5) % 7) / 20}
+			/>
+		))}
+	</g>
+
+	<!-- W -->
+	<g transform={`translate(${AX} ${TOP})`}>
+		{cells(1).map(({ i, j, v }) => (
+			<rect
+				class="wcell"
+				x={gx(j)}
+				y={gy(i)}
+				width={CELL}
+				height={CELL}
+				rx="7"
+				fill="var(--color-brand)"
+				opacity={v * 0.5}
+			/>
+		))}
+		{Array.from({ length: N }, (_, i) => (
+			<rect
+				class="rowglow"
+				x="-5"
+				y={gy(i) - 5}
+				width={GRID + 10}
+				height={CELL + 10}
+				rx="10"
+				style={`animation-delay:${i * ROW_T}s`}
+			/>
+		))}
+		<text x={GRID / 2} y={GRID + 34} text-anchor="middle" class="lbl">W &#183; weights</text>
+	</g>
+
+	<text x={AX + GRID + 24} y={TOP + GRID / 2 + 8} text-anchor="middle" class="op">&#215;</text>
+
+	<!-- x -->
+	<g transform={`translate(${BX} ${TOP})`}>
+		{cells(2).map(({ i, j, v }) => (
+			<rect
+				class="xcell"
+				x={gx(j)}
+				y={gy(i)}
+				width={CELL}
+				height={CELL}
+				rx="7"
+				fill="var(--color-accent)"
+				opacity={v * 0.5}
+			/>
+		))}
+		{Array.from({ length: N }, (_, j) => (
+			<rect
+				class="colglow"
+				x={gx(j) - 5}
+				y="-5"
+				width={CELL + 10}
+				height={GRID + 10}
+				rx="10"
+				style={`animation-delay:${j * STEP}s`}
+			/>
+		))}
+		<text x={GRID / 2} y={GRID + 34} text-anchor="middle" class="lbl">x &#183; input</text>
+	</g>
+
+	<text x={BX + GRID + 24} y={TOP + GRID / 2 + 8} text-anchor="middle" class="op">=</text>
+
+	<!-- y -->
+	<g transform={`translate(${CX} ${TOP})`}>
+		{ycells.map(({ i, j, v }) => (
+			<rect
+				class="ycell"
+				x={gx(j)}
+				y={gy(i)}
+				width={CELL}
+				height={CELL}
+				rx="7"
+				fill="var(--color-brand)"
+				style={`--v:${v.toFixed(2)};animation-delay:${(i * ROW_T + j * STEP).toFixed(2)}s`}
+			/>
+		))}
+		<text x={GRID / 2} y={GRID + 34} text-anchor="middle" class="lbl">y = Wx</text>
+	</g>
+
+	<text x={CX + GRID} y={TOP + GRID + 68} text-anchor="end" class="caption">an LLM, mostly</text>
+</svg>
+
+<style>
+	.lbl {
+		font-family: var(--font-header), sans-serif;
+		font-size: 12px;
+		fill: var(--color-faint);
+	}
+
+	.op {
+		font-family: var(--font-header), sans-serif;
+		font-size: 22px;
+		fill: var(--color-muted);
+	}
+
+	.caption {
+		font-family: var(--font-header), sans-serif;
+		font-size: 13.5px;
+		font-weight: 600;
+		fill: var(--color-faint);
+	}
+
+	/* active row of W: soft ring sweeping down, one row per 1.4s */
+	.rowglow,
+	.colglow {
+		fill: none;
+		stroke: var(--color-brand);
+		stroke-width: 2;
+		opacity: 0;
+	}
+
+	.rowglow {
+		animation: row-on 5.6s linear infinite;
+	}
+	@keyframes row-on {
+		0% { opacity: 0; }
+		1% { opacity: 0.9; }
+		24% { opacity: 0.9; }
+		25% { opacity: 0; }
+		100% { opacity: 0; }
+	}
+
+	/* active column of x: pulses once per row pass (every 1.4s) */
+	.colglow {
+		stroke: var(--color-accent);
+		animation: col-on 1.4s linear infinite;
+	}
+	@keyframes col-on {
+		0% { opacity: 0; }
+		2% { opacity: 0.9; }
+		22% { opacity: 0.9; }
+		26% { opacity: 0; }
+		100% { opacity: 0; }
+	}
+
+	/* output cells: fill when their row/column meet, hold, fade, repeat */
+	.ycell {
+		opacity: 0.06;
+		animation: cell-fill 5.6s linear infinite;
+	}
+	@keyframes cell-fill {
+		0% { opacity: 0.06; }
+		3% { opacity: var(--v); }
+		88% { opacity: var(--v); }
+		97% { opacity: 0.06; }
+		100% { opacity: 0.06; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.rowglow, .colglow, .ycell {
+			animation: none;
+		}
+		.ycell { opacity: var(--v); }
+	}
+</style>

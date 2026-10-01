@@ -1,0 +1,121 @@
+---
+import Base from "../../layouts/BlogBase.astro";
+import BlogThumb from "../../components/BlogThumb.astro";
+import Avatar from "../../components/Avatar.astro";
+import HeroSplash from "../../components/HeroSplash.astro";
+import PostCard from "../../components/PostCard.astro";
+import SubscribeBand from "../../components/SubscribeBand.astro";
+import { getPosts, topicsOf } from "../../lib/posts";
+import ogImages from "../../data/og-images.json";
+
+const posts = await getPosts();
+const [featured, ...rest] = posts;
+const side = rest.slice(0, 4);
+const grid = rest.slice(4);
+const allTags = topicsOf(posts);
+const featuredAuthor = featured?.authors[0];
+---
+
+<style>
+	/* Visualization spans the hero as a background layer: barely-there
+	   behind the heading, fully visible at the top right. */
+	.hero-viz {
+		mask-image: linear-gradient(
+			97deg,
+			rgba(0, 0, 0, 0.1) 0%,
+			rgba(0, 0, 0, 0.16) 42%,
+			rgba(0, 0, 0, 0.7) 64%,
+			rgb(0, 0, 0) 85%
+		);
+		-webkit-mask-image: linear-gradient(
+			97deg,
+			rgba(0, 0, 0, 0.1) 0%,
+			rgba(0, 0, 0, 0.16) 42%,
+			rgba(0, 0, 0, 0.7) 64%,
+			rgb(0, 0, 0) 85%
+		);
+	}
+</style>
+
+<Base
+	title="Engineering Blog"
+	description="Benchmarks, systems deep dives, and hard-won lessons from OpenTeams engineers."
+	image={(ogImages as Record<string, string>).home}
+>
+	<section class="container-wide relative pt-11 pb-10">
+		<div class="hero-viz pointer-events-none absolute inset-0 hidden md:block" aria-hidden="true">
+			<HeroSplash />
+		</div>
+		<div class="relative z-10">
+			<h1 class="max-w-[640px] text-3xl leading-[1.1] font-bold tracking-tight md:text-[38px]">
+				Notes from the people who <span class="text-brand">build with open source</span>
+			</h1>
+			<p class="mt-3 max-w-[540px] text-base text-muted">
+				Benchmarks, systems deep dives, and hard-won lessons from OpenTeams engineers.
+			</p>
+		</div>
+	</section>
+
+	{featured && (
+		<section class="container-wide grid gap-10 pb-16 md:grid-cols-2">
+			<a href={`/engineering-blog/${featured.slug}`} class="group block transition-transform duration-200 hover:-translate-y-1">
+				<BlogThumb slug={featured.slug} size="big" />
+				<div class="cat-label mt-5">{featured.topic?.label ?? "Engineering"}</div>
+				<h2 class="post-title-link mt-2.5 mb-2.5 text-2xl leading-[1.18] font-bold tracking-tight md:text-[28px]">
+					{featured.title}
+				</h2>
+				{featured.excerpt && (
+					<p class="max-w-[600px] text-[15.5px] leading-relaxed text-muted">
+						{featured.excerpt}
+					</p>
+				)}
+				<div class="mt-4 flex items-center gap-2.5">
+					<Avatar
+						name={featuredAuthor?.name ?? "OpenTeams Engineering"}
+						src={featuredAuthor?.avatarUrl}
+						size={32}
+					/>
+					<div>
+						<div class="text-[13.5px] leading-tight font-semibold">
+							{featuredAuthor?.name ?? "OpenTeams Engineering"}
+						</div>
+						<div class="text-xs leading-tight text-faint">
+							{featuredAuthor?.bio.split(".")[0] || "OpenTeams"} &middot; {featured.minutes} min read
+						</div>
+					</div>
+				</div>
+			</a>
+			<div class="grid content-start gap-x-6 gap-y-9 sm:grid-cols-2">
+				{side.map((p) => (
+					<PostCard post={p} size="mini" />
+				))}
+			</div>
+		</section>
+	)}
+
+	<div class="container-wide">
+		<div class="flex flex-wrap items-baseline justify-between gap-4 border-t border-border pt-11 pb-8">
+			<h2 class="text-[28px] font-bold tracking-tight">Latest articles</h2>
+			{allTags.length > 0 && (
+				<div class="flex flex-wrap gap-2">
+					<span class="rounded-full bg-text px-4 py-2 text-[13px] leading-none font-semibold text-bg">All</span>
+					{allTags.map((t) => (
+						<a
+							href={`/engineering-blog/tag/${t.slug}`}
+							class="rounded-full border border-border px-4 py-2 text-[13px] leading-none font-semibold text-muted transition-colors hover:border-brand hover:text-brand"
+						>
+							{t.label}
+						</a>
+					))}
+				</div>
+			)}
+		</div>
+		<div class="grid gap-x-10 gap-y-11 pb-16 md:grid-cols-3">
+			{grid.map((p) => (
+				<PostCard post={p} />
+			))}
+		</div>
+	</div>
+
+	<SubscribeBand />
+</Base>

@@ -1,0 +1,26 @@
+{
+	"name": "openteams-engineering-blog",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"test": "vitest run",
+		"sync-posts": "node scripts/sync-posts.ts",
+		"capture-og": "node scripts/capture-og.mjs"
+	},
+	"dependencies": {
+		"@astrojs/markdown-remark": "7.3.1",
+		"@iconify-json/ph": "1.2.2",
+		"@tailwindcss/vite": "4.3.3",
+		"astro": "7.3.5",
+		"astro-iconset": "0.0.4",
+		"mermaid-doodle": "0.1.1",
+		"tailwindcss": "4.3.3"
+	},
+	"devDependencies": {
+		"playwright": "1.62.1",
+		"vitest": "4.1.11"
+	}
+}

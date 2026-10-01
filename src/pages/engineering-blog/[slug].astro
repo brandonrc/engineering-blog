@@ -1,0 +1,182 @@
+---
+import { render } from "astro:content";
+import Base from "../../layouts/BlogBase.astro";
+import Avatar from "../../components/Avatar.astro";
+import SubscribeBand from "../../components/SubscribeBand.astro";
+import { getPosts, type Post } from "../../lib/posts";
+import ogImages from "../../data/og-images.json";
+
+export async function getStaticPaths() {
+	const posts = await getPosts();
+	return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: Post };
+const { Content } = await render(post.entry);
+const { title, excerpt, minutes, authors, topic } = post;
+const publishedDate = post.date;
+const hasDiagram = /^```mermaid\s*$/m.test(post.entry.body ?? "");
+const ogImage = (ogImages as Record<string, string>)[post.slug];
+---
+
+<Base title={title} description={excerpt} image={ogImage} type="article">
+	{hasDiagram && (
+		<link slot="head" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shantell+Sans:wght@400;500;600&display=swap" />
+	)}
+	<div class="mx-auto max-w-[1120px] xl:grid xl:grid-cols-[minmax(0,1fr)_220px] xl:gap-16">
+		<div class="min-w-0">
+			<article class="mx-auto max-w-[680px] px-6 pt-16">
+				<header class="mb-8">
+					<div class="flex items-center gap-3">
+						<a href="/engineering-blog" class="cat-label hover:underline">Engineering Blog</a>
+						{topic && (
+							<a
+								href={`/engineering-blog/tag/${topic.slug}`}
+								class="rounded-full border border-border px-2.5 py-1 text-[11px] font-semibold tracking-wide text-muted uppercase hover:border-brand hover:text-brand"
+							>
+								{topic.label}
+							</a>
+						)}
+					</div>
+					<h1 class="font-display mt-4 text-3xl leading-[1.2] font-bold tracking-tight md:text-[34px]">
+						{title}
+					</h1>
+					{excerpt && <p class="mt-4 text-lg leading-relaxed text-muted">{excerpt}</p>}
+					<div class="mt-7 flex flex-wrap items-center gap-x-8 gap-y-4 border-y border-border py-4">
+						{authors.map((a) => (
+							<div class="flex items-center gap-2.5">
+								<Avatar name={a.name} src={a.avatarUrl} size={38} />
+								<div>
+									<div class="text-base leading-tight font-semibold">{a.name}</div>
+									<div class="mt-0.5 text-sm leading-tight text-faint">
+										{a.bio.split(".")[0] || "OpenTeams"}
+									</div>
+								</div>
+							</div>
+						))}
+						<div class="ml-auto text-right text-xs leading-relaxed text-faint">
+							<time datetime={publishedDate.toISOString()} class="block">
+								{publishedDate.toLocaleDateString("en-US", {
+									year: "numeric",
+									month: "long",
+									day: "numeric",
+								})}
+							</time>
+							<span>{minutes} min read</span>
+						</div>
+					</div>
+				</header>
+			</article>
+			<div class="editorial-content max-w-[680px] pb-16">
+				<Content />
+			</div>
+
+			{authors.length > 0 && (
+				<aside class="mx-auto mb-20 flex max-w-[680px] flex-col gap-4 px-6">
+					{authors.map((a) => (
+						<div class="flex items-start gap-4 rounded-2xl border border-border bg-surface p-6">
+							<Avatar name={a.name} src={a.avatarUrl} size={52} />
+							<div>
+								<div class="font-semibold">{a.name}</div>
+								{a.bio && <p class="mt-1 text-sm leading-relaxed text-muted">{a.bio}</p>}
+							</div>
+						</div>
+					))}
+				</aside>
+			)}
+		</div>
+
+		<aside class="hidden xl:block">
+			<nav class="sticky top-24 pt-16" aria-label="On this page" id="toc" hidden>
+				<div class="toc-title">On this page</div>
+				<ul class="toc-list" id="toc-list"></ul>
+			</nav>
+		</aside>
+	</div>
+
+	<SubscribeBand />
+
+	<script>
+		// On-this-page rail + heading anchor links, from the rendered content.
+		// Headings get stable slug ids, a hover "#" link, and the rail tracks
+		// the section currently in view.
+		const container = document.querySelector(".editorial-content");
+		const toc = document.getElementById("toc");
+		const tocList = document.getElementById("toc-list");
+		const headings = container
+			? [...container.querySelectorAll<HTMLHeadingElement>("h2")]
+			: [];
+
+		if (toc && tocList && headings.length >= 2) {
+			const seen = new Map<string, number>();
+			for (const h of headings) {
+				if (!h.id) {
+					let id = (h.textContent ?? "")
+						.toLowerCase()
+						.replace(/[^a-z0-9\s-]/g, "")
+						.trim()
+						.replace(/\s+/g, "-");
+					const n = seen.get(id) ?? 0;
+					seen.set(id, n + 1);
+					if (n > 0) id = `${id}-${n}`;
+					h.id = id;
+				}
+				const anchor = document.createElement("a");
+				anchor.className = "heading-anchor";
+				anchor.href = `#${h.id}`;
+				anchor.textContent = "#";
+				anchor.setAttribute("aria-label", "Link to this section");
+				h.appendChild(anchor);
+
+				const li = document.createElement("li");
+				const link = document.createElement("a");
+				link.href = `#${h.id}`;
+				link.textContent = (h.textContent ?? "").replace(/#$/, "");
+				li.appendChild(link);
+				tocList.appendChild(li);
+			}
+			toc.hidden = false;
+
+			const links = new Map(
+				[...tocList.querySelectorAll<HTMLAnchorElement>("a")].map((a) => [
+					a.hash.slice(1),
+					a,
+				]),
+			);
+			let activeId: string | null = null;
+			const setActive = (id: string) => {
+				if (id === activeId) return;
+				activeId = id;
+				links.forEach((a, key) => a.classList.toggle("active", key === id));
+			};
+			const observer = new IntersectionObserver(
+				(entries) => {
+					for (const e of entries) {
+						if (e.isIntersecting) setActive(e.target.id);
+					}
+				},
+				{ rootMargin: "-96px 0px -70% 0px", threshold: 0 },
+			);
+			headings.forEach((h) => observer.observe(h));
+			setActive(headings[0].id);
+		}
+	</script>
+
+	<script>
+		// Hand-drawn Mermaid diagrams, coloured from the --doodle-* variables in
+		// global.css; mermaid itself loads from a pinned CDN only when the page
+		// has a diagram, and diagrams re-render on the light/dark toggle.
+		import { createRenderer } from "mermaid-doodle";
+		import "mermaid-doodle/styles.css";
+
+		// Label boxes are measured at render time, so the handwriting font
+		// must be loaded first or labels get clipped.
+		if (document.querySelector("code.language-mermaid")) {
+			await Promise.all([
+				document.fonts.load('400 16px "Shantell Sans"'),
+				document.fonts.load('600 16px "Shantell Sans"'),
+			]).catch(() => {});
+		}
+		createRenderer().mount();
+	</script>
+</Base>

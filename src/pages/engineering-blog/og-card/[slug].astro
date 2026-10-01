@@ -1,0 +1,183 @@
+---
+// Renders a 1200x630 OG card for a post (or the blog index when slug is
+// "home"), captured with `npm run capture-og` and committed as a static PNG
+// under public/og/. Dev only: production builds emit no card pages.
+import { Font } from "astro:assets";
+import { getPosts } from "../../../lib/posts";
+
+export async function getStaticPaths() {
+	if (import.meta.env.PROD) return [];
+	const posts = await getPosts();
+	return [
+		{ params: { slug: "home" }, props: { title: "", byline: "" } },
+		...posts.map((p) => ({
+			params: { slug: p.slug },
+			props: {
+				title: p.title,
+				byline: p.authors[0] ? `${p.authors[0].name} · ${p.minutes} min read` : `${p.minutes} min read`,
+			},
+		})),
+	];
+}
+
+const { slug } = Astro.params;
+const isHome = slug === "home";
+const { title, byline } = Astro.props as { title: string; byline: string };
+
+const titleSize = title.length > 70 ? 52 : title.length > 45 ? 60 : 68;
+
+// Deterministic matmul cell intensities, same recipe as the hero splash.
+const val = (m: number, i: number, j: number) =>
+	0.25 + (((m * 31 + i * 17 + j * 7) % 13) / 13) * 0.7;
+const grid = (m: number) =>
+	Array.from({ length: 16 }, (_, k) => ({
+		i: Math.floor(k / 4),
+		j: k % 4,
+		v: val(m, Math.floor(k / 4), k % 4),
+	}));
+---
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<Font cssVariable="--font-sora" preload />
+		<Font cssVariable="--font-nav" preload />
+	</head>
+	<body>
+		{isHome ? (
+			<div class="card home">
+				<svg class="matmul" width="560" height="200" viewBox="0 0 560 200" aria-hidden="true">
+					{[0, 1].map((m) => (
+						<g transform={`translate(${m * 190} 20)`}>
+							{grid(m + 1).map((c) => (
+								<rect
+									x={c.j * 40}
+									y={c.i * 40}
+									width="32"
+									height="32"
+									rx="7"
+									fill={m === 0 ? "#8aa2ff" : "#ff9d7e"}
+									opacity={c.v * 0.55}
+								/>
+							))}
+						</g>
+					))}
+					<text x="164" y="105" font-size="30" fill="#8aa2ff" opacity="0.7">&#215;</text>
+					<text x="358" y="105" font-size="30" fill="#8aa2ff" opacity="0.7">=</text>
+					<g transform="translate(392 20)">
+						{grid(3).map((c) => (
+							<rect
+								x={c.j * 40}
+								y={c.i * 40}
+								width="32"
+								height="32"
+								rx="7"
+								fill="#ffffff"
+								opacity={c.v * 0.5}
+							/>
+						))}
+					</g>
+				</svg>
+				<div class="home-center">
+					<img class="home-logo" src="/openteams-white-horizontal.png" alt="OpenTeams" />
+					<div class="home-title">Engineering Blog</div>
+				</div>
+			</div>
+		) : (
+			<div class="card">
+				<svg class="blob" width="700" height="700" viewBox="0 0 700 700">
+					<circle cx="350" cy="350" r="350" fill="#0a2158"></circle>
+				</svg>
+				<img class="logo" src="/openteams-white-horizontal.png" alt="OpenTeams" />
+				<div class="title">{title}</div>
+				<div class="byline">{byline}</div>
+			</div>
+		)}
+	</body>
+</html>
+
+<style define:vars={{ titleSize: `${titleSize}px` }}>
+	.card {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 1200px;
+		height: 630px;
+		background: #041437;
+		overflow: hidden;
+		padding: 64px 80px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.blob {
+		position: absolute;
+		right: -260px;
+		bottom: -300px;
+	}
+
+	.logo {
+		height: 44px;
+		width: auto;
+		align-self: flex-start;
+		position: relative;
+	}
+
+	.title {
+		position: relative;
+		margin-top: auto;
+		margin-bottom: auto;
+		max-width: 940px;
+		font-family: var(--font-sora), ui-sans-serif, sans-serif;
+		font-size: var(--titleSize);
+		line-height: 1.18;
+		font-weight: 700;
+		letter-spacing: -0.01em;
+		color: #ffffff;
+	}
+
+	.byline {
+		position: relative;
+		font-family: var(--font-nav), ui-sans-serif, sans-serif;
+		font-size: 27px;
+		font-weight: 500;
+		color: #8aa2ff;
+	}
+
+	/* Home card: centered lockup over a faint matrix-multiplication motif,
+	   echoing the live hero animation. */
+	.card.home {
+		align-items: center;
+		justify-content: center;
+		padding: 0;
+	}
+
+	.matmul {
+		position: absolute;
+		right: 36px;
+		bottom: 28px;
+		opacity: 0.5;
+	}
+
+	.home-center {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 44px;
+		transform: translateY(-26px);
+	}
+
+	.home-logo {
+		height: 92px;
+		width: auto;
+	}
+
+	.home-title {
+		font-family: var(--font-sora), ui-sans-serif, sans-serif;
+		font-size: 66px;
+		font-weight: 700;
+		letter-spacing: -0.01em;
+		color: #8aa2ff;
+	}
+</style>

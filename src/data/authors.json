@@ -1,0 +1,68 @@
+[
+	{
+		"slug": "anuj-kumar-singh",
+		"name": "Anuj Kumar Singh",
+		"bio": "OSS Intern at OpenTeams. Works on Project Jupyter.",
+		"avatarUrl": "https://openteams.com/wp-content/uploads/2026/04/Anuj-Kumar-Singh.png"
+	},
+	{
+		"slug": "darshan-paudyal",
+		"name": "Darshan Paudyal",
+		"bio": "OSS Intern at OpenTeams. Works on Project Jupyter.",
+		"avatarUrl": "https://avatars.githubusercontent.com/u/127468609?v=4"
+	},
+	{
+		"slug": "khuyen-tran",
+		"name": "Khuyen Tran",
+		"bio": "Senior DevRel at OpenTeams. Writes about data science, MLOps, and open-source tooling.",
+		"avatarUrl": "https://openteams.com/wp-content/uploads/2024/11/Khuyen-Tran.png"
+	},
+	{
+		"slug": "adam-lewis",
+		"name": "Adam Lewis",
+		"bio": "Senior Software Engineer",
+		"avatarUrl": "https://openteams.com/wp-content/uploads/2026/04/avatar-adam-lewis-5157331f.jpg"
+	},
+	{
+		"slug": "brandon-geraci",
+		"name": "Brandon Geraci",
+		"bio": "Senior Software Engineer at OpenTeams. Officially writes software, unofficially whatever else the day needs.",
+		"avatarUrl": "https://openteams.com/wp-content/uploads/2026/04/Brandon-Geraci.png"
+	},
+	{
+		"slug": "johnny-bouder",
+		"name": "Johnny Bouder",
+		"bio": "Director of AI Experience",
+		"avatarUrl": "https://openteams.com/wp-content/uploads/2026/04/johnny-bouder.png"
+	},
+	{
+		"slug": "nick-byrne",
+		"name": "Nick Byrne",
+		"bio": "Senior Software Engineer",
+		"avatarUrl": "https://avatars.githubusercontent.com/u/55434794?v=4"
+	},
+	{
+		"slug": "amelia-thurdekoos",
+		"name": "Amelia (Mia) Thurdekoos",
+		"bio": "Technical Program Manager at OpenTeams",
+		"avatarUrl": "https://avatars.githubusercontent.com/u/223740535?v=4"
+	},
+	{
+		"slug": "guilherme-leobas",
+		"name": "Guilherme Leobas",
+		"bio": "Senior Software Engineer at OpenTeams. Works on PyTorch compiler and Numba.",
+		"avatarUrl": "https://avatars.githubusercontent.com/u/2712115?v=4"
+	},
+	{
+		"slug": "guido-imperiale",
+		"name": "Guido Imperiale",
+		"bio": "Staff Software Engineer at OpenTeams. Dask maintainer.",
+		"avatarUrl": "https://avatars.githubusercontent.com/u/6213168?v=4"
+	},
+	{
+		"slug": "michal-krassowski",
+		"name": "Michał Krassowski",
+		"bio": "Senior Software Engineer at OpenTeams. JupyterLab maintainer and Jupyter Distinguished Contributor.",
+		"avatarUrl": "https://avatars.githubusercontent.com/u/5832902?v=4"
+	}
+]

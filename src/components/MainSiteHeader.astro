@@ -1,0 +1,130 @@
+---
+// Top bar matching the openteams.com header: navy bar, white logo linking
+// to the main site, and the Solutions / Resources / Company dropdowns.
+// Blog-only controls (search, theme toggle) go in the slot.
+import { Icon } from "astro-iconset/components";
+import { MAIN_SITE_URL, mainSiteNav } from "../data/main-site-nav";
+---
+
+<header class="ot-header sticky top-0 z-100 border-b border-white/8 bg-[#000f3a] text-white">
+	<nav class="container-wide flex h-[81px] items-center gap-4 text-sm" aria-label="Main">
+		<a href={MAIN_SITE_URL} class="shrink-0" aria-label="OpenTeams home">
+			<img src="/openteams-logo-white.svg" alt="OpenTeams" width="180" height="50" class="block h-auto w-[130px] md:w-[180px]" />
+		</a>
+		<a
+			href="/engineering-blog"
+			class="hidden shrink-0 border-l border-white/25 pl-4 text-base sm:block font-medium text-white/75 transition-colors hover:text-white"
+		>
+			Engineering
+		</a>
+
+		<ul class="ml-auto hidden items-center lg:flex">
+			{
+				mainSiteNav.map((menu) => (
+					<li class="group relative">
+						<button
+							type="button"
+							class="flex cursor-pointer items-center gap-1.5 px-4 py-2 transition-colors group-hover:text-[#4d75fe] group-focus-within:text-[#4d75fe]"
+							aria-haspopup="true"
+						>
+							{menu.label}
+							<Icon name="ph:caret-down-fill" class="text-xs transition-transform group-hover:rotate-180" aria-hidden="true" />
+						</button>
+						<div class="invisible absolute top-full left-1/2 z-10 -translate-x-1/2 pt-2 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+							<div class="flex w-max flex-col gap-4 rounded-[13px] border border-white/8 bg-[#000f3a] p-5 shadow-xl">
+								{menu.groups.map((group) => (
+									<div>
+										{group.heading && <p class="mb-2 text-[13px] text-white/90">{group.heading}</p>}
+										<div class="flex gap-6">
+											{group.columns.map((col) => (
+												<div class="w-[200px]">
+													{col.heading && <p class="mb-1 text-xs text-white/80">{col.heading}</p>}
+													<ul>
+														{col.links.map((link) => (
+															<li>
+																<a
+																	href={link.url}
+																	class="flex items-start gap-3 rounded-lg px-2 py-3 transition-colors hover:bg-white/5"
+																>
+																	<Icon name={link.icon} class="mt-0.5 shrink-0 text-xl" aria-hidden="true" />
+																	<span>
+																		<span class="block text-sm font-medium">{link.label}</span>
+																		{link.description && (
+																			<span class="mt-1 block text-xs leading-snug text-white/85">{link.description}</span>
+																		)}
+																	</span>
+																</a>
+															</li>
+														))}
+													</ul>
+												</div>
+											))}
+										</div>
+									</div>
+								))}
+							</div>
+						</div>
+					</li>
+				))
+			}
+		</ul>
+		<span class="mx-6 hidden h-11 w-px bg-white lg:block" aria-hidden="true"></span>
+
+		<div class="ml-auto flex items-center gap-2 sm:gap-3 lg:ml-4">
+			<slot />
+			<button
+				type="button"
+				id="ot-menu-toggle"
+				class="flex size-9 cursor-pointer items-center justify-center text-2xl lg:hidden"
+				aria-label="Menu"
+				aria-expanded="false"
+				aria-controls="ot-mobile-menu"
+			>
+				<Icon name="ph:list" class="ot-menu-open" aria-hidden="true" />
+				<Icon name="ph:x" class="ot-menu-close hidden" aria-hidden="true" />
+			</button>
+		</div>
+	</nav>
+
+	<div id="ot-mobile-menu" class="hidden max-h-[calc(100vh-81px)] overflow-y-auto border-t border-white/8 lg:hidden">
+		<div class="container-wide flex flex-col gap-6 py-6">
+			{
+				mainSiteNav.map((menu) => (
+					<div>
+						<p class="mb-2 text-xs font-semibold tracking-[0.08em] text-white/60 uppercase">{menu.label}</p>
+						{menu.groups.flatMap((g) => g.columns.flatMap((c) => c.links)).map((link) => (
+							<a href={link.url} class="flex items-center gap-3 py-2 hover:text-[#4d75fe]">
+								<Icon name={link.icon} class="text-lg" aria-hidden="true" />
+								{link.label}
+							</a>
+						))}
+					</div>
+				))
+			}
+		</div>
+	</div>
+</header>
+
+<style is:global>
+	/* The bar is navy in both themes, so the blog search pill is restyled
+	   for a dark background. Below 961px the pill is already an icon. */
+	.ot-header .search-trigger { color: rgb(255 255 255 / 0.75); }
+	.ot-header .search-trigger:hover { color: #fff; }
+	@media (min-width: 961px) {
+		.ot-header .search-trigger { background: rgb(255 255 255 / 0.06); border-color: rgb(255 255 255 / 0.15); }
+		.ot-header .search-trigger:hover { border-color: #4d75fe; }
+		.ot-header .search-trigger kbd { background: transparent; border-color: rgb(255 255 255 / 0.2); color: rgb(255 255 255 / 0.7); }
+	}
+</style>
+
+<script>
+	const toggle = document.getElementById("ot-menu-toggle");
+	const panel = document.getElementById("ot-mobile-menu");
+	toggle?.addEventListener("click", () => {
+		const open = toggle.getAttribute("aria-expanded") !== "true";
+		toggle.setAttribute("aria-expanded", String(open));
+		panel?.classList.toggle("hidden", !open);
+		toggle.querySelector(".ot-menu-open")?.classList.toggle("hidden", open);
+		toggle.querySelector(".ot-menu-close")?.classList.toggle("hidden", !open);
+	});
+</script>
