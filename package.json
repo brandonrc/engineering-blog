@@ -17,7 +17,7 @@
 		"@iconify-json/ph": "1.2.2",
 		"@tailwindcss/vite": "4.3.3",
 		"astro": "7.3.5",
-		"astro-iconset": "0.0.4",
+		"astro-iconset": "0.0.6",
 		"mermaid-doodle": "0.1.1",
 		"tailwindcss": "4.3.3"
 	},
@@ -25,9 +25,9 @@
 		"@astrojs/check": "0.9.10",
 		"@axe-core/playwright": "4.13.0",
 		"@types/node": "25.9.8",
-		"playwright": "1.62.1",
+		"playwright": "1.63.0",
 		"typescript": "6.0.3",
-		"vitest": "4.1.11",
+		"vitest": "5.0.2",
 		"wrangler": "4.145.0"
 	}
 }
