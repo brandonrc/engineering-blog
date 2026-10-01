@@ -7,8 +7,8 @@ import CodeCopy from "../components/CodeCopy.astro";
 import ShareLinks from "../components/ShareLinks.astro";
 import PostTitle from "../components/PostTitle.astro";
 import { getPosts, type Post } from "../lib/posts";
-import ogImages from "../data/og-images.json";
 import { blogUrl } from "../lib/blog-path";
+import { authorRole } from "../lib/byline";
 
 export async function getStaticPaths() {
 	const posts = await getPosts();
@@ -20,11 +20,9 @@ const { Content } = await render(post.entry);
 const { title, excerpt, minutes, authors, topic } = post;
 const publishedDate = post.date;
 const hasDiagram = /^```mermaid\s*$/m.test(post.entry.body ?? "");
-const ogPath = (ogImages as Record<string, string>)[post.slug];
-const ogImage = ogPath ? blogUrl(ogPath) : undefined;
 ---
 
-<Base title={title} description={excerpt} image={ogImage} type="article">
+<Base title={title} description={excerpt} og={post.slug} type="article">
 	{hasDiagram && (
 		<link slot="head" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shantell+Sans:wght@400;500;600&display=swap" />
 	)}
@@ -54,7 +52,7 @@ const ogImage = ogPath ? blogUrl(ogPath) : undefined;
 								<div>
 									<div class="text-base leading-tight font-semibold group-hover:text-brand">{a.name}</div>
 									<div class="mt-0.5 text-sm leading-tight text-faint">
-										{a.bio.split(".")[0] || "OpenTeams"}
+										{authorRole(a)}
 									</div>
 								</div>
 							</a>

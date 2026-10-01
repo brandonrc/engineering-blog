@@ -7,9 +7,8 @@ import PostCard from "../components/PostCard.astro";
 import PostTitle from "../components/PostTitle.astro";
 import SubscribeBand from "../components/SubscribeBand.astro";
 import { getPosts, topicsOf } from "../lib/posts";
-import ogImages from "../data/og-images.json";
 import { blogUrl } from "../lib/blog-path";
-import { bylineNames } from "../lib/byline";
+import { authorRole, bylineNames } from "../lib/byline";
 
 const posts = await getPosts();
 const [featured, ...rest] = posts;
@@ -17,7 +16,7 @@ const side = rest.slice(0, 4);
 const grid = rest.slice(4);
 const allTags = topicsOf(posts);
 // A role line only fits a single author; co-written posts show just the time.
-const featuredRole = featured?.authors.length === 1 ? featured.authors[0].bio.split(".")[0] || "OpenTeams" : null;
+const featuredRole = featured?.authors.length === 1 ? authorRole(featured.authors[0]) : null;
 ---
 
 <style>
@@ -44,7 +43,7 @@ const featuredRole = featured?.authors.length === 1 ? featured.authors[0].bio.sp
 <Base
 	title="Engineering Blog"
 	description="Benchmarks, systems deep dives, and hard-won lessons from OpenTeams engineers."
-	image={blogUrl((ogImages as Record<string, string>).home)}
+	og="home"
 >
 	<section class="container-wide relative pt-11 pb-10">
 		<div class="hero-viz pointer-events-none absolute inset-0 hidden md:block" aria-hidden="true">

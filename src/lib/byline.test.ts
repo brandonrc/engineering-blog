@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { bylineNames } from "./byline";
+import { authorRole, bylineNames } from "./byline";
 
 const a = (name: string) => ({ name });
 
@@ -18,5 +18,15 @@ describe("bylineNames", () => {
 
 	it("lists three or more authors with commas and a final ampersand", () => {
 		expect(bylineNames([a("Alice"), a("Bob"), a("Carol")])).toBe("Alice, Bob & Carol");
+	});
+});
+
+describe("authorRole", () => {
+	it("takes the first sentence of the bio", () => {
+		expect(authorRole({ bio: "Engineer at Example. Writes about tests." })).toBe("Engineer at Example");
+	});
+
+	it("falls back to the team when there is no bio", () => {
+		expect(authorRole({ bio: "" })).toBe("OpenTeams");
 	});
 });

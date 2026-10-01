@@ -5,20 +5,23 @@ import DarbySearch from "../components/DarbySearch.astro";
 import MainSiteHeader from "../components/MainSiteHeader.astro";
 import { SITE_TAGLINE, SITE_TITLE, footerColumns, socialLinks } from "../data/site";
 import { blogUrl } from "../lib/blog-path";
+import ogImages from "../data/og-images.json";
 import "../styles/global.css";
 
 interface Props {
 	title?: string;
 	description?: string;
-	image?: string;
+	/** Share card key in og-images.json; pages without a card use the blog's. */
+	og?: string;
 	type?: "website" | "article";
 }
 
-const { title, description, image, type = "website" } = Astro.props;
+const { title, description, og = "home", type = "website" } = Astro.props;
 const fullTitle = title ? `${title} — ${SITE_TITLE}` : SITE_TITLE;
 const pageDescription = description || SITE_TAGLINE;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const ogImage = image ? new URL(image, Astro.site).href : undefined;
+const cards = ogImages as Record<string, string>;
+const ogImage = new URL(blogUrl(cards[og] ?? cards.home), Astro.site).href;
 ---
 
 <!doctype html>
@@ -34,9 +37,9 @@ const ogImage = image ? new URL(image, Astro.site).href : undefined;
 		<meta property="og:title" content={title ?? SITE_TITLE} />
 		<meta property="og:description" content={pageDescription} />
 		<meta property="og:url" content={canonical} />
-		{ogImage && <meta property="og:image" content={ogImage} />}
-		<meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
-		{ogImage && <meta name="twitter:image" content={ogImage} />}
+		<meta property="og:image" content={ogImage} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:image" content={ogImage} />
 		<link rel="alternate" type="application/rss+xml" title="OpenTeams Engineering Blog" href={blogUrl("/rss.xml")} />
 		<link rel="icon" type="image/svg+xml" href={blogUrl("/favicon.svg")} />
 		<Font cssVariable="--font-body" preload />

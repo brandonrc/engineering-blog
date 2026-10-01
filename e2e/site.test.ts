@@ -121,6 +121,15 @@ async function check(page: Page, path: string): Promise<string[]> {
 	);
 	problems.push(...broken.map((src) => `image did not load: ${src}`));
 
+	// Link previews need a share image that exists. It is an absolute
+	// production URL, so check the same path on the origin under test.
+	const ogImage = await page.getAttribute('meta[property="og:image"]', "content");
+	if (!ogImage) problems.push("no og:image");
+	else if (!(await fetch(ORIGIN + new URL(ogImage).pathname)).ok) problems.push(`og:image does not load: ${ogImage}`);
+	if (path.includes("/author/") && !ogImage?.includes(`/og-author-${path.split("/author/")[1].replace(/\/$/, "")}.png`)) {
+		problems.push(`author page share image is not the author's own card: ${ogImage}`);
+	}
+
 	problems.push(...(await a11yProblems(page)));
 
 	await page.setViewportSize({ width: 390, height: 844 });

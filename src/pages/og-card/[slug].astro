@@ -4,13 +4,23 @@
 // under public/og/. Dev only: production builds emit no card pages.
 import { Font } from "astro:assets";
 import { blogUrl } from "../../lib/blog-path";
-import { getPosts } from "../../lib/posts";
+import { authorsOf, getPosts } from "../../lib/posts";
+import { authorRole } from "../../lib/byline";
 
 export async function getStaticPaths() {
 	if (import.meta.env.PROD) return [];
 	const posts = await getPosts();
 	return [
 		{ params: { slug: "home" }, props: { title: "", byline: "", avatar: null } },
+		// Author pages: name as the title, role and post count as the byline.
+		...authorsOf(posts).map(({ author, posts: written }) => ({
+			params: { slug: `author-${author.slug}` },
+			props: {
+				title: author.name,
+				byline: `${authorRole(author)} · ${written.length} ${written.length === 1 ? "post" : "posts"}`,
+				avatar: author.avatarUrl,
+			},
+		})),
 		...posts.map((p) => ({
 			params: { slug: p.slug },
 			props: {
