@@ -1,4 +1,17 @@
-# OpenTeams Engineering Blog
+<p align="center">
+  <img src="https://openteams.com/sandbox-4af53e-engineering-blog/og/og-home.png" alt="OpenTeams Engineering Blog" width="720">
+</p>
+
+<p align="center">
+  <a href="https://github.com/openteams-ai/engineering-blog-v2/actions/workflows/ci.yml"><img src="https://github.com/openteams-ai/engineering-blog-v2/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="https://github.com/openteams-ai/engineering-blog-v2/actions/workflows/deploy.yml"><img src="https://github.com/openteams-ai/engineering-blog-v2/actions/workflows/deploy.yml/badge.svg?branch=main" alt="Deploy"></a>
+</p>
+
+<p align="center">
+  <a href="https://openteams.com/sandbox-4af53e-engineering-blog/"><b>openteams.com/sandbox-4af53e-engineering-blog</b></a>
+</p>
+
+## Develop
 
 ```bash
 npm install
@@ -8,19 +21,36 @@ npm test             # unit tests
 npm run test:e2e     # browser tests against the build
 ```
 
-## New post
+## Write a post
 
-Add `src/content/posts/<name>.md` with `title`, `slug`, `date`, `authors`,
-`categories: [Engineering]` and `meta_description` in the frontmatter, and
-images under `src/content/posts/images/`. Authors are in
-`src/data/authors.json`.
+1. Add `src/content/posts/<name>.md`:
 
-Then add:
+   ```yaml
+   ---
+   title: My Post
+   slug: my-post
+   date: 2026-10-01
+   authors:
+     - author-slug        # from src/data/authors.json
+   categories:
+     - Engineering
+   meta_description: One sentence for search and link previews.
+   ---
+   ```
 
-- its topic in `src/data/topics.ts`
-- card art in `src/components/PostArt.astro`, listed in `BlogThumb.astro`
-- a share image in `public/og/og-<slug>.png`, listed in `src/data/og-images.json`
+   Images go in `src/content/posts/images/`.
+
+2. Add its topic in `src/data/topics.ts`.
+3. Draw its card art in `src/components/PostArt.astro` and list it in `BlogThumb.astro`.
+4. Capture its share image with the dev server running, then list it in `src/data/og-images.json`:
+
+   ```bash
+   npm run capture-og -- my-post
+   ```
 
 ## Deploy
 
-Merging to `main` deploys to openteams.com; pull requests get a preview link.
+| Event | Result |
+| --- | --- |
+| Pull request | Preview link posted on the PR |
+| Merge to `main` | Live on openteams.com |
