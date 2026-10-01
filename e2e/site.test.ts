@@ -282,10 +282,15 @@ describe.concurrent("site", () => {
 		expect(diagramPage).toBeDefined();
 		const result = await withPage(async (page) => {
 			await open(page, diagramPage!);
-			const diagram = page.locator(".doodle-wrap").first();
+			// The page wires up click and Enter only after every diagram has
+			// rendered, and marks each one role="button" when it does; clicking
+			// before that opens nothing.
+			const diagram = page.locator('.doodle-wrap[role="button"]').first();
+			await diagram.waitFor();
 			const inline = (await diagram.locator("svg").first().boundingBox())!;
 			const dialog = page.locator("dialog.diagram-zoom");
 			await diagram.click();
+			await dialog.locator("svg").first().waitFor();
 			const zoomed = (await dialog.locator("svg").first().boundingBox())!;
 			const openAfterClick = await dialog.evaluate((d: HTMLDialogElement) => d.open);
 			const zoomedVisible = await dialog.locator("svg").first().isVisible();
