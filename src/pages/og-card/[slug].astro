@@ -99,6 +99,9 @@ const grid = (m: number) =>
 
 <style define:vars={{ titleSize: `${titleSize}px` }}>
 	.card {
+		/* Padding counts inside the 1200x630 box, so the byline is not pushed
+		   below the captured area. */
+		box-sizing: border-box;
 		position: fixed;
 		top: 0;
 		left: 0;
