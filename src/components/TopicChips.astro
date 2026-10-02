@@ -1,0 +1,26 @@
+---
+import { blogUrl } from "../lib/blog-path";
+import type { topicsOf } from "../lib/posts";
+
+// `active` is the slug of the topic being shown; omit it for "All".
+// Chips are plain links so they work without JS; the home page upgrades
+// them to filter in place via `data-topic`.
+const { topics, active } = Astro.props as { topics: ReturnType<typeof topicsOf>; active?: string };
+
+const chips = [{ slug: "", label: "All", href: blogUrl("/") }].concat(
+	topics.map((t) => ({ slug: t.slug, label: t.label, href: blogUrl(`/tag/${t.slug}`) })),
+);
+---
+
+<nav aria-label="Topics" class="flex flex-wrap gap-2">
+	{chips.map((c) => (
+		<a
+			href={c.href}
+			data-topic={c.slug}
+			aria-current={c.slug === (active ?? "") ? "page" : undefined}
+			class="rounded-full border border-border px-4 py-2 text-[13px] leading-none font-semibold text-muted transition-colors hover:border-brand hover:text-brand aria-[current=page]:border-text aria-[current=page]:bg-text aria-[current=page]:text-bg"
+		>
+			{c.label}
+		</a>
+	))}
+</nav>
