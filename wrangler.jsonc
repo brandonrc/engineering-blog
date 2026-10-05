@@ -8,6 +8,8 @@
 	"workers_dev": true,
 	"preview_urls": true,
 	"assets": {
-		"directory": "./dist"
+		"directory": "./dist",
+		// An address with no page gets the blog's own not-found page (pages/404.astro).
+		"not_found_handling": "404-page"
 	}
 }
