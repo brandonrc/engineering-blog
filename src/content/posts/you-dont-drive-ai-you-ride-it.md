@@ -1,7 +1,7 @@
 ---
 title: You Don't Drive AI. You Ride It.
 slug: you-dont-drive-ai-you-ride-it
-date: 2026-06-19T10:59:33-07:00
+date: 2026-07-09T14:37:12-07:00
 authors:
 - amelia-thurdekoos
 categories:

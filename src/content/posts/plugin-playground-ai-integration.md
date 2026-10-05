@@ -1,7 +1,7 @@
 ---
 title: Plugin Playground AI Integration for Faster Plugin Prototyping
 slug: plugin-playground-ai-integration
-date: 2026-04-16T03:46:49+05:30
+date: 2026-04-24T19:23:05-07:00
 authors:
 - anuj-kumar-singh
 categories:

@@ -1,7 +1,7 @@
 ---
 title: Sandboxing Code Mode for Local LLM Agents
 slug: code-mode-sandboxing-local-llms
-date: 2026-05-01T17:26:56-03:00
+date: 2026-05-04T20:01:31-07:00
 authors:
 - nick-byrne
 - khuyen-tran

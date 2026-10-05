@@ -6,6 +6,11 @@ export const SITE_TITLE = "OpenTeams";
 export const TITLE_ENDING = "OpenTeams | AI you own";
 /** The main site's Google Analytics property, so blog visits are counted with it. */
 export const ANALYTICS_ID = "G-P5T85K8QL2";
+/**
+ * The clock dates are printed on. It is the one the main site used, so a
+ * post keeps the date it had there wherever the site is built.
+ */
+export const DATE_ZONE = "America/Los_Angeles";
 export const SITE_TAGLINE = "Building the Infrastructure for a Distributed AI Economy";
 
 const u = (path: string) => `${MAIN_SITE_URL}${path}`;
@@ -15,8 +20,6 @@ export const footerColumns = [
 		heading: "Products",
 		links: [
 			{ label: "AI/ML Products", url: u("/ai-ml-products/") },
-			{ label: "AI Readiness", url: u("/ai-readiness-assessment/") },
-			{ label: "Open SaaS", url: u("/open-saas/") },
 			{ label: "Capabilities", url: u("/capabilities/") },
 		],
 	},
@@ -35,7 +38,7 @@ export const footerColumns = [
 			{ label: "Blog", url: u("/blog/") },
 			{ label: "Engineering Blog", url: pageUrl() },
 			{ label: "Case Studies", url: u("/case-studies/") },
-			{ label: "Contact", url: u("/contact/") },
+			{ label: "Contact", url: u("/contact-us/") },
 		],
 	},
 ];

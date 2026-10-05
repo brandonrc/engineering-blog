@@ -1,7 +1,7 @@
 ---
 title: 'pixi on UBI-micro: A Safer, Smaller Multi-Stage Container Build'
 slug: pixi-ubi-micro-containers
-date: 2026-06-04T22:24:22-05:00
+date: 2026-07-24T05:21:21-07:00
 authors:
 - brandon-geraci
 categories:
