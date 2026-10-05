@@ -1,7 +1,7 @@
 ---
 title: 'From Skill to Agent: When a Text File Isn''t Enough'
 slug: from-skill-to-agent
-date: 2026-04-09T11:24:22-05:00
+date: 2026-04-21T21:05:06-07:00
 authors:
 - adam-lewis
 categories:

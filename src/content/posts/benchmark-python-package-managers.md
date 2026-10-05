@@ -1,7 +1,7 @@
 ---
 title: We Benchmarked 6 Python Package Managers on a Real ML Project. Here's What We Found.
 slug: benchmark-python-package-managers
-date: 2026-04-16T13:39:23-05:00
+date: 2026-04-22T06:07:27-07:00
 authors:
 - brandon-geraci
 categories:

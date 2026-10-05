@@ -1,7 +1,7 @@
 ---
 title: Slow Down — Simple Lessons for Guiding AI and Shipping Better Code
 slug: slow-down-ship-better-code
-date: 2026-04-19T12:48:57Z
+date: 2026-04-23T01:32:20-07:00
 authors:
 - johnny-bouder
 categories:

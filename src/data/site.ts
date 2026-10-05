@@ -6,6 +6,11 @@ export const SITE_TITLE = "OpenTeams";
 export const TITLE_ENDING = "OpenTeams | AI you own";
 /** The main site's Google Analytics property, so blog visits are counted with it. */
 export const ANALYTICS_ID = "G-P5T85K8QL2";
+/**
+ * The clock dates are printed on. It is the one the main site used, so a
+ * post keeps the date it had there wherever the site is built.
+ */
+export const DATE_ZONE = "America/Los_Angeles";
 export const SITE_TAGLINE = "Building the Infrastructure for a Distributed AI Economy";
 
 const u = (path: string) => `${MAIN_SITE_URL}${path}`;

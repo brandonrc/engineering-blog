@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro";
+import { DATE_ZONE } from "../data/site";
 import { pageUrl } from "../lib/blog-path";
 import { bylineNames } from "../lib/byline";
 import { getPosts } from "../lib/posts";
@@ -12,7 +13,7 @@ export const GET: APIRoute = async () => {
 		section: p.topic?.label ?? "Engineering",
 		byline: bylineNames(p.authors),
 		faces: p.authors.map((a) => ({ name: a.name, src: a.avatarUrl })),
-		date: p.date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }),
+		date: p.date.toLocaleDateString("en-US", { timeZone: DATE_ZONE, year: "numeric", month: "short", day: "numeric" }),
 		url: pageUrl(`/${p.slug}`),
 		content: plainText(p.entry.body ?? ""),
 	}));
