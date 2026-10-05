@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 const { author, posts } = Astro.props as { author: Author; posts: Post[] };
 ---
 
-<Base title={`${author.name} — Engineering Blog`} description={author.bio || undefined} og={`author-${author.slug}`}>
+<Base title={`${author.name} | Engineering Blog`} description={author.bio || undefined} og={`author-${author.slug}`}>
 	<section class="container-wide pt-16 pb-10">
 		<a href={pageUrl()} class="cat-label">&larr; Engineering Blog</a>
 		<div class="mt-5 flex items-center gap-5">

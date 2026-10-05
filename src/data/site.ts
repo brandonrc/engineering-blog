@@ -2,6 +2,8 @@ import { pageUrl } from "../lib/blog-path";
 import { MAIN_SITE_URL } from "./main-site-nav";
 
 export const SITE_TITLE = "OpenTeams";
+/** How every page title ends, the same as on the main site. */
+export const TITLE_ENDING = "OpenTeams | AI you own";
 export const SITE_TAGLINE = "Building the Infrastructure for a Distributed AI Economy";
 
 const u = (path: string) => `${MAIN_SITE_URL}${path}`;

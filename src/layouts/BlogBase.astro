@@ -3,7 +3,7 @@ import { Font } from "astro:assets";
 import { Icon } from "astro-iconset/components";
 import DarbySearch from "../components/DarbySearch.astro";
 import MainSiteHeader from "../components/MainSiteHeader.astro";
-import { SITE_TAGLINE, SITE_TITLE, footerColumns, socialLinks } from "../data/site";
+import { SITE_TAGLINE, SITE_TITLE, TITLE_ENDING, footerColumns, socialLinks } from "../data/site";
 import { blogUrl } from "../lib/blog-path";
 import { ogCards, ogFile } from "../lib/og-cards";
 import { getPosts } from "../lib/posts";
@@ -18,7 +18,7 @@ interface Props {
 }
 
 const { title, description, og = "home", type = "website" } = Astro.props;
-const fullTitle = title ? `${title} — ${SITE_TITLE}` : SITE_TITLE;
+const fullTitle = title ? `${title} | ${TITLE_ENDING}` : TITLE_ENDING;
 const pageDescription = description || SITE_TAGLINE;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const cards = ogCards(await getPosts());
