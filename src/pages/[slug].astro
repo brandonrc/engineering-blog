@@ -7,7 +7,7 @@ import CodeCopy from "../components/CodeCopy.astro";
 import ShareLinks from "../components/ShareLinks.astro";
 import PostTitle from "../components/PostTitle.astro";
 import { getPosts, type Post } from "../lib/posts";
-import { blogUrl } from "../lib/blog-path";
+import { pageUrl } from "../lib/blog-path";
 import { authorRole } from "../lib/byline";
 
 export async function getStaticPaths() {
@@ -22,7 +22,7 @@ const publishedDate = post.date;
 const hasDiagram = /^```mermaid\s*$/m.test(post.entry.body ?? "");
 ---
 
-<Base title={title} description={excerpt} og={post.slug} type="article">
+<Base title={title} description={excerpt} og={post.slug} type="article" article={{ published: publishedDate, authors }}>
 	{hasDiagram && (
 		<link slot="head" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shantell+Sans:wght@400;500;600&display=swap" />
 	)}
@@ -37,10 +37,10 @@ const hasDiagram = /^```mermaid\s*$/m.test(post.entry.body ?? "");
 			<article class="mx-auto max-w-(--post-width) px-6 pt-16">
 				<header class="mb-8">
 					<div class="flex items-center gap-3">
-						<a href={blogUrl("/")} class="cat-label hover:underline">Engineering Blog</a>
+						<a href={pageUrl()} class="cat-label hover:underline">Engineering Blog</a>
 						{topic && (
 							<a
-								href={blogUrl(`/tag/${topic.slug}`)}
+								href={pageUrl(`/tag/${topic.slug}`)}
 								class="rounded-full border border-border px-2.5 py-1 text-[11px] font-semibold tracking-wide text-muted uppercase hover:border-brand hover:text-brand"
 							>
 								{topic.label}
@@ -53,7 +53,7 @@ const hasDiagram = /^```mermaid\s*$/m.test(post.entry.body ?? "");
 					{excerpt && <p class="mt-4 text-lg leading-relaxed text-muted">{excerpt}</p>}
 					<div class="mt-7 flex flex-wrap items-center gap-x-8 gap-y-4 border-y border-border py-4">
 						{authors.map((a) => (
-							<a href={blogUrl(`/author/${a.slug}`)} class="group flex items-center gap-2.5">
+							<a href={pageUrl(`/author/${a.slug}`)} class="group flex items-center gap-2.5">
 								<Avatar name={a.name} src={a.avatarUrl} size={38} />
 								<div>
 									<div class="text-base leading-tight font-semibold group-hover:text-brand">{a.name}</div>
@@ -84,10 +84,10 @@ const hasDiagram = /^```mermaid\s*$/m.test(post.entry.body ?? "");
 				<aside class="mx-auto flex max-w-[680px] flex-wrap items-start justify-center gap-x-12 gap-y-10 px-6 pt-4 text-center" aria-label="About the authors">
 					{authors.map((a) => (
 						<div class:list={["flex flex-col items-center", authors.length > 1 && "w-[280px]"]}>
-							<a href={blogUrl(`/author/${a.slug}`)} aria-label={`Posts by ${a.name}`}>
+							<a href={pageUrl(`/author/${a.slug}`)} aria-label={`Posts by ${a.name}`}>
 								<Avatar name={a.name} src={a.avatarUrl} size={72} />
 							</a>
-							<a href={blogUrl(`/author/${a.slug}`)} class="author-name mt-4 hover:text-brand">{a.name}</a>
+							<a href={pageUrl(`/author/${a.slug}`)} class="author-name mt-4 hover:text-brand">{a.name}</a>
 							{a.bio && <p class="mt-2 max-w-[560px] leading-relaxed text-muted">{a.bio}</p>}
 						</div>
 					))}

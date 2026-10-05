@@ -3,10 +3,11 @@ import { Font } from "astro:assets";
 import { Icon } from "astro-iconset/components";
 import DarbySearch from "../components/DarbySearch.astro";
 import MainSiteHeader from "../components/MainSiteHeader.astro";
-import { SITE_TAGLINE, SITE_TITLE, footerColumns, socialLinks } from "../data/site";
-import { blogUrl } from "../lib/blog-path";
+import { ANALYTICS_ID, SITE_TAGLINE, SITE_TITLE, TITLE_ENDING, footerColumns, socialLinks } from "../data/site";
+import { blogUrl, pageUrl } from "../lib/blog-path";
 import { ogCards, ogFile } from "../lib/og-cards";
-import { getPosts } from "../lib/posts";
+import { getPosts, type Author } from "../lib/posts";
+import { pageSchema } from "../lib/schema";
 import "../styles/global.css";
 
 interface Props {
@@ -15,15 +16,34 @@ interface Props {
 	/** Share card key (lib/og-cards.ts); pages without a card use the blog's. */
 	og?: string;
 	type?: "website" | "article";
+	/** Set on a post: its date and authors, for search engines. */
+	article?: { published: Date; authors: Author[] };
 }
 
-const { title, description, og = "home", type = "website" } = Astro.props;
-const fullTitle = title ? `${title} — ${SITE_TITLE}` : SITE_TITLE;
+const { title, description, og = "home", type = "website", article } = Astro.props;
+const fullTitle = title ? `${title} | ${TITLE_ENDING}` : TITLE_ENDING;
 const pageDescription = description || SITE_TAGLINE;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const cards = ogCards(await getPosts());
 const card = cards.find((c) => c.key === og) ?? cards[0];
 const ogImage = new URL(blogUrl(ogFile(card)), Astro.site).href;
+// "<" is escaped so no text in the data can close the script element early.
+const schema = JSON.stringify(
+	pageSchema({
+		url: canonical,
+		article: article && {
+			title: title ?? "",
+			description: pageDescription,
+			published: article.published,
+			image: ogImage,
+			authors: article.authors.map((author) => ({
+				name: author.name,
+				bio: author.bio,
+				url: new URL(pageUrl(`/author/${author.slug}`), Astro.site).href,
+			})),
+		},
+	}),
+).replace(/</g, "\\u003c");
 ---
 
 <!doctype html>
@@ -40,13 +60,29 @@ const ogImage = new URL(blogUrl(ogFile(card)), Astro.site).href;
 		<meta property="og:description" content={pageDescription} />
 		<meta property="og:url" content={canonical} />
 		<meta property="og:image" content={ogImage} />
+		{article && <meta property="article:published_time" content={article.published.toISOString()} />}
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:image" content={ogImage} />
 		<link rel="alternate" type="application/rss+xml" title="OpenTeams Engineering Blog" href={blogUrl("/rss.xml")} />
 		<link rel="icon" type="image/svg+xml" href={blogUrl("/favicon.svg")} />
+		<script is:inline type="application/ld+json" set:html={schema} />
 		<Font cssVariable="--font-body" preload />
 		<Font cssVariable="--font-post" preload />
 		<Font cssVariable="--font-mono" />
+		{/* Google Analytics: built pages only, so local development is not counted. */}
+		{import.meta.env.PROD && (
+			<>
+				<script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ANALYTICS_ID}`}></script>
+				<script is:inline define:vars={{ ANALYTICS_ID }}>
+					window.dataLayer = window.dataLayer || [];
+					function gtag() {
+						dataLayer.push(arguments);
+					}
+					gtag("js", new Date());
+					gtag("config", ANALYTICS_ID);
+				</script>
+			</>
+		)}
 		<slot name="head" />
 		<style is:global>
 			/* Moon/sun toggle icon follows the effective theme. */

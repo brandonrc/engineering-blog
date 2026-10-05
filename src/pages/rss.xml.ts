@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { BLOG_PATH } from "../lib/blog-path";
+import { pageUrl } from "../lib/blog-path";
 import { getPosts } from "../lib/posts";
 
 function escapeXml(value: string): string {
@@ -11,11 +11,10 @@ function escapeXml(value: string): string {
 }
 
 export const GET: APIRoute = async ({ site }) => {
-	const base = new URL(BLOG_PATH, site).href;
 	const items = (await getPosts())
 		.slice(0, 20)
 		.map((post) => {
-			const postUrl = `${base}/${post.slug}`;
+			const postUrl = new URL(pageUrl(`/${post.slug}`), site).href;
 			return `    <item>
       <title>${escapeXml(post.title)}</title>
       <link>${postUrl}</link>
@@ -31,7 +30,7 @@ export const GET: APIRoute = async ({ site }) => {
 <rss version="2.0">
   <channel>
     <title>OpenTeams Engineering Blog</title>
-    <link>${base}</link>
+    <link>${new URL(pageUrl(), site).href}</link>
     <description>Benchmarks, systems deep dives, and hard-won lessons from OpenTeams engineers.</description>
 ${items}
   </channel>

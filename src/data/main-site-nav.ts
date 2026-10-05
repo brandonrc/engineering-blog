@@ -2,7 +2,7 @@
 // presents the same top bar as the main site. Links are absolute because
 // these pages live on the main site, not in this CMS.
 
-import { BLOG_PATH } from "../lib/blog-path";
+import { pageUrl } from "../lib/blog-path";
 
 export const MAIN_SITE_URL = "https://openteams.com";
 
@@ -79,7 +79,7 @@ export const mainSiteNav: NavMenu[] = [
 					{
 						links: [
 							{ label: "OpenTeams Blog", url: u("/blog/"), icon: "ph:newspaper" },
-							{ label: "Engineering Blog", url: BLOG_PATH, icon: "ph:pen-nib" },
+							{ label: "Engineering Blog", url: pageUrl(), icon: "ph:pen-nib" },
 							{ label: "Case Studies", url: u("/case-studies/"), icon: "ph:notepad" },
 						],
 					},

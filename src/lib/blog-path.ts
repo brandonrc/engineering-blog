@@ -4,5 +4,12 @@
  */
 export const BLOG_PATH = "/sandbox-4af53e-engineering-blog";
 
-/** Absolute URL path for a page or file inside the blog. */
+/** Absolute URL path for a file inside the blog. */
 export const blogUrl = (path = "") => `${BLOG_PATH}${path}`;
+
+/**
+ * Absolute URL path for a page inside the blog; no argument is the blog's
+ * home. Pages are served with a trailing slash and asking without one costs
+ * a redirect, so every link to a page carries it.
+ */
+export const pageUrl = (path = "") => `${BLOG_PATH}${path}/`;

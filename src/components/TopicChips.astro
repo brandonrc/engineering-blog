@@ -1,5 +1,5 @@
 ---
-import { blogUrl } from "../lib/blog-path";
+import { pageUrl } from "../lib/blog-path";
 import type { topicsOf } from "../lib/posts";
 
 // `active` is the slug of the topic being shown; omit it for "All".
@@ -7,8 +7,8 @@ import type { topicsOf } from "../lib/posts";
 // them to filter in place via `data-topic`.
 const { topics, active } = Astro.props as { topics: ReturnType<typeof topicsOf>; active?: string };
 
-const chips = [{ slug: "", label: "All", href: blogUrl("/") }].concat(
-	topics.map((t) => ({ slug: t.slug, label: t.label, href: blogUrl(`/tag/${t.slug}`) })),
+const chips = [{ slug: "", label: "All", href: pageUrl() }].concat(
+	topics.map((t) => ({ slug: t.slug, label: t.label, href: pageUrl(`/tag/${t.slug}`) })),
 );
 ---
 

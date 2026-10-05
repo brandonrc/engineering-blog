@@ -171,10 +171,10 @@
    ============================================================ */
 
 .blog-theme {
-	/* Brand guidelines type: Inter for nav and cards; code keeps Fira Code.
-	   Post titles (on the post and on cards) and article text are set
-	   in IBM Plex Sans (--font-post). Scoped here so the main site is
-	   untouched. */
+	/* Brand guidelines type: Inter for nav and cards, card titles included;
+	   code keeps Fira Code. On a post page the title and the article text
+	   are set in IBM Plex Sans (--font-post). Scoped here so the main site
+	   is untouched. */
 	--font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 	--font-display: var(--font-post), var(--font-body), ui-sans-serif, system-ui, sans-serif;
 	--font-serif: var(--font-post), var(--font-body), ui-sans-serif, system-ui, sans-serif;
@@ -462,6 +462,5 @@
 
 	.blog-theme .post-title-link {
 		@apply transition-colors hover:text-brand;
-		font-family: var(--font-display);
 	}
 }
