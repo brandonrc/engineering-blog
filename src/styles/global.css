@@ -171,12 +171,12 @@
    ============================================================ */
 
 .blog-theme {
-	/* Brand guidelines type: Inter for nav, cards and post titles; code
-	   keeps Fira Code. Article text and its section headings are set in
-	   IBM Plex Sans (--font-post). Scoped here so the main site is
-	   untouched. */
+	/* Brand guidelines type: Inter for nav and cards, card titles included;
+	   code keeps Fira Code. On a post page the title and the article text
+	   are set in IBM Plex Sans (--font-post). Scoped here so the main site
+	   is untouched. */
 	--font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
-	--font-display: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+	--font-display: var(--font-post), var(--font-body), ui-sans-serif, system-ui, sans-serif;
 	--font-serif: var(--font-post), var(--font-body), ui-sans-serif, system-ui, sans-serif;
 	--font-header: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 	/* Background and surface inherit the main site's values so the blog
@@ -208,7 +208,7 @@
 	}
 
 	.blog-theme .editorial-content :where(h1, h2, h3, h4, h5, h6) {
-		font-family: var(--font-serif);
+		font-family: var(--font-display);
 		scroll-margin-top: 96px;
 	}
 
