@@ -1,8 +1,9 @@
 ---
 // Hand-made minimal headline art, one vignette per post. Every label and
 // number comes from the post itself. All draw in a 720x380 viewBox and
-// scale to any card size. Labels render in Inter (--font-header) unless a
-// card picks Fira Code or IBM Plex Sans.
+// scale to any card size. Labels are set in Fira Code on cards that show
+// code (a command, a file name, an identifier), IBM Plex Sans on the rest.
+// Fira Code is loaded at 400 and 500 only, so its labels stop at 500.
 //
 // Color system (Atlassian-style, restrained): four background families
 // rotate across the cards -- soft blue tint, light green tint, peach tint, solid
@@ -24,7 +25,6 @@ interface Props {
 import { blogUrl } from "../lib/blog-path";
 
 const { slug } = Astro.props;
-const mono = "var(--font-header)"; // Inter, same as the nav
 const code = "var(--font-mono)"; // Fira Code, same as code blocks
 const plex = "var(--font-post)"; // IBM Plex Sans, same as post titles
 const navy = "#091e42";
@@ -80,31 +80,31 @@ const sparkle = (x: number, y: number, r: number) =>
 {slug === "pixi-ubi-micro-containers" && (
 	<svg viewBox="0 0 720 380" class="h-full w-full" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Multi-stage build: full UBI builder shrinking to an ubi-micro runtime">
 		<rect x="-300" y="-300" width="1320" height="980" fill={peach}/>
-		<g font-family={mono}>
+		<g font-family={code}>
 			<rect x="60" y="50" width="230" height="240" rx="16" fill="#ffffff"/>
-			<text x="175" y="92" text-anchor="middle" font-size="24" font-weight="600" fill={navy}>ubi9/ubi</text>
+			<text x="175" y="92" text-anchor="middle" font-size="24" font-weight="500" fill={navy}>ubi9/ubi</text>
 			<rect x="84" y="112" width="182" height="22" rx="6" fill={peachSoft}/>
 			<rect x="84" y="142" width="182" height="22" rx="6" fill={peachSoft}/>
 			<rect x="84" y="172" width="140" height="22" rx="6" fill={peachSoft}/>
 			<rect x="84" y="202" width="182" height="22" rx="6" fill={peachSoft}/>
 			<rect x="84" y="232" width="182" height="22" rx="6" fill={gold}/>
-			<text x="175" y="332" text-anchor="middle" font-size="30" font-weight="700" fill={navy}>803 MB</text>
+			<text x="175" y="332" text-anchor="middle" font-size="30" font-weight="500" fill={navy}>803 MB</text>
 			<text x="175" y="360" text-anchor="middle" font-size="17" fill={peachInk}>188 packages</text>
 		</g>
 		<image href={blogUrl("/pixi-logo.webp")} x="326" y="94" width="84" height="64"/>
 		<path d="M310 195 H406" stroke={navy} stroke-width="4" stroke-linecap="round"/>
 		<path d="M398 184 L416 195 L398 206 Z" fill={navy}/>
-		<g font-family={mono}>
+		<g font-family={code}>
 			<g transform="translate(505 42)">
 				<circle r="22" fill={check}/>
 				<path d="M-9 0 L-3 6 L10 -8" stroke="#ffffff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 			</g>
-			<text x="540" y="50" font-size="20" fill={green} font-weight="600">356 &#8594; 16</text>
+			<text x="540" y="50" font-size="20" fill={green} font-weight="500">356 -&gt; 16</text>
 			<rect x="440" y="110" width="190" height="180" rx="16" fill="#ffffff"/>
-			<text x="535" y="152" text-anchor="middle" font-size="24" font-weight="600" fill={navy}>ubi-micro</text>
+			<text x="535" y="152" text-anchor="middle" font-size="24" font-weight="500" fill={navy}>ubi-micro</text>
 			<rect x="464" y="176" width="142" height="22" rx="6" fill={gold}/>
 			<rect x="464" y="206" width="100" height="22" rx="6" fill={peachSoft}/>
-			<text x="535" y="332" text-anchor="middle" font-size="30" font-weight="700" fill={navy}>511 MB</text>
+			<text x="535" y="332" text-anchor="middle" font-size="30" font-weight="500" fill={navy}>511 MB</text>
 			<text x="535" y="360" text-anchor="middle" font-size="17" fill={peachInk}>22 packages</text>
 		</g>
 	</svg>
@@ -113,8 +113,8 @@ const sparkle = (x: number, y: number, r: number) =>
 {slug === "benchmark-python-package-managers" && (
 	<svg viewBox="0 0 720 380" class="h-full w-full" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Environment recreate times across six package managers">
 		<rect x="-300" y="-300" width="1320" height="980" fill={solidBlue}/>
-		<g font-family={mono} font-size="22">
-			<text x="64" y="52" font-size="19" fill="#cfe1fb">env recreate, same ML project</text>
+		<g font-family={code} font-size="20">
+			<text x="64" y="52" font-size="18" fill="#cfe1fb">env recreate, same ML project</text>
 			{[
 				{ name: "uv", t: "2.1s", w: 14, y: 74, hot: true },
 				{ name: "pixi", t: "21.8s", w: 72, y: 122, hot: true },
@@ -126,7 +126,7 @@ const sparkle = (x: number, y: number, r: number) =>
 				<>
 					<text x="150" y={b.y + 21} text-anchor="end" fill="#ffffff">{b.name}</text>
 					<rect x="166" y={b.y} width={b.w} height="28" rx="7" fill="#ffffff" opacity={b.hot ? 1 : 0.35}/>
-					<text x={166 + b.w + 14} y={b.y + 21} fill={b.hot ? "#ffffff" : "#cfe1fb"} font-weight={b.hot ? "700" : "400"}>{b.t}</text>
+					<text x={166 + b.w + 14} y={b.y + 21} fill={b.hot ? "#ffffff" : "#cfe1fb"} font-weight={b.hot ? "500" : "400"}>{b.t}</text>
 				</>
 			))}
 		</g>
@@ -136,7 +136,7 @@ const sparkle = (x: number, y: number, r: number) =>
 {slug === "best-code-reviews-say-less" && (
 	<svg viewBox="0 0 720 380" class="h-full w-full" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Forty review comments filtered down to the three that matter">
 		<rect x="-300" y="-300" width="1320" height="980" fill={lightGreen}/>
-		<g font-family={mono}>
+		<g font-family={plex}>
 			{[60, 106, 152, 198, 244].map((y, i) => (
 				<g opacity={0.6 + i * 0.02}>
 					<rect x="70" y={y} width="240" height="38" rx="12" fill="#ffffff"/>
@@ -162,7 +162,7 @@ const sparkle = (x: number, y: number, r: number) =>
 {slug === "what-i-learned-making-a-local-llm-do-real-work" && (
 	<svg viewBox="0 0 720 380" class="h-full w-full" preserveAspectRatio="xMidYMid meet" role="img" aria-label="A local model passing evals, with a caveat">
 		<rect x="-300" y="-300" width="1320" height="980" fill={darkNavy}/>
-		<g font-family={mono}>
+		<g font-family={code}>
 			<rect x="64" y="70" width="290" height="220" rx="14" fill="#0b1c44"/>
 			<circle cx="92" cy="98" r="5" fill="#2c3d6e"/><circle cx="112" cy="98" r="5" fill="#2c3d6e"/><circle cx="132" cy="98" r="5" fill="#2c3d6e"/>
 			<text x="88" y="150" font-size="20" fill="#8aa2ff">$ llama-server</text>
@@ -170,7 +170,7 @@ const sparkle = (x: number, y: number, r: number) =>
 			<text x="88" y="222" font-size="20" fill={greenOnNavy}>local &#183; no cloud</text>
 			<g>
 				<rect x="390" y="70" width="270" height="200" rx="14" fill="#ffffff"/>
-				<text x="416" y="110" font-size="22" fill={navy} font-weight="600">evals</text>
+				<text x="416" y="110" font-size="22" fill={navy} font-weight="500">evals</text>
 				{[138, 172, 206].map((y) => (
 					<g>
 						<circle cx="428" cy={y} r="10" fill={check}/>
@@ -178,7 +178,7 @@ const sparkle = (x: number, y: number, r: number) =>
 						<rect x="450" y={y - 5} width="180" height="10" rx="5" fill="#dbe3f0"/>
 					</g>
 				))}
-				<text x="525" y="310" text-anchor="middle" font-size="22" fill={gold} font-weight="600">100% pass &#8800; prod-ready</text>
+				<text x="525" y="310" text-anchor="middle" font-size="22" fill={gold} font-weight="500">100% pass != prod-ready</text>
 			</g>
 		</g>
 	</svg>
@@ -195,7 +195,7 @@ const sparkle = (x: number, y: number, r: number) =>
 				<line x1="-20" y1={i * 44 - 20} x2="740" y2={i * 44 - 20} />
 			))}
 		</g>
-		<g font-family={mono}>
+		<g font-family={plex}>
 			<path d="M90 130 H540" stroke="#7a8db0" stroke-width="4" stroke-dasharray="12 12" stroke-linecap="round"/>
 			<text x="570" y="138" font-size="26" fill={blueMut}>drive</text>
 			<path d="M90 260 C 175 190, 240 330, 325 260 S 470 195, 540 250" stroke={solidBlue} stroke-width="8" fill="none" stroke-linecap="round"/>
@@ -211,7 +211,7 @@ const sparkle = (x: number, y: number, r: number) =>
 {slug === "who-is-your-codes-audience" && (
 	<svg viewBox="0 0 720 380" class="h-full w-full" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Code written by AI, read by humans">
 		<rect x="-300" y="-300" width="1320" height="980" fill={lightGreen}/>
-		<g font-family={mono}>
+		<g font-family={plex}>
 			<rect x="190" y="44" width="340" height="190" rx="14" fill="#ffffff"/>
 			<rect x="190" y="44" width="340" height="38" rx="14" fill={greenWash}/>
 			<rect x="190" y="68" width="340" height="14" fill={greenWash}/>
@@ -235,10 +235,10 @@ const sparkle = (x: number, y: number, r: number) =>
 {slug === "from-skill-to-agent" && (
 	<svg viewBox="0 0 720 380" class="h-full w-full" preserveAspectRatio="xMidYMid meet" role="img" aria-label="A skill markdown file growing into a running agent loop">
 		<rect x="-300" y="-300" width="1320" height="980" fill={softBlue}/>
-		<g font-family={mono}>
+		<g font-family={code}>
 			<path d="M100 60 h130 l40 40 v170 h-170 Z" fill="#ffffff"/>
 			<path d="M230 60 v40 h40" fill="none" stroke="#9db8e8" stroke-width="2.5"/>
-			<text x="122" y="130" font-size="24" fill={navy} font-weight="600">SKILL.md</text>
+			<text x="122" y="130" font-size="24" fill={navy} font-weight="500">SKILL.md</text>
 			<rect x="122" y="156" width="110" height="12" rx="6" fill="#dbe7fa"/>
 			<rect x="122" y="182" width="126" height="12" rx="6" fill="#dbe7fa"/>
 			<rect x="122" y="208" width="92" height="12" rx="6" fill="#dbe7fa"/>
@@ -248,7 +248,7 @@ const sparkle = (x: number, y: number, r: number) =>
 			<rect x="420" y="66" width="250" height="188" rx="14" fill="#1e1e2e"/>
 			<circle cx="446" cy="92" r="5" fill="#45475a"/><circle cx="464" cy="92" r="5" fill="#45475a"/><circle cx="482" cy="92" r="5" fill="#45475a"/>
 			<text x="442" y="142" font-size="20" fill="#cba6f7">while task:</text>
-			<text x="442" y="178" font-size="20" fill="#cdd6f4">&#160;plan &#8594; act</text>
+			<text x="442" y="178" font-size="20" fill="#cdd6f4">&#160;plan -&gt; act</text>
 			<text x="442" y="214" font-size="20" fill="#a6e3a1">&#160;&#10003; keeps state</text>
 			<text x="545" y="330" text-anchor="middle" font-size="22" fill={blueMut}>an agent</text>
 		</g>
@@ -258,10 +258,10 @@ const sparkle = (x: number, y: number, r: number) =>
 {slug === "code-mode-sandboxing-local-llms" && (
 	<svg viewBox="0 0 720 380" class="h-full w-full" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Model-written code running inside a sandbox">
 		<rect x="-300" y="-300" width="1320" height="980" fill={darkNavy}/>
-		<g font-family={mono}>
+		<g font-family={code}>
 			<rect x="60" y="135" width="160" height="110" rx="14" fill="#ffffff"/>
-			<text x="140" y="182" text-anchor="middle" font-size="24" fill={navy} font-weight="600">local</text>
-			<text x="140" y="214" text-anchor="middle" font-size="24" fill={navy} font-weight="600">LLM</text>
+			<text x="140" y="182" text-anchor="middle" font-size="24" fill={navy} font-weight="500">local</text>
+			<text x="140" y="214" text-anchor="middle" font-size="24" fill={navy} font-weight="500">LLM</text>
 			<path d="M234 190 H292" stroke="#8aa2ff" stroke-width="4" stroke-linecap="round"/>
 			<path d="M284 179 L302 190 L284 201 Z" fill="#8aa2ff"/>
 			<rect x="330" y="72" width="330" height="240" rx="16" fill="none" stroke="#85b8ff" stroke-width="3.5" stroke-dasharray="14 10"/>
@@ -277,7 +277,7 @@ const sparkle = (x: number, y: number, r: number) =>
 {slug === "docling-vs-marker-vs-llamaparse" && (
 	<svg viewBox="0 0 720 380" class="h-full w-full" preserveAspectRatio="xMidYMid meet" role="img" aria-label="One PDF parsed by three tools">
 		<rect x="-300" y="-300" width="1320" height="980" fill={peach}/>
-		<g font-family={mono}>
+		<g font-family={code}>
 			<path d="M84 96 h110 l36 36 v152 h-146 Z" fill="#ffffff"/>
 			<path d="M194 96 v36 h36" fill="none" stroke={peachMid} stroke-width="2.5"/>
 			<rect x="106" y="152" width="102" height="12" rx="6" fill={peachSoft}/>
@@ -293,7 +293,7 @@ const sparkle = (x: number, y: number, r: number) =>
 				<g>
 					<path d={`M246 190 C 310 190, 320 ${t.y + 32}, 372 ${t.y + 32}`} stroke={gold} stroke-width="2.5" fill="none"/>
 					<rect x="380" y={t.y} width="260" height="64" rx="14" fill="#ffffff"/>
-					<text x="402" y={t.y + 30} font-size="24" fill={navy} font-weight="600">{t.name}</text>
+					<text x="402" y={t.y + 30} font-size="24" fill={navy} font-weight="500">{t.name}</text>
 					<rect x="402" y={t.y + 42} width={t.w} height="12" rx="6" fill={t.hot ? gold : peachMid}/>
 				</g>
 			))}
@@ -304,7 +304,7 @@ const sparkle = (x: number, y: number, r: number) =>
 {slug === "plugin-playground-ai-integration" && (
 	<svg viewBox="0 0 720 380" class="h-full w-full" preserveAspectRatio="xMidYMid meet" role="img" aria-label="AI-drafted plugin code feeding the write, load, test, refine loop">
 		<rect x="-300" y="-300" width="1320" height="980" fill={softBlue}/>
-		<g font-family={mono}>
+		<g font-family={code}>
 			<rect x="60" y="64" width="290" height="230" rx="14" fill="#ffffff"/>
 			<rect x="60" y="64" width="290" height="40" rx="14" fill="#e9f0fb"/>
 			<rect x="60" y="90" width="290" height="14" fill="#e9f0fb"/>
@@ -314,10 +314,10 @@ const sparkle = (x: number, y: number, r: number) =>
 			<rect x="84" y="150" width="242" height="18" rx="6" fill="#c0e8d0"/>
 			<rect x="84" y="176" width="242" height="18" rx="6" fill="#c0e8d0"/>
 			<rect x="84" y="204" width="150" height="14" rx="7" fill="#dbe7fa"/>
-			<rect x="212" y="244" width="116" height="36" rx="18" fill={solidBlue}/>
-			<text x="270" y="268" text-anchor="middle" font-size="18" fill="#ffffff" font-weight="500">AI draft</text>
+			<rect x="200" y="244" width="128" height="36" rx="18" fill={solidBlue}/>
+			<text x="264" y="268" text-anchor="middle" font-size="18" fill="#ffffff" font-weight="500">AI draft</text>
 		</g>
-		<g font-family={mono} font-size="22">
+		<g font-family={code} font-size="22">
 			<path d="M540 108 A 82 82 0 1 1 458 190" fill="none" stroke={solidBlue} stroke-width="4"/>
 			<path d="M450 172 L458 198 L477 182 Z" fill={solidBlue}/>
 			<rect x="486" y="72" width="108" height="42" rx="21" fill="#ffffff"/>
@@ -335,7 +335,7 @@ const sparkle = (x: number, y: number, r: number) =>
 {slug === "slow-down-ship-better-code" && (
 	<svg viewBox="0 0 720 380" class="h-full w-full" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Dial turned down from rushed to deliberate">
 		<rect x="-300" y="-300" width="1320" height="980" fill={peach}/>
-		<g font-family={mono} font-size="24">
+		<g font-family={plex} font-size="24">
 			<path d="M210 264 A 150 150 0 0 1 510 264" fill="none" stroke="#ffffff" stroke-width="26" stroke-linecap="round"/>
 			<path d="M210 264 A 150 150 0 0 1 318 127" fill="none" stroke={gold} stroke-width="26" stroke-linecap="round"/>
 			<line x1="360" y1="264" x2="278" y2="176" stroke={navy} stroke-width="8" stroke-linecap="round"/>
@@ -439,7 +439,7 @@ const sparkle = (x: number, y: number, r: number) =>
 		<rect x="-300" y="-300" width="1320" height="980" fill={softBlue}/>
 		<rect x="90" y="110" width="300" height="160" rx="24" fill="#fdfdfd"/>
 		<image href={blogUrl("/blog-logos/minicpm.png")} x="112" y="130" width="256" height="120"/>
-		<g font-family={mono}>
+		<g font-family={plex}>
 			<text x="430" y="210" font-size="76" fill={navy} font-weight="700">3 GiB</text>
 			<text x="434" y="252" font-size="24" fill={blueMut}>of RAM</text>
 		</g>
@@ -475,7 +475,7 @@ const sparkle = (x: number, y: number, r: number) =>
 		<rect x="-300" y="-300" width="1320" height="980" fill={peach}/>
 		<image href={blogUrl("/blog-logos/claude.svg")} x="150" y="96" width="96" height="96"/>
 		<image href={blogUrl("/blog-logos/zai.svg")} x="474" y="100" width="88" height="88"/>
-		<g font-family={mono} text-anchor="middle">
+		<g font-family={plex} text-anchor="middle">
 			<text x="198" y="262" font-size="44" fill={navy} font-weight="700">$3.69</text>
 			<text x="360" y="160" font-size="26" fill={peachInk}>vs</text>
 			<text x="518" y="262" font-size="44" fill={goldDeep} font-weight="700">$0.023</text>
