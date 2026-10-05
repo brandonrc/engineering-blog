@@ -2,7 +2,9 @@ import { unified } from "@astrojs/markdown-remark";
 import tailwindcss from "@tailwindcss/vite";
 import icon from "astro-iconset";
 import { defineConfig, fontProviders } from "astro/config";
+import { writeFileSync } from "node:fs";
 import { BLOG_PATH } from "./src/lib/blog-path.ts";
+import { postMoves, redirectsFile } from "./src/lib/old-addresses.ts";
 import remarkPostCleanup from "./src/lib/remark-post-cleanup.ts";
 
 export default defineConfig({
@@ -21,6 +23,13 @@ export default defineConfig({
 		shikiConfig: { theme: "catppuccin-mocha" },
 	},
 	integrations: [
+		{
+			// Old addresses of posts that moved here redirect to them. Cloudflare
+			// reads the rules from the root of what is deployed (dist/), one
+			// level above the blog's own folder.
+			name: "old-addresses",
+			hooks: { "astro:build:done": () => writeFileSync("dist/_redirects", redirectsFile(postMoves())) },
+		},
 		icon({
 			// Ship only the Phosphor icons the templates reference.
 			include: {
