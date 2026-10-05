@@ -196,7 +196,7 @@
 @layer components {
 	/* Long-form article typography: 17px body with headings held to
 	   ~1.3x so the eye isn't jumping between sizes; the post column keeps
-	   lines near 70 characters. */
+	   lines under 100 characters. */
 	.blog-theme .editorial-content {
 		font-family: var(--font-serif);
 	}
@@ -402,10 +402,12 @@
 	/* Rail hidden (button in the rail, choice kept in localStorage): the
 	   article column takes the space the rail had. Wide screens only, as
 	   the rail itself only shows there. */
-	/* Variables, not utilities, so the collapsed state below can change them. */
+	/* Variables, not utilities, so the collapsed state below can change them.
+	   The layout is as wide as the home page (.container-wide): the article
+	   starts at its left edge and the rail ends at its right edge. */
 	.blog-theme .post-layout {
-		--post-width: 680px;
-		--post-cols: minmax(0, 1fr) 220px;
+		--post-width: 840px;
+		--post-cols: minmax(0, var(--post-width)) 220px;
 	}
 	@media (min-width: 80rem) {
 		.blog-theme.toc-collapsed .post-layout {
