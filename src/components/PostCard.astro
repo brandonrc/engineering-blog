@@ -1,5 +1,5 @@
 ---
-import { blogUrl } from "../lib/blog-path";
+import { pageUrl } from "../lib/blog-path";
 import BlogThumb from "./BlogThumb.astro";
 import AuthorFaces from "./AuthorFaces.astro";
 import PostTitle from "./PostTitle.astro";
@@ -14,7 +14,7 @@ interface Props {
 const { post, size = "cell" } = Astro.props;
 const byline = bylineNames(post.authors);
 const label = post.topic?.label ?? "Engineering";
-const href = blogUrl(`/${post.slug}`);
+const href = pageUrl(`/${post.slug}`);
 ---
 
 {size === "mini" ? (

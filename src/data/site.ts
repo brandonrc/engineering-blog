@@ -1,4 +1,4 @@
-import { BLOG_PATH } from "../lib/blog-path";
+import { pageUrl } from "../lib/blog-path";
 import { MAIN_SITE_URL } from "./main-site-nav";
 
 export const SITE_TITLE = "OpenTeams";
@@ -29,7 +29,7 @@ export const footerColumns = [
 		heading: "Resources",
 		links: [
 			{ label: "Blog", url: u("/blog/") },
-			{ label: "Engineering Blog", url: BLOG_PATH },
+			{ label: "Engineering Blog", url: pageUrl() },
 			{ label: "Case Studies", url: u("/case-studies/") },
 			{ label: "Contact", url: u("/contact/") },
 		],
