@@ -117,12 +117,19 @@ const candidates = posts.map((post) => ({ slug: post.slug, title: post.title, ur
 		line-height: 1.9;
 		color: #dce3ff;
 	}
+	/* The window's three buttons, in the usual close, minimise, zoom colours. */
 	.nf-dot {
 		display: block;
-		width: 0.6rem;
-		height: 0.6rem;
+		width: 0.7rem;
+		height: 0.7rem;
 		border-radius: 999px;
-		background: #2c3d6e;
+		background: #ff5f57;
+	}
+	.nf-dot:nth-child(2) {
+		background: #febc2e;
+	}
+	.nf-dot:nth-child(3) {
+		background: #28c840;
 	}
 	.nf-line {
 		/* A long address wraps inside the card instead of widening the page. */
