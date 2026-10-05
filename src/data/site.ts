@@ -7,6 +7,15 @@ export const TITLE_ENDING = "OpenTeams | AI you own";
 /** The main site's Google Analytics property, so blog visits are counted with it. */
 export const ANALYTICS_ID = "G-P5T85K8QL2";
 /**
+ * The newsletter form in the main site's footer. Signups sent here land in
+ * WordPress under Elementor, Submissions, the same place as the footer's.
+ */
+export const NEWSLETTER_FORM = {
+	endpoint: "https://openteams.com/wp-admin/admin-ajax.php",
+	postId: "24848",
+	formId: "306990c",
+};
+/**
  * The clock dates are printed on. It is the one the main site used, so a
  * post keeps the date it had there wherever the site is built.
  */
