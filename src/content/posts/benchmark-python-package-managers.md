@@ -152,7 +152,7 @@ graph LR
 
 Pixi also solves in two phases, but with an important difference: phase two knows about phase one.
 
-First, pixi's Rust-based SAT solver ([resolvo](https://github.com/prefix-dev/resolvo), part of the [rattler](https://github.com/prefix-dev/rattler) library) resolves all conda-forge dependencies. Then a second solver ([PubGrub](https://github.com/pubgrub-rs/pubgrub), the same one used by uv) resolves PyPI dependencies — but with every conda package locked as a hard constraint. Pixi even maps conda package names to their PyPI equivalents using [parselmouth](https://github.com/prefix-dev/parselmouth) so the PyPI solver understands what's already installed.
+First, pixi's Rust-based SAT solver ([resolvo](https://github.com/prefix-dev/resolvo), part of the [rattler](https://github.com/conda/rattler) library) resolves all conda-forge dependencies. Then a second solver ([PubGrub](https://github.com/pubgrub-rs/pubgrub), the same one used by uv) resolves PyPI dependencies — but with every conda package locked as a hard constraint. Pixi even maps conda package names to their PyPI equivalents using [parselmouth](https://github.com/prefix-dev/parselmouth) so the PyPI solver understands what's already installed.
 
 The result: when conda pins `fsspec==2026.3.0` and a PyPI package can't work with that version, pixi fails with an explicit error telling you exactly which conda pin caused the problem. Conda would just silently install both and let you discover the breakage at runtime.
 

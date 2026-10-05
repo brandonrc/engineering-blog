@@ -20,8 +20,6 @@ export const footerColumns = [
 		heading: "Products",
 		links: [
 			{ label: "AI/ML Products", url: u("/ai-ml-products/") },
-			{ label: "AI Readiness", url: u("/ai-readiness-assessment/") },
-			{ label: "Open SaaS", url: u("/open-saas/") },
 			{ label: "Capabilities", url: u("/capabilities/") },
 		],
 	},
@@ -40,7 +38,7 @@ export const footerColumns = [
 			{ label: "Blog", url: u("/blog/") },
 			{ label: "Engineering Blog", url: pageUrl() },
 			{ label: "Case Studies", url: u("/case-studies/") },
-			{ label: "Contact", url: u("/contact/") },
+			{ label: "Contact", url: u("/contact-us/") },
 		],
 	},
 ];
