@@ -4,6 +4,8 @@ import { MAIN_SITE_URL } from "./main-site-nav";
 export const SITE_TITLE = "OpenTeams";
 /** How every page title ends, the same as on the main site. */
 export const TITLE_ENDING = "OpenTeams | AI you own";
+/** The main site's Google Analytics property, so blog visits are counted with it. */
+export const ANALYTICS_ID = "G-P5T85K8QL2";
 export const SITE_TAGLINE = "Building the Infrastructure for a Distributed AI Economy";
 
 const u = (path: string) => `${MAIN_SITE_URL}${path}`;

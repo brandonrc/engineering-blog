@@ -3,7 +3,7 @@ import { Font } from "astro:assets";
 import { Icon } from "astro-iconset/components";
 import DarbySearch from "../components/DarbySearch.astro";
 import MainSiteHeader from "../components/MainSiteHeader.astro";
-import { SITE_TAGLINE, SITE_TITLE, TITLE_ENDING, footerColumns, socialLinks } from "../data/site";
+import { ANALYTICS_ID, SITE_TAGLINE, SITE_TITLE, TITLE_ENDING, footerColumns, socialLinks } from "../data/site";
 import { blogUrl } from "../lib/blog-path";
 import { ogCards, ogFile } from "../lib/og-cards";
 import { getPosts } from "../lib/posts";
@@ -47,6 +47,20 @@ const ogImage = new URL(blogUrl(ogFile(card)), Astro.site).href;
 		<Font cssVariable="--font-body" preload />
 		<Font cssVariable="--font-post" preload />
 		<Font cssVariable="--font-mono" />
+		{/* Google Analytics: built pages only, so local development is not counted. */}
+		{import.meta.env.PROD && (
+			<>
+				<script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ANALYTICS_ID}`}></script>
+				<script is:inline define:vars={{ ANALYTICS_ID }}>
+					window.dataLayer = window.dataLayer || [];
+					function gtag() {
+						dataLayer.push(arguments);
+					}
+					gtag("js", new Date());
+					gtag("config", ANALYTICS_ID);
+				</script>
+			</>
+		)}
 		<slot name="head" />
 		<style is:global>
 			/* Moon/sun toggle icon follows the effective theme. */
