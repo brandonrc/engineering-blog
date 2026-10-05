@@ -6,6 +6,7 @@ import BlogThumb from "./BlogThumb.astro";
 import Byline from "./Byline.astro";
 import PostTitle from "./PostTitle.astro";
 import type { Post } from "../lib/posts";
+import { shortDate } from "../lib/dates";
 
 interface Props {
 	post: Post;
@@ -29,7 +30,7 @@ const over = "block after:absolute after:inset-0 after:content-['']";
 			</h3>
 		</a>
 		<Byline authors={post.authors} size={20} class="mt-2.5 gap-2 text-[12.5px] text-faint" nameClass="inline">
-			<span>&middot; {post.minutes} min read</span>
+			<span>{" "}&middot; <time datetime={post.date.toISOString()}>{shortDate(post.date)}</time></span>
 		</Byline>
 	</div>
 ) : (
@@ -45,7 +46,7 @@ const over = "block after:absolute after:inset-0 after:content-['']";
 			)}
 		</a>
 		<Byline authors={post.authors} size={30} class="mt-3.5 gap-2.5" nameClass="text-[13px] leading-tight font-semibold">
-			<div class="text-xs leading-tight text-faint">{post.minutes} min read</div>
+			<div class="text-xs leading-tight text-faint"><time datetime={post.date.toISOString()}>{shortDate(post.date)}</time> &middot; {post.minutes} min read</div>
 		</Byline>
 	</div>
 )}
