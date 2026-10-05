@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://openteams.com/sandbox-4af53e-engineering-blog/og/og-home.png" alt="OpenTeams Engineering Blog" width="720">
+  <img src="https://openteams.com/engineering-blog/og/og-home.png" alt="OpenTeams Engineering Blog" width="720">
 </p>
 
 <p align="center">
@@ -11,7 +11,7 @@
 
 ```bash
 npm install
-npm run dev          # http://localhost:4321/sandbox-4af53e-engineering-blog
+npm run dev          # http://localhost:4321/engineering-blog
 npm run build
 npm run og           # share cards into dist/ (needed before test:e2e)
 npm test             # unit tests
@@ -54,3 +54,8 @@ author whose post count changed.
 | --- | --- |
 | Pull request | Preview link posted on the PR |
 | Merge to `main` | Live on openteams.com |
+
+Every build also writes `sitemap.xml` and keeps old addresses working: a post
+that moved here from the main site has its old address in `wordpress_url` in
+its frontmatter, and that address redirects to the post
+(`src/lib/old-addresses.ts`).
