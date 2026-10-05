@@ -171,11 +171,13 @@
    ============================================================ */
 
 .blog-theme {
-	/* Brand guidelines type: Inter everywhere (display, prose, nav);
-	   code keeps Fira Code. Scoped here so the main site is untouched. */
+	/* Brand guidelines type: Inter for nav and cards; code keeps Fira Code.
+	   Post titles (on the post and on cards) and article text are set
+	   in IBM Plex Sans (--font-post). Scoped here so the main site is
+	   untouched. */
 	--font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
-	--font-display: var(--font-body), ui-sans-serif, system-ui, sans-serif;
-	--font-serif: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+	--font-display: var(--font-post), var(--font-body), ui-sans-serif, system-ui, sans-serif;
+	--font-serif: var(--font-post), var(--font-body), ui-sans-serif, system-ui, sans-serif;
 	--font-header: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 	/* Background and surface inherit the main site's values so the blog
 	   matches the home page in both light and dark. */
@@ -195,6 +197,10 @@
 	/* Long-form article typography: 17px body with headings held to
 	   ~1.3x so the eye isn't jumping between sizes; the post column keeps
 	   lines near 70 characters. */
+	.blog-theme .editorial-content {
+		font-family: var(--font-serif);
+	}
+
 	.blog-theme .editorial-content :where(p, li) {
 		font-family: var(--font-serif);
 		font-size: 17px;
@@ -454,5 +460,6 @@
 
 	.blog-theme .post-title-link {
 		@apply transition-colors hover:text-brand;
+		font-family: var(--font-display);
 	}
 }
