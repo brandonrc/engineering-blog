@@ -21,6 +21,8 @@ export interface Post {
 	authors: Author[];
 	topic: { slug: string; label: string } | null;
 	date: Date;
+	/** When the post last changed: its `updated` date if it has one, else the day it came out. */
+	changed: Date;
 	minutes: number;
 	entry: CollectionEntry<"posts">;
 }
@@ -37,6 +39,7 @@ function toPost(entry: CollectionEntry<"posts">): Post {
 		authors: entry.data.authors.flatMap((s) => authorBySlug.get(s) ?? []),
 		topic: topicSlug ? { slug: topicSlug, label: TOPIC_LABELS[topicSlug] ?? topicSlug } : null,
 		date: entry.data.date,
+		changed: entry.data.updated ?? entry.data.date,
 		minutes: readingTimeMinutes(entry.body ?? ""),
 		entry,
 	};

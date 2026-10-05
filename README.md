@@ -28,6 +28,7 @@ npm run test:e2e     # browser tests against the build
    title: My Post
    slug: my-post
    date: 2026-10-01
+   updated: 2026-10-05   # optional: set it when you edit a published post
    authors:
      - author-slug        # from src/data/authors.json
    categories:
