@@ -22,7 +22,7 @@ const publishedDate = post.date;
 const hasDiagram = /^```mermaid\s*$/m.test(post.entry.body ?? "");
 ---
 
-<Base title={title} description={excerpt} og={post.slug} type="article">
+<Base title={title} description={excerpt} og={post.slug} type="article" article={{ published: publishedDate, authors }}>
 	{hasDiagram && (
 		<link slot="head" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shantell+Sans:wght@400;500;600&display=swap" />
 	)}
