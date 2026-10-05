@@ -1,0 +1,47 @@
+---
+// Who wrote a post, for a card: the authors' faces overlapped left to right,
+// then their names ("A", "A & B", "A, B & C"), each a link to the author's
+// page. The slot goes under the names (read time, role). A card is one link
+// to its post laid over everything, so these links sit above that layer.
+// No known author falls back to one team tile, matching bylineNames().
+import Avatar from "./Avatar.astro";
+import { pageUrl } from "../lib/blog-path";
+import { bylineNames } from "../lib/byline";
+import type { Author } from "../lib/posts";
+
+interface Props {
+	authors: Author[];
+	/** Face diameter in pixels. */
+	size: number;
+	/** Classes for the names line. */
+	nameClass: string;
+	class?: string;
+}
+
+const { authors, size, nameClass, class: className } = Astro.props;
+const faces = authors.length ? authors : [{ name: bylineNames([]), avatarUrl: null, slug: null }];
+const href = (a: { slug: string | null }) => (a.slug ? pageUrl(`/author/${a.slug}`) : undefined);
+const before = (i: number) => (i === 0 ? "" : i === faces.length - 1 ? " & " : ", ");
+const link = "relative z-10";
+---
+
+<div class:list={["flex items-center", className]}>
+	<span class="post-byline-faces flex shrink-0">
+		{faces.map((a, i) => (
+			<a href={href(a)} aria-label={`Posts by ${a.name}`} class:list={[link, "rounded-full ring-2 ring-[var(--color-bg)] transition-shadow hover:ring-brand"]} style={i ? `margin-left:${-Math.round(size * 0.3)}px` : undefined}>
+				<Avatar name={a.name} src={a.avatarUrl} size={size} />
+			</a>
+		))}
+	</span>
+	<div>
+		<div class:list={["post-byline", nameClass]}>
+			{faces.map((a, i) => (
+				<>
+					{before(i)}
+					<a href={href(a)} class:list={[link, "transition-colors hover:text-brand"]}>{a.name}</a>
+				</>
+			))}
+		</div>
+		<slot />
+	</div>
+</div>
