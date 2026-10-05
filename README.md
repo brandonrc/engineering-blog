@@ -20,7 +20,7 @@ npm run test:e2e     # browser tests against the build
 
 ## Write a post
 
-1. New author? Add them to `src/data/authors.json` (slug, name, bio, photo URL).
+1. New author? Add them to `src/data/authors.json` (slug, name, bio, photo). Put the photo in `public/authors/`, about 264px wide, and list it as `/authors/<slug>.jpg`.
 2. Add `src/content/posts/<name>.md`:
 
    ```yaml
