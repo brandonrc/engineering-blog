@@ -45,6 +45,7 @@ const ogImage = new URL(blogUrl(ogFile(card)), Astro.site).href;
 		<link rel="alternate" type="application/rss+xml" title="OpenTeams Engineering Blog" href={blogUrl("/rss.xml")} />
 		<link rel="icon" type="image/svg+xml" href={blogUrl("/favicon.svg")} />
 		<Font cssVariable="--font-body" preload />
+		<Font cssVariable="--font-post" preload />
 		<Font cssVariable="--font-mono" />
 		<slot name="head" />
 		<style is:global>

@@ -32,7 +32,7 @@ const hasDiagram = /^```mermaid\s*$/m.test(post.entry.body ?? "");
 			if (localStorage.getItem("toc-collapsed") === "1") document.documentElement.classList.add("toc-collapsed");
 		} catch (e) {}
 	</script>
-	<div class="post-layout mx-auto max-w-[1120px] xl:grid xl:grid-cols-(--post-cols) xl:gap-16">
+	<div class="post-layout mx-auto max-w-[1200px] xl:grid xl:grid-cols-(--post-cols) xl:justify-between xl:gap-16 xl:pr-6">
 		<div class="min-w-0">
 			<article class="mx-auto max-w-(--post-width) px-6 pt-16">
 				<header class="mb-8">
