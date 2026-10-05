@@ -1,17 +1,31 @@
 import type { APIRoute } from "astro";
 import { pageUrl } from "../lib/blog-path";
-import { authorsOf, getPosts, topicsOf } from "../lib/posts";
+import { authorsOf, getPosts, topicsOf, type Post } from "../lib/posts";
 
-/** Every page of the blog, for search engines: the index, posts, topics and authors. */
+/** When a page that lists posts last changed: when the newest of those posts did. */
+const newest = (posts: Post[]): Date => new Date(Math.max(...posts.map((post) => post.changed.getTime())));
+
+/**
+ * Every page of the blog, for search engines: the index, posts, topics and
+ * authors, each with the date it last changed.
+ */
 export const GET: APIRoute = async ({ site }) => {
 	const posts = await getPosts();
-	const paths = [
-		pageUrl(),
-		...posts.map((post) => pageUrl(`/${post.slug}`)),
-		...topicsOf(posts).map((topic) => pageUrl(`/tag/${topic.slug}`)),
-		...authorsOf(posts).map(({ author }) => pageUrl(`/author/${author.slug}`)),
+	const pages = [
+		{ path: pageUrl(), changed: newest(posts) },
+		...posts.map((post) => ({ path: pageUrl(`/${post.slug}`), changed: post.changed })),
+		...topicsOf(posts).map((topic) => ({
+			path: pageUrl(`/tag/${topic.slug}`),
+			changed: newest(posts.filter((post) => post.topic?.slug === topic.slug)),
+		})),
+		...authorsOf(posts).map(({ author, posts: written }) => ({
+			path: pageUrl(`/author/${author.slug}`),
+			changed: newest(written),
+		})),
 	];
-	const urls = paths.map((path) => `  <url><loc>${new URL(path, site).href}</loc></url>`).join("\n");
+	const urls = pages
+		.map(({ path, changed }) => `  <url><loc>${new URL(path, site).href}</loc><lastmod>${changed.toISOString()}</lastmod></url>`)
+		.join("\n");
 
 	return new Response(
 		`<?xml version="1.0" encoding="UTF-8"?>

@@ -1,5 +1,6 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 import authors from "../data/authors.json";
+import { blogUrl } from "./blog-path";
 import { POST_TOPICS, TOPIC_LABELS } from "../data/topics";
 import { readingTimeMinutes } from "./reading-time";
 import { plainTitle, titleParts, type TitlePart } from "./title";
@@ -21,11 +22,17 @@ export interface Post {
 	authors: Author[];
 	topic: { slug: string; label: string } | null;
 	date: Date;
+	/** When the post last changed: its `updated` date if it has one, else the day it came out. */
+	changed: Date;
 	minutes: number;
 	entry: CollectionEntry<"posts">;
 }
 
-const authorBySlug = new Map((authors as Author[]).map((a) => [a.slug, a]));
+// A photo kept in the blog (public/authors/) is listed by its path there;
+// one hosted elsewhere by its full address.
+const authorBySlug = new Map(
+	(authors as Author[]).map((a) => [a.slug, { ...a, avatarUrl: a.avatarUrl?.startsWith("/") ? blogUrl(a.avatarUrl) : a.avatarUrl }]),
+);
 
 function toPost(entry: CollectionEntry<"posts">): Post {
 	const topicSlug = POST_TOPICS[entry.id];
@@ -37,6 +44,7 @@ function toPost(entry: CollectionEntry<"posts">): Post {
 		authors: entry.data.authors.flatMap((s) => authorBySlug.get(s) ?? []),
 		topic: topicSlug ? { slug: topicSlug, label: TOPIC_LABELS[topicSlug] ?? topicSlug } : null,
 		date: entry.data.date,
+		changed: entry.data.updated ?? entry.data.date,
 		minutes: readingTimeMinutes(entry.body ?? ""),
 		entry,
 	};

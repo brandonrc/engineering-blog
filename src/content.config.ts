@@ -12,6 +12,8 @@ const posts = defineCollection({
 		categories: z.array(z.string()).default([]),
 		meta_description: z.string().default(""),
 		date: z.coerce.date(),
+		// Set when a published post is edited in a way readers should know about.
+		updated: z.coerce.date().optional(),
 	}),
 });
 

@@ -3,7 +3,7 @@
 		"slug": "anuj-kumar-singh",
 		"name": "Anuj Kumar Singh",
 		"bio": "OSS Intern at OpenTeams. Works on Project Jupyter.",
-		"avatarUrl": "https://openteams.com/wp-content/uploads/2026/04/Anuj-Kumar-Singh.png"
+		"avatarUrl": "/authors/anuj-kumar-singh.jpg"
 	},
 	{
 		"slug": "darshan-paudyal",
@@ -15,25 +15,25 @@
 		"slug": "khuyen-tran",
 		"name": "Khuyen Tran",
 		"bio": "Senior DevRel at OpenTeams. Writes about data science, MLOps, and open-source tooling.",
-		"avatarUrl": "https://openteams.com/wp-content/uploads/2024/11/Khuyen-Tran.png"
+		"avatarUrl": "/authors/khuyen-tran.jpg"
 	},
 	{
 		"slug": "adam-lewis",
 		"name": "Adam Lewis",
 		"bio": "Senior Software Engineer",
-		"avatarUrl": "https://openteams.com/wp-content/uploads/2026/04/avatar-adam-lewis-5157331f.jpg"
+		"avatarUrl": "/authors/adam-lewis.jpg"
 	},
 	{
 		"slug": "brandon-geraci",
 		"name": "Brandon Geraci",
 		"bio": "Senior Software Engineer at OpenTeams. Officially writes software, unofficially whatever else the day needs.",
-		"avatarUrl": "https://openteams.com/wp-content/uploads/2026/04/Brandon-Geraci.png"
+		"avatarUrl": "/authors/brandon-geraci.jpg"
 	},
 	{
 		"slug": "johnny-bouder",
 		"name": "Johnny Bouder",
 		"bio": "Director of AI Experience",
-		"avatarUrl": "https://openteams.com/wp-content/uploads/2026/04/johnny-bouder.png"
+		"avatarUrl": "/authors/johnny-bouder.jpg"
 	},
 	{
 		"slug": "nick-byrne",
