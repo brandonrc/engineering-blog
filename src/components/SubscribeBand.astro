@@ -1,28 +1,141 @@
 ---
 import { blogUrl } from "../lib/blog-path";
-// Horizontal subscribe call-to-action: navy band with a short pitch and an
-// RSS button. Rendered below the article grid on the index and below every
-// post. RSS is the honest subscribe target until a newsletter backend exists.
+import { NEWSLETTER_FORM } from "../data/site";
+// Subscribe call-to-action below the article grid and below every post: a
+// navy band with an email box that feeds the main site's newsletter form,
+// plus the RSS feed. The email box needs JavaScript to send, so it stays
+// hidden until the page's script is running; RSS works regardless.
 ---
 
 <section class="container-wide pb-20">
-	<div class="bg-deep flex flex-col items-start justify-between gap-6 rounded-2xl px-8 py-9 md:flex-row md:items-center md:px-12">
+	<div class="bg-deep flex flex-col items-start justify-between gap-7 rounded-2xl px-8 py-9 lg:flex-row lg:items-center lg:px-12">
 		<div>
 			<h2 class="text-2xl font-bold tracking-tight text-white">Never miss a post</h2>
 			<p class="mt-1.5 max-w-[520px] text-[15px] text-[#97a3c4]">
-				Benchmarks, deep dives, and lessons from OpenTeams engineers, straight to your feed reader.
+				Benchmarks, deep dives, and lessons from OpenTeams engineers. Leave your email, or follow the feed.
 			</p>
 		</div>
-		<a
-			href={blogUrl("/rss.xml")}
-			class="inline-flex shrink-0 items-center gap-2.5 rounded-full bg-white px-6 py-3 text-[15px] font-semibold text-[#041437] transition-transform duration-200 hover:-translate-y-0.5"
-		>
-			<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
-				<path d="M4 11a9 9 0 0 1 9 9" />
-				<path d="M4 4a16 16 0 0 1 16 16" />
-				<circle cx="5.5" cy="18.5" r="1.4" fill="currentColor" stroke="none" />
-			</svg>
-			Subscribe via RSS
-		</a>
+		<div class="flex w-full flex-col gap-4 lg:w-auto lg:items-end">
+			<form class="sub-form" data-subscribe hidden>
+				<label for="subscribe-email" class="sr-only">Email address</label>
+				<input id="subscribe-email" class="sub-input" type="email" name="email" placeholder="Email address" autocomplete="email" required />
+				<button type="submit" class="sub-button">Subscribe</button>
+			</form>
+			<p class="sub-status" data-subscribe-status aria-live="polite"></p>
+			<a href={blogUrl("/rss.xml")} class="sub-rss">
+				<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+					<path d="M4 11a9 9 0 0 1 9 9" />
+					<path d="M4 4a16 16 0 0 1 16 16" />
+					<circle cx="5.5" cy="18.5" r="1.4" fill="currentColor" stroke="none" />
+				</svg>
+				Or subscribe via RSS
+			</a>
+		</div>
 	</div>
 </section>
+
+<script is:inline define:vars={{ NEWSLETTER_FORM }}>
+	// Sends the email to the main site's newsletter form, so blog signups land in
+	// the same place as signups from the footer of openteams.com. The blog lives
+	// on the same domain, which is what lets the browser send this request.
+	const form = document.querySelector("[data-subscribe]");
+	const status = document.querySelector("[data-subscribe-status]");
+	form.hidden = false;
+	form.addEventListener("submit", async (event) => {
+		event.preventDefault();
+		const button = form.querySelector("button");
+		const body = new FormData();
+		body.set("action", "elementor_pro_forms_send_form");
+		body.set("post_id", NEWSLETTER_FORM.postId);
+		body.set("form_id", NEWSLETTER_FORM.formId);
+		body.set("queried_id", NEWSLETTER_FORM.postId);
+		body.set("referer_title", document.title);
+		body.set("form_fields[email]", form.email.value);
+		button.disabled = true;
+		status.textContent = "Sending…";
+		try {
+			const answer = await (await fetch(NEWSLETTER_FORM.endpoint, { method: "POST", body })).json();
+			if (!answer.success) throw new Error(answer.data?.message ?? "rejected");
+			form.hidden = true;
+			status.textContent = "You're on the list. Thanks for reading.";
+		} catch {
+			button.disabled = false;
+			status.innerHTML = 'That did not go through. Try again, or <a href="https://openteams.com/#Subscribe">subscribe on openteams.com</a>.';
+		}
+	});
+</script>
+
+<style>
+	.sub-form {
+		display: flex;
+		width: 100%;
+		gap: 0.5rem;
+	}
+	.sub-input {
+		flex: 1;
+		min-width: 0;
+		border: 1px solid #2c3d6e;
+		border-radius: 999px;
+		background: #0b1c44;
+		padding: 0.7rem 1.1rem;
+		font-size: 15px;
+		color: #ffffff;
+	}
+	.sub-input::placeholder {
+		color: #7a8db0;
+	}
+	.sub-input:focus-visible {
+		outline: 2px solid #8aa2ff;
+		outline-offset: 2px;
+	}
+	.sub-button {
+		flex-shrink: 0;
+		border-radius: 999px;
+		background: #ffffff;
+		padding: 0.7rem 1.4rem;
+		font-size: 15px;
+		font-weight: 600;
+		color: #041437;
+		cursor: pointer;
+		transition: transform 0.2s ease;
+	}
+	.sub-button:hover {
+		transform: translateY(-2px);
+	}
+	.sub-button:disabled {
+		cursor: default;
+		opacity: 0.7;
+		transform: none;
+	}
+	.sub-button:focus-visible {
+		outline: 2px solid #8aa2ff;
+		outline-offset: 2px;
+	}
+	.sub-status {
+		min-height: 1.25rem;
+		font-size: 14px;
+		color: #dce3ff;
+	}
+	.sub-status:empty {
+		display: none;
+	}
+	.sub-status a {
+		text-decoration: underline;
+	}
+	.sub-rss {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-size: 14px;
+		color: #97a3c4;
+		transition: color 0.15s ease;
+	}
+	.sub-rss:hover {
+		color: #ffffff;
+	}
+	@media (min-width: 64rem) {
+		.sub-form {
+			width: 26rem;
+		}
+	}
+</style>
