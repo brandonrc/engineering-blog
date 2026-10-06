@@ -29,7 +29,7 @@
 		"name": "Brandon Geraci",
 		"bio": "Senior Software Engineer at OpenTeams. Officially writes software, unofficially whatever else the day needs.",
 		"avatarUrl": "/authors/brandon-geraci.jpg",
-		"links": { "github": "https://github.com/brandonrc" }
+		"links": { "github": "https://github.com/brandonrc", "linkedin": "https://www.linkedin.com/in/brandongeraci/", "website": "https://brandongeraci.com/" }
 	},
 	{
 		"slug": "johnny-bouder",
