@@ -1,5 +1,6 @@
 ---
 title: "Reliable Visual Regression Testing for Humans and Coding Agents"
+date: 2026-10-06T14:00:12-00:00
 slug: visual-regression-testing-jupyterlab
 authors:
   - michal-krassowski
