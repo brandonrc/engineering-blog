@@ -3,69 +3,120 @@
 		"slug": "anuj-kumar-singh",
 		"name": "Anuj Kumar Singh",
 		"bio": "OSS Intern at OpenTeams. Works on Project Jupyter.",
-		"avatarUrl": "/authors/anuj-kumar-singh.jpg"
+		"avatarUrl": "/authors/anuj-kumar-singh.jpg",
+		"links": {
+			"github": "https://github.com/MUFFANUJ",
+			"linkedin": "https://www.linkedin.com/in/anuj-singh-2b2ab6206/"
+		}
 	},
 	{
 		"slug": "darshan-paudyal",
 		"name": "Darshan Paudyal",
 		"bio": "OSS Intern at OpenTeams. Works on Project Jupyter.",
-		"avatarUrl": "https://avatars.githubusercontent.com/u/127468609?v=4"
+		"avatarUrl": "https://avatars.githubusercontent.com/u/127468609?v=4",
+		"links": {
+			"github": "https://github.com/Darshan808",
+			"linkedin": "https://www.linkedin.com/in/darshan-poudel8/",
+			"website": "https://www.darshanpaudyal.com.np/"
+		}
 	},
 	{
 		"slug": "khuyen-tran",
 		"name": "Khuyen Tran",
 		"bio": "Senior DevRel at OpenTeams. Writes about data science, MLOps, and open-source tooling.",
 		"avatarUrl": "/authors/khuyen-tran.jpg",
-		"links": { "website": "https://codecut.ai/" }
+		"links": {
+			"github": "https://github.com/khuyentran1401",
+			"linkedin": "https://www.linkedin.com/in/khuyen-tran-1401/",
+			"x": "https://x.com/KhuyenTran16",
+			"website": "https://codecut.ai/"
+		}
 	},
 	{
 		"slug": "adam-lewis",
 		"name": "Adam Lewis",
 		"bio": "Senior Software Engineer",
-		"avatarUrl": "/authors/adam-lewis.jpg"
+		"avatarUrl": "/authors/adam-lewis.jpg",
+		"links": {
+			"github": "https://github.com/Adam-D-Lewis",
+			"linkedin": "https://www.linkedin.com/in/adam-d-lewis/",
+			"website": "https://adam-d-lewis.github.io/"
+		}
 	},
 	{
 		"slug": "brandon-geraci",
 		"name": "Brandon Geraci",
 		"bio": "Senior Software Engineer at OpenTeams. Officially writes software, unofficially whatever else the day needs.",
 		"avatarUrl": "/authors/brandon-geraci.jpg",
-		"links": { "github": "https://github.com/brandonrc", "linkedin": "https://www.linkedin.com/in/brandongeraci/", "website": "https://brandongeraci.com/" }
+		"links": {
+			"github": "https://github.com/brandonrc",
+			"linkedin": "https://www.linkedin.com/in/brandongeraci/",
+			"website": "https://brandongeraci.com/"
+		}
 	},
 	{
 		"slug": "johnny-bouder",
 		"name": "Johnny Bouder",
 		"bio": "Director of AI Experience",
-		"avatarUrl": "/authors/johnny-bouder.jpg"
+		"avatarUrl": "/authors/johnny-bouder.jpg",
+		"links": {
+			"github": "https://github.com/jbouder",
+			"linkedin": "https://www.linkedin.com/in/johnny-bouder/",
+			"website": "https://johnnybouder.com/"
+		}
 	},
 	{
 		"slug": "nick-byrne",
 		"name": "Nick Byrne",
 		"bio": "Senior Software Engineer",
-		"avatarUrl": "https://avatars.githubusercontent.com/u/55434794?v=4"
+		"avatarUrl": "https://avatars.githubusercontent.com/u/55434794?v=4",
+		"links": {
+			"github": "https://github.com/nenb",
+			"linkedin": "https://www.linkedin.com/in/nick-byrne-a5335a94/",
+			"x": "https://x.com/_nenb",
+			"website": "https://nenb.github.io/"
+		}
 	},
 	{
 		"slug": "amelia-thurdekoos",
 		"name": "Amelia (Mia) Thurdekoos",
 		"bio": "Technical Program Manager at OpenTeams",
-		"avatarUrl": "https://avatars.githubusercontent.com/u/223740535?v=4"
+		"avatarUrl": "https://avatars.githubusercontent.com/u/223740535?v=4",
+		"links": {
+			"github": "https://github.com/athurdekoos",
+			"linkedin": "https://www.linkedin.com/in/amelia-thurdekoos-26450b86/"
+		}
 	},
 	{
 		"slug": "guilherme-leobas",
 		"name": "Guilherme Leobas",
 		"bio": "Senior Software Engineer at OpenTeams. Works on PyTorch compiler and Numba.",
-		"avatarUrl": "https://avatars.githubusercontent.com/u/2712115?v=4"
+		"avatarUrl": "https://avatars.githubusercontent.com/u/2712115?v=4",
+		"links": {
+			"github": "https://github.com/guilhermeleobas",
+			"linkedin": "https://www.linkedin.com/in/guilhermeleobas/"
+		}
 	},
 	{
 		"slug": "guido-imperiale",
 		"name": "Guido Imperiale",
 		"bio": "Staff Software Engineer at OpenTeams. Dask maintainer.",
-		"avatarUrl": "https://avatars.githubusercontent.com/u/6213168?v=4"
+		"avatarUrl": "https://avatars.githubusercontent.com/u/6213168?v=4",
+		"links": {
+			"github": "https://github.com/crusaderky",
+			"linkedin": "https://www.linkedin.com/in/guido-imperiale/"
+		}
 	},
 	{
 		"slug": "michal-krassowski",
 		"name": "Michał Krassowski",
 		"bio": "Senior Software Engineer at OpenTeams. JupyterLab maintainer and Jupyter Distinguished Contributor.",
 		"avatarUrl": "https://avatars.githubusercontent.com/u/5832902?v=4",
-		"links": { "github": "https://github.com/krassowski", "linkedin": "https://www.linkedin.com/in/michal-krassowski/" }
+		"links": {
+			"github": "https://github.com/krassowski",
+			"linkedin": "https://www.linkedin.com/in/michal-krassowski/",
+			"bluesky": "https://bsky.app/profile/krassowski.bsky.social",
+			"website": "https://whybook.dev/"
+		}
 	}
 ]
