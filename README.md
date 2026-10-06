@@ -21,6 +21,7 @@ npm run test:e2e     # browser tests against the build
 ## Write a post
 
 1. New author? Add them to `src/data/authors.json` (slug, name, bio, photo). Put the photo in `public/authors/`, about 264px wide, and list it as `/authors/<slug>.jpg`.
+   Profiles elsewhere go in an optional `links` object (`github`, `linkedin`, `x`, `bluesky`, `website`, each a full address); they show as icons on the author's page and under their posts.
 2. Add `src/content/posts/<name>.md`:
 
    ```yaml

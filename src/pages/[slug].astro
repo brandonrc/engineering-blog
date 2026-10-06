@@ -2,6 +2,7 @@
 import { render } from "astro:content";
 import Base from "../layouts/BlogBase.astro";
 import Avatar from "../components/Avatar.astro";
+import AuthorLinks from "../components/AuthorLinks.astro";
 import SubscribeBand from "../components/SubscribeBand.astro";
 import CodeCopy from "../components/CodeCopy.astro";
 import ShareLinks from "../components/ShareLinks.astro";
@@ -91,6 +92,7 @@ const hasDiagram = /^```mermaid\s*$/m.test(post.entry.body ?? "");
 							</a>
 							<a href={pageUrl(`/author/${a.slug}`)} class="author-name mt-4 hover:text-brand">{a.name}</a>
 							{a.bio && <p class="mt-2 max-w-[560px] leading-relaxed text-muted">{a.bio}</p>}
+							<AuthorLinks author={a} class="mt-2 justify-center" />
 						</div>
 					))}
 				</aside>
