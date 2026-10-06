@@ -15,7 +15,8 @@
 		"slug": "khuyen-tran",
 		"name": "Khuyen Tran",
 		"bio": "Senior DevRel at OpenTeams. Writes about data science, MLOps, and open-source tooling.",
-		"avatarUrl": "/authors/khuyen-tran.jpg"
+		"avatarUrl": "/authors/khuyen-tran.jpg",
+		"links": { "website": "https://codecut.ai/" }
 	},
 	{
 		"slug": "adam-lewis",
@@ -27,7 +28,8 @@
 		"slug": "brandon-geraci",
 		"name": "Brandon Geraci",
 		"bio": "Senior Software Engineer at OpenTeams. Officially writes software, unofficially whatever else the day needs.",
-		"avatarUrl": "/authors/brandon-geraci.jpg"
+		"avatarUrl": "/authors/brandon-geraci.jpg",
+		"links": { "github": "https://github.com/brandonrc", "linkedin": "https://www.linkedin.com/in/brandongeraci/", "website": "https://brandongeraci.com/" }
 	},
 	{
 		"slug": "johnny-bouder",
@@ -63,6 +65,7 @@
 		"slug": "michal-krassowski",
 		"name": "Michał Krassowski",
 		"bio": "Senior Software Engineer at OpenTeams. JupyterLab maintainer and Jupyter Distinguished Contributor.",
-		"avatarUrl": "https://avatars.githubusercontent.com/u/5832902?v=4"
+		"avatarUrl": "https://avatars.githubusercontent.com/u/5832902?v=4",
+		"links": { "github": "https://github.com/krassowski", "linkedin": "https://www.linkedin.com/in/michal-krassowski/" }
 	}
 ]

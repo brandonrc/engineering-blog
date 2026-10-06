@@ -165,7 +165,7 @@ describe.concurrent("site", () => {
 			};
 		});
 		expect(result.photoLoaded).toBe(true);
-		expect(result.meta).toMatch(/\w+ \w+ · [A-Z][a-z]{2} \d{1,2}, \d{4}/);
+		expect(result.meta).toMatch(/\p{L}+ \p{L}+ · [A-Z][a-z]{2} \d{1,2}, \d{4}/u);
 		expect(result.photoRadius).not.toBe("0px");
 	});
 

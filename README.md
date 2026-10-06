@@ -92,11 +92,14 @@ If this is your first post, add yourself to `authors.json`:
   "slug": "your-author-slug",
   "name": "Your Name",
   "bio": "Your role at OpenTeams and what you write about.",
-  "avatarUrl": "https://avatars.githubusercontent.com/u/<your-id>"
+  "avatarUrl": "https://avatars.githubusercontent.com/u/<your-id>",
+  "links": { "github": "https://github.com/<you>", "linkedin": "https://www.linkedin.com/in/<you>/" }
 }
 ```
 
 The easiest `avatarUrl` is your GitHub avatar's address. To use a photo file instead, put it in `public/authors/<slug>.jpg` (about 264px wide) and set `avatarUrl` to `/authors/<slug>.jpg`.
+
+`links` is optional: `github`, `linkedin`, `x`, `bluesky` or `website`, each a full address. They show as icons on your author page and under your posts.
 
 ### Social Brief
 

@@ -16,7 +16,7 @@ export interface SchemaPage {
 		published: Date;
 		/** The share image, as an absolute address. */
 		image: string;
-		authors: { name: string; bio: string; url: string }[];
+		authors: { name: string; bio: string; url: string; sameAs: string[] }[];
 	};
 }
 
@@ -33,6 +33,7 @@ export function pageSchema(page: SchemaPage): object {
 		name: author.name,
 		url: author.url,
 		description: author.bio,
+		...(author.sameAs.length && { sameAs: author.sameAs }),
 	}));
 	return {
 		"@context": "https://schema.org",
