@@ -23,18 +23,6 @@ export function frontmatter(markdown: string): Record<string, unknown> {
 	return block ? (parse(block) ?? {}) : {};
 }
 
-/**
- * The PR comment for a preview at `origin`: the blog's home, then a link to
- * each post file's text in `posts` (the posts the PR adds or edits).
- */
-export function previewComment(origin: string, posts: string[]): string {
-	const links = posts.map((markdown) => {
-		const data = frontmatter(markdown);
-		return `- [${plainTitle(String(data.title ?? ""))}](${origin}${pageUrl(`/${data.slug}`)})`;
-	});
-	return [`Preview: ${origin}${pageUrl()}`, ...links].join("\n");
-}
-
 /** The announcement for one post file's text. Authors are named as on the site. */
 export function announcement(markdown: string, authors: AuthorName[]): Announcement {
 	const data = frontmatter(markdown);

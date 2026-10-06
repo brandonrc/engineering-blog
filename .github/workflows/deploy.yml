@@ -44,22 +44,17 @@ jobs:
           echo "::warning::CLOUDFLARE_API_TOKEN secret is not set, nothing deployed"
           [ "${{ github.event_name }}" = "pull_request" ]
 
-      # The comment links each post the PR adds or edits. The checkout is the
-      # PR merged into its base, so diffing against the base gives just the
-      # PR's changes.
       - name: Deploy preview
         if: github.event_name == 'pull_request' && steps.token.outputs.set == 'true'
         run: |
           set -o pipefail
           node scripts/deploy.ts "pr-${{ github.event.number }}" 2>&1 | tee deploy.log
           url=$(grep -oE 'https://pr-[0-9]+-[a-z0-9.-]+\.workers\.dev' deploy.log | head -n1)
-          git fetch --no-tags --depth=1 origin "$BASE_SHA"
-          mapfile -t changed < <(git diff --name-only --diff-filter=AMR "$BASE_SHA" HEAD -- 'posts/*.md')
-          body=$(node scripts/preview-comment.ts "$url" "${changed[@]}")
+          path=$(node -e 'import("./src/lib/blog-path.ts").then(m => console.log(m.BLOG_PATH))')
+          body="Preview: ${url}${path}/"
           gh pr comment "${{ github.event.number }}" --edit-last --body "$body" \
             || gh pr comment "${{ github.event.number }}" --body "$body"
         env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
           GH_TOKEN: ${{ github.token }}
 
       - name: Deploy production

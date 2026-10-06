@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { announcement, frontmatter, previewComment } from "./new-posts";
+import { announcement, frontmatter } from "./new-posts";
 
 const AUTHORS = [
 	{ slug: "khuyen-tran", name: "Khuyen Tran" },
@@ -30,21 +30,6 @@ describe("announcement", () => {
 
 	it("leaves the author empty when the post lists none", () => {
 		expect(announcement(post("title: T\nslug: t"), AUTHORS).author).toBe("");
-	});
-});
-
-describe("previewComment", () => {
-	const ORIGIN = "https://pr-7-blog.workers.dev";
-
-	it("links the home page when the PR changes no posts", () => {
-		expect(previewComment(ORIGIN, [])).toBe(`Preview: ${ORIGIN}/engineering-blog/`);
-	});
-
-	it("links each post by its title and slug", () => {
-		const md = post("title: Your Agent Ignored `AGENTS.md`\nslug: agents-md");
-		expect(previewComment(ORIGIN, [md])).toBe(
-			`Preview: ${ORIGIN}/engineering-blog/\n- [Your Agent Ignored AGENTS.md](${ORIGIN}/engineering-blog/agents-md/)`,
-		);
 	});
 });
 
