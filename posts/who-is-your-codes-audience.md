@@ -2,10 +2,9 @@
 title: Who Is Your Code's Audience? An Engineering Team Talks AI-Written Code
 slug: who-is-your-codes-audience
 date: 2026-07-09T14:36:59-07:00
+topic: practices
 authors:
 - amelia-thurdekoos
-categories:
-- Engineering
 meta_description: Learn why your code's audience decides how much readability matters, as an engineering team debates AI-written code, review, and accountability.
 focus_keyword: code's audience
 wordpress_id: 33838

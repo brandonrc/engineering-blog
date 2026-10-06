@@ -2,10 +2,9 @@
 title: 'LLMs: Intelligence vs. cost'
 slug: intelligence-vs-cost
 date: 2026-09-01T18:29:09-07:00
+topic: llms-inference
 authors:
 - guido-imperiale
-categories:
-- Engineering
 meta_description: 'LLM intelligence vs cost: logarithmic scales in plots hide the cost chasm between frontier and cheap models; actual OpenRouter prices alter the Pareto frontier.'
 focus_keyword: LLM intelligence vs cost
 wordpress_id: 37652

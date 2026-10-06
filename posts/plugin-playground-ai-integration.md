@@ -2,10 +2,9 @@
 title: Plugin Playground AI Integration for Faster Plugin Prototyping
 slug: plugin-playground-ai-integration
 date: 2026-04-24T19:23:05-07:00
+topic: ai-engineering
 authors:
 - anuj-kumar-singh
-categories:
-- Engineering
 meta_description: Learn how we integrated AI into Plugin Playground to help you create, edit, test, package, and share JupyterLab plugins faster in JupyterLite and Binder.
 focus_keyword: plugin playground ai integration
 wordpress_id: 22368

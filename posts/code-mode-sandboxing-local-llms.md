@@ -2,11 +2,10 @@
 title: Sandboxing Code Mode for Local LLM Agents
 slug: code-mode-sandboxing-local-llms
 date: 2026-05-04T20:01:31-07:00
+topic: llms-inference
 authors:
 - nick-byrne
 - khuyen-tran
-categories:
-- Engineering
 meta_description: Code mode can make local LLM agents more practical, but executing model-written code brings sandboxing back into the architecture.
 focus_keyword: code mode sandboxing
 wordpress_id: 24557

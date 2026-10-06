@@ -2,10 +2,9 @@
 title: Where Does Jev Fit in a Software Supply Chain? We Benchmarked It Against the Open Alternatives
 slug: jev-bench-package-curation
 date: 2026-09-29T01:59:43-07:00
+topic: ai-engineering
 authors:
 - brandon-geraci
-categories:
-- Engineering
 meta_description: We benchmarked TypeSafe's Jev, Laya, CLM-8B and Claude Haiku on five package-curation triage tasks. A fine-tuned 421M model matched Jev at a tenth of the latency.
 focus_keyword: jev benchmark
 wordpress_id: 40577

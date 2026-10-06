@@ -2,10 +2,9 @@
 title: I Asked LLMs to Review Another LLM. They Still Got It Wrong
 slug: llm-review-reliability
 date: 2026-09-17T19:24:06-07:00
+topic: ai-engineering
 authors:
 - khuyen-tran
-categories:
-- Engineering
 tags:
 - llm-evaluation
 - hallucination-detection

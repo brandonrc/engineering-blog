@@ -2,10 +2,9 @@
 title: "Your AI Agent Ignored `AGENTS.md`. Your Linter Won't Let It."
 slug: lint-rules-for-ai-agents
 date: 2026-10-01T00:26:51-07:00
+topic: ai-engineering
 authors:
 - darshan-paudyal
-categories:
-- Engineering
 meta_description: Use lint rules for AI agents to enforce project conventions. Custom ESLint rules like @jupyter/eslint-plugin give agents clear errors they can fix on their own.
 focus_keyword: Lint rules for AI agents
 wordpress_id: 42025

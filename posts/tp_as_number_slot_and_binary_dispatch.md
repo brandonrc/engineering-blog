@@ -2,10 +2,9 @@
 title: "The `tp_as_number` Slot and Binary Operation Dispatch in CPython"
 slug: tp-as-number-slot-and-binary-dispatch
 date: 2026-06-22T07:01:40-07:00
+topic: python-tooling
 authors:
 - guilherme-leobas
-categories:
-- Engineering
 meta_description: How CPython dispatches binary operations via tp_as_number slots, and how TorchDynamo mirrors that model to improve correctness and reduce ad-hoc special cases.
 focus_keyword: cpython binary operation dispatch
 wordpress_id: 31431

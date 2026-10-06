@@ -2,10 +2,9 @@
 title: The Best Code Review Says Less
 slug: best-code-reviews-say-less
 date: 2026-07-24T05:06:01-07:00
+topic: practices
 authors:
 - johnny-bouder
-categories:
-- Engineering
 meta_description: Far too many AI code review comments are noise. Pair a human editor with AI, surface only the findings that matter, and encode that discipline in a reusable skill.
 focus_keyword: AI code review
 wordpress_id: 35061

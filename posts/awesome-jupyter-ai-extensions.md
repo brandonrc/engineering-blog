@@ -2,10 +2,9 @@
 title: 'Awesome Jupyter AI: A Map of 100+ Jupyter Extensions for AI'
 slug: awesome-jupyter-ai-extensions
 date: 2026-09-25T05:52:56-07:00
+topic: ai-engineering
 authors:
 - michal-krassowski
-categories:
-- Engineering
 meta_description: 'Find the right Jupyter AI extension: a curated map of 100+ chat panels, inline completers, agent bridges and MCP servers for JupyterLab and Notebook 7.'
 focus_keyword: jupyter ai extensions
 wordpress_id: 40334

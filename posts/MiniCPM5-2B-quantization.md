@@ -2,10 +2,9 @@
 title: MiniCPM5-2B quantization report
 slug: minicpm5-2b-quantization-report
 date: 2026-09-22T18:18:00-07:00
+topic: llms-inference
 authors:
 - guido-imperiale
-categories:
-- Engineering
 meta_description: 'MiniCPM5-2B quantization report: the best GGUF weights and K/V cache quants on llama.cpp and BeeLlama.cpp, squeezing a SOTA model into 3 GiB RAM.'
 focus_keyword: MiniCPM5-2B quantization
 wordpress_id: 39135

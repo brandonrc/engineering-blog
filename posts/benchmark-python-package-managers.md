@@ -2,10 +2,9 @@
 title: We Benchmarked 6 Python Package Managers on a Real ML Project. Here's What We Found.
 slug: benchmark-python-package-managers
 date: 2026-04-22T06:07:27-07:00
+topic: python-tooling
 authors:
 - brandon-geraci
-categories:
-- Engineering
 meta_description: Head-to-head benchmark of pixi, uv, conda, mamba, pip, and poetry on a real ML/AI project with 25+ mixed conda-forge and PyPI dependencies.
 focus_keyword: pixi benchmark python package manager
 wordpress_id: 22338

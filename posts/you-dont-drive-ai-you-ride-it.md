@@ -2,10 +2,9 @@
 title: You Don't Drive AI. You Ride It.
 slug: you-dont-drive-ai-you-ride-it
 date: 2026-07-09T14:37:12-07:00
+topic: ai-engineering
 authors:
 - amelia-thurdekoos
-categories:
-- Engineering
 meta_description: 'AI is stochastic, not deterministic. You don''t drive it, you ride it: make documents the memory, use the variation to prototype, and verify every public claim.'
 focus_keyword: riding AI
 wordpress_id: 33839

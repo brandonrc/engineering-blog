@@ -2,10 +2,9 @@
 title: 'PDF Table Extraction: Docling vs Marker vs LlamaParse Compared'
 slug: docling-vs-marker-vs-llamaparse
 date: 2026-05-19T20:52:48-07:00
+topic: ai-engineering
 authors:
 - khuyen-tran
-categories:
-- Engineering
 meta_description: 'Compare three Python tools for PDF table extraction: Docling, Marker, and LlamaParse. Learn which handles merged cells and multi-level headers best.'
 focus_keyword: pdf table extraction python
 canonical_url: https://codecut.ai/docling-vs-marker-vs-llamaparse/
