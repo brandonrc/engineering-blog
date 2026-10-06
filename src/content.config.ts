@@ -1,6 +1,7 @@
 import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
+import { existsSync } from "node:fs";
 import authors from "../authors.json";
 import { TOPICS } from "./data/topics";
 
@@ -20,6 +21,13 @@ const posts = defineCollection({
 		topic: z.enum(TOPICS),
 		// Set when a published post is edited in a way readers should know about.
 		updated: z.coerce.date().optional(),
+	}).superRefine((post, ctx) => {
+		if (existsSync(`src/components/art/${post.slug}.astro`)) return;
+		ctx.addIssue({
+			code: "custom",
+			path: ["slug"],
+			message: `no thumbnail: add src/components/art/${post.slug}.astro (run /draw-card-art)`,
+		});
 	}),
 });
 
