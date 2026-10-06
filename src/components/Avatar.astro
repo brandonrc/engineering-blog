@@ -5,10 +5,13 @@ interface Props {
 	name: string;
 	src?: string | null;
 	size?: number;
+	/** Leave the box size to the caller's classes; `size` then only sets the initials' type size. */
+	fill?: boolean;
 	class?: string;
 }
 
-const { name, src, size = 36, class: className } = Astro.props;
+const { name, src, size = 36, fill = false, class: className } = Astro.props;
+const box = fill ? "" : `width:${size}px;height:${size}px;`;
 const initials = name
 	.split(/\s+/)
 	.map((w) => w[0])
@@ -26,7 +29,7 @@ const initials = name
 		height={size}
 		loading="lazy"
 		class:list={["shrink-0 rounded-full object-cover", className]}
-		style={`width:${size}px;height:${size}px`}
+		style={box || undefined}
 	/>
 ) : (
 	<span
@@ -34,7 +37,7 @@ const initials = name
 			"flex shrink-0 items-center justify-center rounded-full bg-linear-to-br from-brand-strong to-brand font-semibold text-white",
 			className,
 		]}
-		style={`width:${size}px;height:${size}px;font-size:${Math.round(size * 0.36)}px`}
+		style={`${box}font-size:${Math.round(size * 0.36)}px`}
 		aria-hidden="true"
 	>
 		{initials}

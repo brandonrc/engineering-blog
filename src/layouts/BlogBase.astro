@@ -40,6 +40,7 @@ const schema = JSON.stringify(
 				name: author.name,
 				bio: author.bio,
 				url: new URL(pageUrl(`/author/${author.slug}`), Astro.site).href,
+				sameAs: Object.values(author.links ?? {}),
 			})),
 		},
 	}),
