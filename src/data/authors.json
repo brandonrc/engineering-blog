@@ -15,7 +15,8 @@
 		"slug": "khuyen-tran",
 		"name": "Khuyen Tran",
 		"bio": "Senior DevRel at OpenTeams. Writes about data science, MLOps, and open-source tooling.",
-		"avatarUrl": "/authors/khuyen-tran.jpg"
+		"avatarUrl": "/authors/khuyen-tran.jpg",
+		"links": { "website": "https://codecut.ai/" }
 	},
 	{
 		"slug": "adam-lewis",

@@ -5,11 +5,21 @@ import { POST_TOPICS, TOPIC_LABELS } from "../data/topics";
 import { readingTimeMinutes } from "./reading-time";
 import { plainTitle, titleParts, type TitlePart } from "./title";
 
+/** Where to find an author elsewhere, each an absolute address. All optional. */
+export interface AuthorLinks {
+	github?: string;
+	linkedin?: string;
+	x?: string;
+	bluesky?: string;
+	website?: string;
+}
+
 export interface Author {
 	slug: string;
 	name: string;
 	bio: string;
 	avatarUrl: string | null;
+	links?: AuthorLinks;
 }
 
 export interface Post {

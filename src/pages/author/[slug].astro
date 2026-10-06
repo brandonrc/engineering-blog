@@ -1,6 +1,7 @@
 ---
 import Base from "../../layouts/BlogBase.astro";
 import Avatar from "../../components/Avatar.astro";
+import AuthorLinks from "../../components/AuthorLinks.astro";
 import PostCard from "../../components/PostCard.astro";
 import { pageUrl } from "../../lib/blog-path";
 import { authorsOf, getPosts, type Author, type Post } from "../../lib/posts";
@@ -23,6 +24,7 @@ const { author, posts } = Astro.props as { author: Author; posts: Post[] };
 			<div>
 				<h1 class="text-4xl font-bold tracking-tight md:text-5xl">{author.name}</h1>
 				{author.bio && <p class="mt-2 max-w-[640px] text-lg text-muted">{author.bio}</p>}
+				<AuthorLinks author={author} class="mt-3 -ml-2" />
 			</div>
 		</div>
 		<p class="mt-6 text-sm font-semibold tracking-[0.08em] text-faint uppercase">
