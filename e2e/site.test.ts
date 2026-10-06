@@ -218,14 +218,17 @@ describe.concurrent("site", () => {
 		expect(result.label).toBe("Link copied");
 	});
 
+	// A post card: the link to the post, then the byline beside it.
+	const CARD = "div:has(> a[href]):has(> div .post-byline)";
+
 	it("names every author of a post on its index card", async ({ expect }) => {
 		const cards = await withPage(async (page) => {
 			await open(page, `${BLOG_PATH}/`);
-			return page.$$eval("a:has(.post-byline)", (as) =>
-				as.map((a) => ({
-					href: (a as HTMLAnchorElement).href,
-					byline: a.querySelector(".post-byline")!.textContent!.trim(),
-					photos: a.querySelectorAll(".post-byline-faces > *").length,
+			return page.$$eval(CARD, (cards) =>
+				cards.map((card) => ({
+					href: card.querySelector<HTMLAnchorElement>(":scope > a[href]")!.href,
+					byline: card.querySelector(".post-byline")!.textContent!.trim().replace(/\s+/g, " "),
+					photos: card.querySelectorAll(".post-byline-faces > *").length,
 				})),
 			);
 		});
@@ -248,11 +251,11 @@ describe.concurrent("site", () => {
 	it("renders backtick code in a title as code on its card, post page and in search", async ({ expect }) => {
 		const result = await withPage(async (page) => {
 			await open(page, `${BLOG_PATH}/`);
-			const titles = page.locator("a:has(.post-byline) :is(h2, h3)");
+			const titles = page.locator(`${CARD} :is(h2, h3)`);
 			const rawBackticks = (await titles.allInnerTexts()).filter((t) => t.includes("`"));
-			const card = page.locator("a:has(.post-byline):has(.title-code)").first();
+			const card = page.locator(`${CARD}:has(.title-code)`).first();
 			const code = await card.locator(".title-code").first().innerText();
-			const href = await card.getAttribute("href");
+			const href = await card.locator(":scope > a[href]").getAttribute("href");
 			await page.click("[data-search-trigger]");
 			await page.fill("[data-search-input]", code);
 			const searchCode = await page.locator(".search-result .sr-title .title-code").first().innerText();
