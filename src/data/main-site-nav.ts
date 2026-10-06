@@ -35,6 +35,7 @@ export const mainSiteNav: NavMenu[] = [
 						links: [
 							{ label: "Our Capabilities", url: u("/capabilities/"), icon: "ph:cpu", description: "Rooted in open source expertise" },
 							{ label: "Python Security Remediation", url: u("/python-security-remediation/"), icon: "ph:file-py", description: "Bring accountability to your AI stack." },
+							{ label: "Government", url: u("/government/"), icon: "ph:bank", description: "AI infrastructure your agency owns." },
 						],
 					},
 					{
@@ -98,6 +99,7 @@ export const mainSiteNav: NavMenu[] = [
 							{ label: "About Us", url: u("/about-us/"), icon: "ph:users-three" },
 							{ label: "Press Room", url: u("/press/"), icon: "ph:microphone" },
 							{ label: "Careers", url: u("/careers/"), icon: "ph:briefcase" },
+							{ label: "Contact Us", url: u("/contact-us/"), icon: "ph:envelope-simple" },
 						],
 					},
 				],

@@ -34,8 +34,8 @@ export default defineConfig({
 			// Ship only the Phosphor icons the templates reference.
 			include: {
 				ph: [
-					"brain", "briefcase", "caret-down-fill", "chart-line-up", "cpu", "dna",
-					"facebook-logo", "file-py", "github-logo", "instagram-logo", "lightning",
+					"bank", "brain", "briefcase", "caret-down-fill", "chart-line-up", "cpu", "dna",
+					"envelope-simple", "facebook-logo", "file-py", "github-logo", "instagram-logo", "lightning",
 					"linkedin-logo", "link", "check", "list", "medium-logo", "megaphone", "microphone", "moon",
 					"newspaper", "notepad", "pen-nib", "rocket", "rss", "share-network", "shield",
 					"sparkle", "sun", "users-three", "x", "x-logo", "youtube-logo",
