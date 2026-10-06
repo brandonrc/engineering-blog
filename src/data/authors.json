@@ -65,6 +65,7 @@
 		"slug": "michal-krassowski",
 		"name": "Michał Krassowski",
 		"bio": "Senior Software Engineer at OpenTeams. JupyterLab maintainer and Jupyter Distinguished Contributor.",
-		"avatarUrl": "https://avatars.githubusercontent.com/u/5832902?v=4"
+		"avatarUrl": "https://avatars.githubusercontent.com/u/5832902?v=4",
+		"links": { "github": "https://github.com/krassowski", "linkedin": "https://www.linkedin.com/in/michal-krassowski/" }
 	}
 ]
