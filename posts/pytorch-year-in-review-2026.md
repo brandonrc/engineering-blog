@@ -6,7 +6,7 @@ authors:
 categories:
   - Engineering
 topic: "ai-engineering"
-date: 20261007
+date: 2026-10-07
 meta_description: "See what our PyTorch year in review covers: a CPython-faithful Dynamo, Python 3.15 on day one, fused linear cross-entropy, MPS ops and a new build backend."
 focus_keyword: "PyTorch year in review"
 ---
