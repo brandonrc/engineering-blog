@@ -565,6 +565,8 @@ still associated with the community (Nikita) -->
 [2021](https://quansight.com/post/a-year-in-review-quansights-contributions-to-pytorch-in-2021/). Still available on the
 Quansight blog archives!*
 
+<small>PyTorch Foundation and the PyTorch Foundation logo design are registered trademarks of the Linux Foundation.</small>
+
 [^review-bottleneck]: As Edward Yang put it in PyTorch's 
   [AI coding playbook](https://docs.pytorch.org/devlogs/ai-agents/2026-05-30-ai-coding-playbook/), "In an age of cheap
   code, we are human review bottlenecked."
