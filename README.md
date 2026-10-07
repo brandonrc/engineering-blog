@@ -1,4 +1,4 @@
-<pp align="center">
+<p align="center">
   <img src="https://openteams.com/engineering-blog/og/og-home.png" alt="OpenTeams Engineering Blog" width="720">
 </p>
 
