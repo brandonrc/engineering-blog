@@ -18,7 +18,7 @@ Changing the site's code or settings? See [DEVELOPMENT.md](DEVELOPMENT.md).
 
 Only people with write access can open pull requests here. If you're a guest author, or an OpenTeams member with read-only access:
 
-1. Open a [Request write access](https://github.com/openteams-ai/engineering-blog-v2/issues/new?template=request-write-access.yml) issue. OpenTeams members get write access within a minute, and the issue closes itself.
+1. Open a [Request write access](https://github.com/openteams-ai/engineering-blog/issues/new?template=request-write-access.yml) issue. OpenTeams members get write access within a minute, and the issue closes itself.
 2. Guests only: if the admin approves, accept the email invite from GitHub.
 3. Follow the [Writing Guide](#writing-guide).
 

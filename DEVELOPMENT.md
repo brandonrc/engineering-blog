@@ -1,8 +1,8 @@
 # Development
 
 <p>
-  <a href="https://github.com/openteams-ai/engineering-blog-v2/actions/workflows/ci.yml"><img src="https://github.com/openteams-ai/engineering-blog-v2/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
-  <a href="https://github.com/openteams-ai/engineering-blog-v2/actions/workflows/deploy.yml"><img src="https://github.com/openteams-ai/engineering-blog-v2/actions/workflows/deploy.yml/badge.svg?branch=main" alt="Deploy"></a>
+  <a href="https://github.com/openteams-ai/engineering-blog/actions/workflows/ci.yml"><img src="https://github.com/openteams-ai/engineering-blog/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="https://github.com/openteams-ai/engineering-blog/actions/workflows/deploy.yml"><img src="https://github.com/openteams-ai/engineering-blog/actions/workflows/deploy.yml/badge.svg?branch=main" alt="Deploy"></a>
 </p>
 
 For people changing the site's code or settings. Writing a post? You only need the [README](README.md).
@@ -34,7 +34,7 @@ Guest requests stay open for you to decide, and are posted in the blog's Slack c
 
 ```bash
 # Invite (push = Write)
-gh api -X PUT repos/openteams-ai/engineering-blog-v2/collaborators/<username> -f permission=push
+gh api -X PUT repos/openteams-ai/engineering-blog/collaborators/<username> -f permission=push
 # Remove after the post merges
-gh api -X DELETE repos/openteams-ai/engineering-blog-v2/collaborators/<username>
+gh api -X DELETE repos/openteams-ai/engineering-blog/collaborators/<username>
 ```
