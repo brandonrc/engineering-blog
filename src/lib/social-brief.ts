@@ -60,15 +60,17 @@ export function renderTemplate(postPath: string): string {
 }
 
 const words = (value: string) => value.split(/\s+/).filter(Boolean).length;
+// A question that doesn't fit the post can be answered "N/A" instead.
+const notApplicable = (value: string) => /^n\/a\.?$/i.test(value.trim());
 
 function textProblem(name: string, value: unknown): string | null {
 	if (value != null && typeof value !== "string") return `\`${name}\` should be text.`;
 	const count = words(value ?? "");
 	if (count === 0) return `\`${name}\` is empty.`;
-	if (count < MIN_WORDS) {
+	if (count < MIN_WORDS && !notApplicable(value ?? "")) {
 		return (
 			`\`${name}\` is only ${count} word${count === 1 ? "" : "s"}. Say more: at least ${MIN_WORDS} words, ` +
-			"with the article's specifics (tools, numbers, what was tested or argued)."
+			"with the article's specifics (tools, numbers, what was tested or argued), or answer N/A if the question doesn't apply."
 		);
 	}
 	return null;

@@ -43,6 +43,12 @@ describe("findProblems", () => {
 		expect(problem).toMatch(/^`problem` is only 7 words\./);
 	});
 
+	it("accepts N/A for a question that doesn't apply", () => {
+		for (const na of ["N/A", "n/a", " N/A. "]) {
+			expect(findProblems(brief({ ...answered, what_it_does: na }))).toEqual([]);
+		}
+	});
+
 	it("says singular for one word, and empty for none", () => {
 		expect(findProblems(brief({ ...answered, problem: "Short.", what_it_does: "" }))).toEqual([
 			expect.stringMatching(/^`problem` is only 1 word\./),
