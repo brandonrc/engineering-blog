@@ -61,7 +61,9 @@ jobs:
         run: |
           {
             echo "post-files<<EOF"
-            git diff --name-only --diff-filter=A "$BASE_SHA"...pr-head -- 'posts/*.md'
+            # No pathspec on the diff, so a moved post isn't counted as new.
+            # grep finding nothing is fine (|| true).
+            git diff --name-only --diff-filter=A "$BASE_SHA"...pr-head | grep -E '^posts/[^/]+\.md$' || true
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 

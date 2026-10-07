@@ -71,6 +71,8 @@ jobs:
           SLACK_PUBLISH_WEBHOOK: ${{ secrets.SLACK_PUBLISH_WEBHOOK }}
         run: |
           git fetch --no-tags --depth=1 origin "$BEFORE"
-          mapfile -t added < <(git diff --name-only --diff-filter=A "$BEFORE" HEAD -- 'posts/*.md')
+          # No pathspec on the diff: git pairs a moved post with its old path only
+          # when it sees both, so a move doesn't count as a new post.
+          mapfile -t added < <(git diff --name-only --diff-filter=A "$BEFORE" HEAD | grep -E '^posts/[^/]+\.md$')
           [ "${#added[@]}" -eq 0 ] && { echo "No new posts."; exit 0; }
           node scripts/notify-published.ts "${added[@]}"
