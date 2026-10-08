@@ -63,7 +63,7 @@ Whenever it meets something it can't model, it breaks the graph and falls back t
 The more faithfully Dynamo models Python, the fewer graph
 breaks users hit. The clear distinction between something we break on *now* vs something we will *always* break on gives
 users clarity around what they should avoid vs what we working on dynamo want to get fixed. This and other issues like
-excessive recompiles have motivated much of the team's work in 2026
+excessive recompiles have motivated much of the team's work in 2026.
 
 #### The slots migration
 
