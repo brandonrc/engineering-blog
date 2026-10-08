@@ -41,7 +41,7 @@ new stages in front of those human heavy stages. The end goal is for contributor
 early, and reserve human time expensive stuff for after automated gates are cleared. For a team like ours, which sits
 between the core maintainers and the broader community, this changed what useful work looks like. Fixing bugs one at a
 time is still useful, but there are far more people who can pick up work like that, and new things that experienced
-contributors can (and need to be doing) to help move things forward. That can mean a structure that tells people (and
+contributors can do (and need to be doing) to help move things forward. That can mean a structure that tells people (and
 agents) where a fix belongs, a test suite that finds gaps before users do, issues scoped tightly enough that a new
 contributor can pick one up and land it, or tooling that keeps working when the details underneath it change. You will
 see that theme running through most of what follows.
