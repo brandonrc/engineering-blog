@@ -31,9 +31,9 @@ A curated channel is a registry that does four things the cache does not. It kee
 
 We built this with [Artifact Keeper](https://github.com/artifact-keeper/artifact-keeper), the open-source universal artifact registry we maintain, and wrote every step up as a [walkthrough](https://artifact-keeper.github.io/walkthroughs/private-conda-channel-pixi/) with the commands and the output. The developers in that walkthrough never change anything. Same tool, same address they always used. The artifact manager never changes either. It gets one new remote URL.
 
-There are three ways to wire it, and they form a path rather than a choice.
+There are four ways to wire it. The first three form a path, and the fourth is the one to keep in mind for the day the renewal comes up.
 
-![Three ways to put a curated channel upstream of your artifact manager: least change, one governed channel, full control](images/curated-channel-behind-your-artifact-manager/three-ways.png)
+![Four ways to wire a curated channel on Artifact Keeper: upstream of your artifact manager with least change, as one governed channel, with full control over builds, or as the artifact manager itself](images/curated-channel-behind-your-artifact-manager/three-ways.png)
 
 **Least change.** Your artifact manager keeps pulling conda-forge directly and adds the curated channel for your internal packages only. This is a few hours of work and proves the plumbing. The limit is that policy covers only the internal half, and the merge still happens inside the artifact manager, under rules you may not fully control.
 
@@ -41,7 +41,9 @@ There are three ways to wire it, and they form a path rather than a choice.
 
 **Full control.** The curated channel stops proxying and serves only packages you built or rebuilt yourselves from source. This is the most work by a wide margin, and it is where regulated and air-gapped organizations end up, because it is the only arrangement where the answer to "who built this" is always "we did".
 
-We recommend starting at the first step and moving to the second as soon as the plumbing is proven. The third is a decision to make once you know how many packages you actually depend on, which the allowlist tells you.
+**One registry.** The green box does not have to sit behind anything. Artifact Keeper is itself a universal artifact registry, so it can be the cache, the access control and the curated channel in one place, for conda and for every other format your teams use. Nothing sits in front of it to configure, and there is one audit trail instead of two. This is the arrangement for an organization that does not yet have an artifact manager, or one whose renewal is on the table.
+
+We recommend starting at the first step and moving to the second as soon as the plumbing is proven. The third is a decision to make once you know how many packages you actually depend on, which the allowlist tells you. The fourth is a procurement conversation rather than an engineering one, and the first three mean you never have to win it to get the benefits.
 
 ## What it costs and what you get
 
