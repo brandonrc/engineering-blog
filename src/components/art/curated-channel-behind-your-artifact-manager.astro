@@ -1,0 +1,23 @@
+---
+import { plex, softBlue, solidBlue, navy, blueMut, lightGreen, greenDeep, check } from "./style";
+---
+
+<svg viewBox="0 0 720 380" class="h-full w-full" preserveAspectRatio="xMidYMid meet" role="img" aria-label="A curated channel with a check mark placed upstream of your artifact manager, which stays unchanged">
+	<rect x="-300" y="-300" width="1320" height="980" fill={softBlue}/>
+	<!-- your artifact manager: unchanged, outlined -->
+	<rect x="60" y="120" width="260" height="140" rx="18" fill="#ffffff" stroke={navy} stroke-width="6"/>
+	<text x="190" y="182" font-family={plex} font-size="30" font-weight="600" text-anchor="middle" fill={navy}>your artifact</text>
+	<text x="190" y="220" font-family={plex} font-size="30" font-weight="600" text-anchor="middle" fill={navy}>manager</text>
+	<!-- arrow from curated channel into it -->
+	<path d="M392 190 H336" stroke={navy} stroke-width="7" stroke-linecap="round"/>
+	<path d="M344 172 L318 190 L344 208 Z" fill={navy}/>
+	<!-- curated channel: green, checked -->
+	<rect x="400" y="120" width="260" height="140" rx="18" fill={lightGreen} stroke={greenDeep} stroke-width="4"/>
+	<text x="530" y="182" font-family={plex} font-size="30" font-weight="600" text-anchor="middle" fill={greenDeep}>curated</text>
+	<text x="530" y="220" font-family={plex} font-size="30" font-weight="600" text-anchor="middle" fill={greenDeep}>channel</text>
+	<circle cx="650" cy="124" r="30" fill={check}/>
+	<path d="M634 125 L645 136 L667 112" stroke="#ffffff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+	<!-- caption -->
+	<text x="190" y="310" font-family={plex} font-size="27" font-weight="500" text-anchor="middle" fill={blueMut}>nothing changes here</text>
+	<text x="530" y="310" font-family={plex} font-size="27" font-weight="500" text-anchor="middle" fill={blueMut}>allowlist · scan · attest</text>
+</svg>

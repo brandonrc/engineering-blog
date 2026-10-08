@@ -1,0 +1,16 @@
+# The social brief for posts/curated-channel-behind-your-artifact-manager.md. It's used to write the LinkedIn post.
+# Answer each question yourself or with your AI assistant (see Social Brief in
+# README.md). The PR can merge once all four are answered.
+
+# What problem does this article solve? (1-2 sentences)
+problem: "Organizations pay for an artifact manager that caches packages and controls access, but it cannot say who built a package, whether a public package is shadowing an internal name, or what happens when the public channel is slow, oversized or compromised."
+
+# What does the article build, test, compare, or argue? (1-2 sentences)
+what_it_does: "Argues for putting a curated, attested channel upstream of the artifact manager you already have, with an allowlist, scanning, signed build statements and promotion gates, and lays out three ways to wire it, from least change to full control, backed by a conda walkthrough built on Artifact Keeper."
+
+# If readers remember one thing, what should it be? (1 sentence)
+remember_one_thing: "You do not have to replace your artifact manager to answer who built what you run; curate upstream of it and change nothing downstream."
+
+# Who should read this? Pick one or more:
+# data-scientists, ml-ai-engineers, python-developers, platform-devops-engineers, security-compliance-engineers, oss-maintainers, engineering-leaders
+audience: ["engineering-leaders", "security-compliance-engineers", "platform-devops-engineers"]
